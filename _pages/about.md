@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>Northeastern University</a>. Undergraduate Student.
+subtitle: <a href='#'>Northeastern University</a>. Undergraduate.<br>tahboub.h [at] northeastern [dot] edu
 
 profile:
   align: right
