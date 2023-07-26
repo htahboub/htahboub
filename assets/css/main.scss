@@ -6,10 +6,6 @@
 // Dimensions
 $max-content-width: {{ site.max_width }};
 
-.contact-icons {
-  font-size: 3rem;
-}
-
 @import
   "variables",
   "themes",
@@ -18,3 +14,7 @@ $max-content-width: {{ site.max_width }};
   "distill",
   "cv"
 ;
+
+.contact-icons {
+  font-size: 3rem !important;
+}
