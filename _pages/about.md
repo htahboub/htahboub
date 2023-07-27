@@ -31,7 +31,7 @@ social: true  # includes social icons at the bottom of the page
     };
     document.addEventListener('keydown', keyHandler, false);
 </script>
-<img style="display: none; position: fixed;" id="howard" src="images/howard.gif" height="600pt">
+<img style="display: none; position: fixed;" id="howard" src="assets/img/howard.gif" height="600pt">
 Hi there! My name is Hamza and I am a data science major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
 
 I am a Research Assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. Additionally, I have been a Teaching Assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course at Northeastern University.
