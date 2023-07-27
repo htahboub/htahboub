@@ -9,6 +9,6 @@ horizontal: false
 ---
 
 <ul>
-  <li><a href="https://type.hamzatahboub.com">type</a></li> – a quiet place to type (plus eternal saving features)
-  <li><a href="https://stopwatch.hamzatahboub.com">stopwatch</a></li> - a minimal stopwatch
+  <li><a href="https://type.hamzatahboub.com">type</a> – a quiet place to type (plus eternal saving features)</li>
+  <li><a href="https://stopwatch.hamzatahboub.com">stopwatch</a> - a minimal stopwatch</li>
 </ul>
