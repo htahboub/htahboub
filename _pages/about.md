@@ -8,7 +8,7 @@ profile:
   align: right
   image: me.png
   image_circular: true # crops the image to make it circular
-  address: 
+  address: Boston, Massachusetts
 
 news: false  # includes a list of news items
 latest_posts: false  # includes a list of the newest posts
