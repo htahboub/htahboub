@@ -8,7 +8,7 @@ profile:
   align: right
   image: me.png
   image_circular: true # crops the image to make it circular
-  address: Boston, Massachusetts
+  address: 
 
 news: false  # includes a list of news items
 latest_posts: false  # includes a list of the newest posts
@@ -34,8 +34,8 @@ social: true  # includes social icons at the bottom of the page
 <img style="display: none; position: fixed;" id="howard" src="assets/img/howard.gif" height="600pt">
 Hi there! My name is Hamza and I am a data science major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
 
-I am a Research Assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. Additionally, I have been a Teaching Assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course at Northeastern University.
+I am a Research Assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My main research focus thus far has been commonsense reasoning. Additionally, I have been a Teaching Assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course at Northeastern University.
 
-If you are interested in learning more about my work or have any interesting potential opportunities available, feel free to reach out!
+If you're curious about my work or have potential opportunities and collaborations in mind, feel free to reach out!
 
 <br>
