@@ -36,7 +36,7 @@ Hi there! My name is Hamza and I am a data science major at Northeastern Univers
 
 I am a Research Assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My main research focus thus far has been commonsense reasoning. Additionally, I have been a Teaching Assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course at Northeastern University.
 
-You can find my (currently outdated) resume <a target="" href="https://hamzatahboub.com/resume.pdf">here</a>.
+You can find my resume <a target="" href="https://hamzatahboub.com/resume.pdf">here</a>.
 
 If you're curious about my work or have potential opportunities and collaborations in mind, feel free to reach out!
 
