@@ -40,8 +40,8 @@ social: false          # includes social icons at the bottom of the page
         document.getElementById("howard").style.display = "block";
     }
 
-    // Call checkTime after 30 minutes
-    setTimeout(checkTime, 1800000); // 1800000 milliseconds = 30 minutes
+    // Call checkTime after an hour
+    setTimeout(checkTime, 3600000);
 </script>
 <img style="display: none; position: fixed;" id="howard" src="assets/img/howard.gif" height="600pt">
 Hi there! My name is Hamza and I am a data science major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
