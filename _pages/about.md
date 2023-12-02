@@ -18,18 +18,30 @@ social: false          # includes social icons at the bottom of the page
 <script>
     var pattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
     var current = 0;
+    var isTimePassed = false;
+
     var keyHandler = function (event) {
-        if (pattern.indexOf(event.key) < 0 || event.key !== pattern[current]) {
+        if (isTimePassed || (pattern.indexOf(event.key) >= 0 && event.key === pattern[current])) {
+            current++;
+            if (pattern.length === current || isTimePassed) {
+                current = 0;
+                document.getElementById("howard").style.display = "block";
+            }
+        } else {
             current = 0;
-            return;
-        }
-        current++;
-        if (pattern.length === current) {
-            current = 0;
-            document.getElementById("howard").style.display = "block";
         }
     };
+
     document.addEventListener('keydown', keyHandler, false);
+
+    // Function to check if 30 minutes have passed
+    function checkTime() {
+        isTimePassed = true;
+        document.getElementById("howard").style.display = "block";
+    }
+
+    // Call checkTime after 30 minutes
+    setTimeout(checkTime, 1800000); // 1800000 milliseconds = 30 minutes
 </script>
 <img style="display: none; position: fixed;" id="howard" src="assets/img/howard.gif" height="600pt">
 Hi there! My name is Hamza and I am a data science major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
