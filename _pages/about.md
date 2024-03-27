@@ -44,11 +44,11 @@ social: false          # includes social icons at the bottom of the page
     setTimeout(checkTime, 3600000);
 </script>
 <img style="display: none; position: fixed;" id="howard" src="assets/img/howard.gif" height="600pt">
-Hi there! My name is Hamza and I am a data science major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
+Hi there! My name is Hamza and I am a computer science & math major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
 
-I am a Research Assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My main research focus thus far has been commonsense reasoning. Additionally, I have been a Teaching Assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course at Northeastern University.
+I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My main research focus currently is in video understanding, especially egocentric video and social understanding. Additionally, I have been a teaching assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course at Northeastern University.
 
-You can find my resume <a target="" href="https://hamzatahboub.com/resume.pdf">here</a>.
+You can find me on LinkedIn <a target="" href="https://linkedin.com/in/hamzatahboub">here</a> and my resume <a target="" href="https://hamzatahboub.com/resume.pdf">here</a>.
 
 If you're curious about my work or have potential opportunities and collaborations in mind, feel free to reach out!
 
