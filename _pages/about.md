@@ -44,7 +44,7 @@ social: false          # includes social icons at the bottom of the page
     setTimeout(checkTime, 3600000);
 </script>
 <img style="display: none; position: fixed;" id="howard" src="assets/img/howard.gif" height="600pt">
-Hi there! My name is Hamza and I am a computer science & math major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
+Hello! My name is Hamza and I am a computer science & math major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
 
 I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My main research focus currently is in video understanding, especially egocentric video and social understanding. Additionally, I have been a teaching assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course at Northeastern University.
 
