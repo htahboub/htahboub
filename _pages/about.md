@@ -34,19 +34,16 @@ social: false          # includes social icons at the bottom of the page
 
     document.addEventListener('keydown', keyHandler, false);
 
-    // Function to check if 30 minutes have passed
     function checkTime() {
         isTimePassed = true;
         document.getElementById("howard").style.display = "block";
     }
-
-    // Call checkTime after an hour
-    setTimeout(checkTime, 3600000);
+    setTimeout(checkTime, 18000000); // 5 hours
 </script>
 <img style="display: none; position: fixed;" id="howard" src="assets/img/howard.gif" height="600pt">
 Hello! My name is Hamza and I am a computer science & math major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
 
-I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My main research focus currently is in video understanding, especially egocentric video and social understanding. Additionally, I have been a teaching assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course at Northeastern University.
+I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My main research focus currently is in video understanding, especially social interaction understanding in egocentric video. Also in the CS department, I worked as a teaching assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course for a couple of semesters.
 
 You can find me on LinkedIn <a target="" href="https://linkedin.com/in/hamzatahboub">here</a> and my resume <a target="" href="https://hamzatahboub.com/resume.pdf">here</a>.
 
