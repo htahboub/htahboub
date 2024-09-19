@@ -43,7 +43,7 @@ social: false          # includes social icons at the bottom of the page
     setTimeout(checkTime, 21600000); // 6 hours
 </script>
 <img style="display: none; position: fixed; right: 0;" id="howard" src="assets/img/howard.gif" height="600pt">
-<img style="display: none; position: fixed; left: 0;" id="howard" src="assets/img/gaster.gif" height="600pt">
+<img style="display: none; position: fixed; left: 0;" id="gaster" src="assets/img/gaster.gif" height="600pt">
 Hello! My name is Hamza and I am a computer science & math major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
 
 I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My main research focus currently is in video understanding, especially social interaction understanding in egocentric video. Also in the CS department, I worked as a teaching assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course for a couple of semesters.
