@@ -48,7 +48,7 @@ Hello! My name is Hamza and I am a computer science & math major at Northeastern
 
 I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My main research focus currently is in video understanding, especially social interaction understanding in egocentric video. Also in the CS department, I worked as a teaching assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course for a couple of semesters.
 
-You can find me on LinkedIn <a target="" href="https://linkedin.com/in/hamzatahboub">here</a> and my resume <a target="" href="https://hamzatahboub.com/resume.pdf">here</a>.
+You can find me on LinkedIn <a target="" href="https://linkedin.com/in/hamzatahboub">here</a> and my resume (outdated, will update soon!) <a target="" href="https://hamzatahboub.com/resume.pdf">here</a>.
 
 If you're curious about my work or have potential opportunities and collaborations in mind, feel free to reach out!
 
