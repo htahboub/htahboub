@@ -4014,7 +4014,7 @@ var vm = {};
 return {
 link:        linkFunction,
 restrict:    'A',
-templateUrl: '/assets/apps/common/views/directives' +
+templateUrl: '/prototype/assets/apps/common/views/directives' +
 '/mobile-transition-layer.htm'
 };
 function linkFunction($scope, element) {
@@ -7845,7 +7845,7 @@ return ({
 controller: "comment.CommentController",
 controllerAs: "vm",
 restrict: "A",
-templateUrl: "/assets/apps/common/ng-components/comment/comment.directive.htm",
+templateUrl: "/prototype/assets/apps/common/ng-components/comment/comment.directive.htm",
 link: linkFunction,
 scope: {
 comment: "=comment", 	// current comment
@@ -8219,7 +8219,7 @@ return ({
 controller: "comment.CommentTeaserController",
 controllerAs: "vm",
 restrict: "A",
-templateUrl: "/assets/apps/common/ng-components/comment/teaser/comment-teaser.directive.htm",
+templateUrl: "/prototype/assets/apps/common/ng-components/comment/teaser/comment-teaser.directive.htm",
 scope: {
 isShown: "=isShown",
 hasInitialMentions: "=hasInitialMentions",
@@ -8250,7 +8250,7 @@ return ({
 link: linkFunction,
 restrict: "A",
 replace: true,
-templateUrl: "/assets/apps/common/ng-components/emoji/emoji-add-menu.directive.htm"
+templateUrl: "/prototype/assets/apps/common/ng-components/emoji/emoji-add-menu.directive.htm"
 });
 function linkFunction(scope, element) {
 var menuObj = {
@@ -8374,7 +8374,7 @@ scope: {
 commentTarget: "=target",
 isOpen: "@"
 },
-templateUrl: "/assets/apps/common/ng-components/emoji/emoji-add.directive.htm"
+templateUrl: "/prototype/assets/apps/common/ng-components/emoji/emoji-add.directive.htm"
 });
 function linkFunction( scope, element ) {
 init();
@@ -8601,7 +8601,7 @@ isNarrow: "@"
 },
 restrict: "A",
 replace: true,
-templateUrl: "/assets/apps/common/ng-components/emoji/emoji-typeahead.directive.htm"
+templateUrl: "/prototype/assets/apps/common/ng-components/emoji/emoji-typeahead.directive.htm"
 });
 function linkFunction( $scope, element ) {
 var minSearch = 2;
@@ -9632,7 +9632,7 @@ return ({
 controller: "mention.MentionController",
 controllerAs: "vm",
 restrict: "A",
-templateUrl: "/assets/apps/common/ng-components/mention/mention.directive.htm",
+templateUrl: "/prototype/assets/apps/common/ng-components/mention/mention.directive.htm",
 scope: {
 uid: "@uid",
 hasWhoIsNotified: "@hasWhoIsNotified",
@@ -9874,7 +9874,7 @@ triggerChar: "=mentioTriggerChar",
 forElem: "=mentioFor",
 mentionPositioningClass: "@?"
 },
-templateUrl: "/assets/apps/common/ng-components/mention/menu/mention-menu.directive.htm",
+templateUrl: "/prototype/assets/apps/common/ng-components/mention/menu/mention-menu.directive.htm",
 controller: "mention.MenuController",
 controllerAs: "vm",
 link: function( scope, element, attr ) {
@@ -11341,7 +11341,7 @@ ng
 function WhoIsNotifiedDirective() {
 return ({
 restrict: "A",
-templateUrl: "/assets/apps/common/ng-components/mention/who-is-notified/mention-who-is-notified.directive.htm",
+templateUrl: "/prototype/assets/apps/common/ng-components/mention/who-is-notified/mention-who-is-notified.directive.htm",
 controller: "mention.WhoIsNotifiedController",
 controllerAs: "vm",
 scope: {
@@ -11746,7 +11746,7 @@ controller: "invM1BrowseModal.ModalController",
 controllerAs: "vm",
 restrict: "E",
 scope: true,
-templateUrl: "/assets/apps/share/components/browse-modal/browse-modal.directive.htm"
+templateUrl: "/prototype/assets/apps/share/components/browse-modal/browse-modal.directive.htm"
 });
 }
 })( angular, InVision );
@@ -11762,7 +11762,7 @@ function InfoList( fakeCssModuleCompiler ) {
 return({
 compile: fakeCssModuleCompiler( "c-0a7b66" ),
 restrict: "E",
-templateUrl: "/assets/apps/share/components/browse-modal/info-list.directive.htm"
+templateUrl: "/prototype/assets/apps/share/components/browse-modal/info-list.directive.htm"
 });
 }
 })( angular, InVision );
@@ -11778,7 +11778,7 @@ function ThumbnailList( fakeCssModuleCompiler ) {
 return({
 compile: fakeCssModuleCompiler( "c-5d1133" ),
 restrict: "E",
-templateUrl: "/assets/apps/share/components/browse-modal/thumbnail-list.directive.htm"
+templateUrl: "/prototype/assets/apps/share/components/browse-modal/thumbnail-list.directive.htm"
 });
 }
 })( angular, InVision );
@@ -11866,7 +11866,7 @@ node: "=",
 onViewScreen: "&",
 onViewScreenInShare: "&"
 },
-templateUrl: "/assets/apps/share/components/flow/detail/detail.directive.htm"
+templateUrl: "/prototype/assets/apps/share/components/flow/detail/detail.directive.htm"
 });
 }
 })( angular, InVision );
@@ -11916,7 +11916,7 @@ onViewScreen: "&",
 onClose: "&",
 onReflowFromSelectedScreen: "&"
 },
-templateUrl: "/assets/apps/share/components/flow/header/header.directive.htm"
+templateUrl: "/prototype/assets/apps/share/components/flow/header/header.directive.htm"
 });
 }
 })( angular, InVision );
@@ -12066,7 +12066,7 @@ nodes: "=",
 selectedNode: "=",
 onSelect: "&"
 },
-templateUrl: "/assets/apps/share/components/flow/header/screen-menu.directive.htm"
+templateUrl: "/prototype/assets/apps/share/components/flow/header/screen-menu.directive.htm"
 });
 }
 })( angular, InVision );
@@ -12228,7 +12228,7 @@ onReflowFromScreen: "&",
 onDragStart: "&",
 onDragStop: "&"
 },
-templateUrl: "/assets/apps/share/components/flow/map/map.directive.htm"
+templateUrl: "/prototype/assets/apps/share/components/flow/map/map.directive.htm"
 });
 }
 })( angular, InVision );
@@ -12277,7 +12277,7 @@ onViewScreen: "&",
 onReflowFromScreen: "&",
 selectedNode: "="
 },
-templateUrl: "/assets/apps/share/components/flow/map/node.directive.htm"
+templateUrl: "/prototype/assets/apps/share/components/flow/map/node.directive.htm"
 });
 }
 })( angular, InVision );
@@ -12457,7 +12457,7 @@ controllerAs: "vm",
 require: "invFlowModal",
 restrict: "E",
 scope: true,
-templateUrl: "/assets/apps/share/components/flow/modal/modal.directive.htm"
+templateUrl: "/prototype/assets/apps/share/components/flow/modal/modal.directive.htm"
 });
 function link( $scope, element, attributes, flowModalController ) {
 init();
@@ -12885,7 +12885,7 @@ controller: "invM2TitleView.ViewController",
 controllerAs: "vm",
 restrict: "E",
 scope: true,
-templateUrl: "/assets/apps/share/components/title-view/title-view.directive.htm"
+templateUrl: "/prototype/assets/apps/share/components/title-view/title-view.directive.htm"
 });
 }
 })( angular, InVision );
@@ -13079,7 +13079,7 @@ $scope.$broadcast("relaunchMobileApp", config.share.screenID );
 $scope.navigateToTargetScreen( shareStart , false );
 };
 $scope.getAppIcon = function() {
-return $scope.appIcon.imageUrl || "/assets/apps/share/img/icon.png";
+return $scope.appIcon.imageUrl || "/prototype/assets/apps/share/img/icon.png";
 };
 $scope.toggleQrShareForm = function(){
 $scope.isShowingQrForm = !$scope.isShowingQrForm;
@@ -18557,7 +18557,7 @@ return {
 restrict: 'A',
 transclude: true,
 replace: true,
-templateUrl: "/assets/apps/share/views/directives/share-sketch-viewer.htm",
+templateUrl: "/prototype/assets/apps/share/views/directives/share-sketch-viewer.htm",
 link: function( $scope, element, attrs ){
 var $win = $($window);
 var unlistenToKeyCommands = keyCommandsService.listen(
@@ -18815,7 +18815,7 @@ link: linkFunction,
 replace: true,
 require: "^ngModel",
 restrict: "A",
-templateUrl: "/assets/apps/share/views/directives/toggle.htm"
+templateUrl: "/prototype/assets/apps/share/views/directives/toggle.htm"
 });
 }
 );
