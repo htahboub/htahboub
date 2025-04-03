@@ -40,7 +40,7 @@ social: false          # includes social icons at the bottom of the page
         document.getElementById("howard").style.display = "block";
         document.getElementById("gaster").style.display = "block";
     }
-    setTimeout(checkTime, 21600000); // 6 hours
+    setTimeout(checkTime, 36e5); // 6 hours
 </script>
 <img style="display: none; position: fixed; right: 0; bottom: 35px;" id="howard" src="assets/img/howard.gif" height="600pt">
 <img style="display: none; position: fixed; left: 0; bottom: 0;" id="gaster" src="assets/img/gaster.gif" height="600pt">
