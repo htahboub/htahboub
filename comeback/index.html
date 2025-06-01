@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive 2-Week Cycling Comeback Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Visualization & Content Choices: 
+        - Report Info: Physiological detraining/retraining data (Table 1). Goal: Show change potential. Viz: Interactive Bar Chart (Chart.js). Interaction: User selects a metric (e.g., VO2max) to update the chart, visually comparing decline vs. potential gain. Justification: More engaging and clearer than a static table.
+        - Report Info: Training focus comparison (Table 2). Goal: Contrast strategies. Viz: Side-by-side HTML/CSS cards. Interaction: Static visual comparison. Justification: Clearly highlights the core strategic shift.
+        - Report Info: Two-week training plan (Table 4). Goal: Provide a daily, actionable plan. Viz: Interactive 14-day grid/calendar. Interaction: Clicking a day reveals a modal with detailed workout info, rationale, and RPE. Justification: Transforms a dense table into an intuitive, day-by-day guide.
+        - Report Info: Recovery principles. Goal: Offer quick, memorable tips. Viz: Icon-driven info cards. Interaction: Clicking an icon (Nutrition, Sleep) reveals concise tips. Justification: Breaks down dense text into easily digestible chunks.
+        - All choices adhere to the no-SVG/Mermaid constraint, using HTML/CSS and Chart.js on Canvas.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfcfb;
+            color: #334155;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .plan-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .plan-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .modal-backdrop {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-700">
+
+    <nav id="navbar" class="bg-white/80 backdrop-blur-lg sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <span class="text-xl font-bold text-orange-600">🚴‍♂️ 2-Week Comeback</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#the-why" class="text-slate-600 hover:bg-orange-100 hover:text-orange-700 px-3 py-2 rounded-md text-sm font-medium">The Why</a>
+                        <a href="#the-how" class="text-slate-600 hover:bg-orange-100 hover:text-orange-700 px-3 py-2 rounded-md text-sm font-medium">The How</a>
+                        <a href="#the-plan" class="text-slate-600 hover:bg-orange-100 hover:text-orange-700 px-3 py-2 rounded-md text-sm font-medium">The Plan</a>
+                        <a href="#the-recovery" class="text-slate-600 hover:bg-orange-100 hover:text-orange-700 px-3 py-2 rounded-md text-sm font-medium">Recovery</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header class="bg-white py-16 sm:py-24">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-800">Your Two-Week Cycling Comeback</h1>
+                <p class="mt-4 text-lg sm:text-xl text-slate-600">An interactive guide to rapidly and safely rebuilding your fitness after a long pause. This plan prioritizes targeted intensity over sheer volume to make the most of your limited time.</p>
+            </div>
+        </header>
+
+        <section id="the-why" class="py-16 sm:py-20 bg-stone-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-800">The 'Why': Detraining & Rapid Retraining</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">After a break, your body loses some fitness, but it can also regain key adaptations remarkably fast. This section visualizes what happens during detraining and what you can realistically improve in just two weeks. Understanding this helps justify our focus on specific types of training.</p>
+                </div>
+
+                <div class="mt-12 bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                         <h3 class="text-xl font-semibold text-slate-800">Explore Physiological Changes</h3>
+                        <div id="metric-selector" class="flex flex-wrap gap-2">
+                        </div>
+                    </div>
+                   
+                    <p id="chart-explanation" class="mt-4 text-slate-600"></p>
+                    <div class="mt-6 chart-container">
+                        <canvas id="retrainingChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="the-how" class="py-16 sm:py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-800">The 'How': A Shift in Strategy</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">With only two weeks, the conventional wisdom of building a massive aerobic base with long, slow Zone 2 rides is impractical. Instead, we shift focus to a more potent strategy: using carefully dosed intensity to trigger rapid fitness gains.</p>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-slate-100/50 p-8 rounded-2xl border border-slate-200">
+                        <h3 class="text-2xl font-semibold text-slate-500">🐌 Traditional Endurance Build</h3>
+                        <p class="mt-2 text-slate-600">Focuses on slowly building a huge aerobic base over months.</p>
+                        <ul class="mt-6 space-y-4 text-slate-600">
+                            <li class="flex items-start"><span class="flex-shrink-0 h-6 w-6 text-lg text-center">🏆</span><span class="ml-3"><strong>Primary Goal:</strong> Build a large aerobic base, maximize fat oxidation.</span></li>
+                            <li class="flex items-start"><span class="flex-shrink-0 h-6 w-6 text-lg text-center">🕒</span><span class="ml-3"><strong>Zone 2 Volume:</strong> Very high; the cornerstone of training (3+ hour rides).</span></li>
+                            <li class="flex items-start"><span class="flex-shrink-0 h-6 w-6 text-lg text-center">⚡</span><span class="ml-3"><strong>HIIT Frequency:</strong> Low initially, gradually introduced.</span></li>
+                            <li class="flex items-start"><span class="flex-shrink-0 h-6 w-6 text-lg text-center">🗺️</span><span class="ml-3"><strong>Long Ride Focus:</strong> Maximize duration to improve metabolic efficiency.</span></li>
+                        </ul>
+                    </div>
+                    <div class="bg-orange-100/50 p-8 rounded-2xl border border-orange-200 ring-2 ring-orange-500">
+                        <h3 class="text-2xl font-semibold text-orange-700">🚀 2-Week Comeback Strategy</h3>
+                        <p class="mt-2 text-orange-800">Focuses on rapidly "sharpening" fitness with targeted, time-efficient efforts.</p>
+                         <ul class="mt-6 space-y-4 text-slate-700">
+                            <li class="flex items-start"><span class="flex-shrink-0 h-6 w-6 text-lg text-center">🏆</span><span class="ml-3"><strong>Primary Goal:</strong> Rapidly improve VO2max, regain bike feel, and boost confidence.</span></li>
+                            <li class="flex items-start"><span class="flex-shrink-0 h-6 w-6 text-lg text-center">🕒</span><span class="ml-3"><strong>Zone 2 Volume:</strong> Low-Moderate; shorter, supportive rides (60-90 min).</span></li>
+                            <li class="flex items-start"><span class="flex-shrink-0 h-6 w-6 text-lg text-center">⚡</span><span class="ml-3"><strong>HIIT Frequency:</strong> Moderate-High; targeted VO2max & sprint intervals from the start.</span></li>
+                            <li class="flex items-start"><span class="flex-shrink-0 h-6 w-6 text-lg text-center">🗺️</span><span class="ml-3"><strong>Long Ride Focus:</strong> Moderate duration for confidence and nutrition practice.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="the-plan" class="py-16 sm:py-20 bg-stone-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-800">The 'Plan': Your Interactive Schedule</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">Here is your day-by-day guide for the next two weeks. Each day is designed with a specific purpose, balancing stress and recovery. Click on any day to see the full workout details, its rationale, and the target effort level.</p>
+                </div>
+                <div id="plan-container" class="mt-12"></div>
+            </div>
+        </section>
+        
+        <section id="the-recovery" class="py-16 sm:py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-800">The Foundation: Recovery is Paramount</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">In an accelerated plan, your ability to adapt is limited by your ability to recover. Neglecting recovery will undermine your hard work. Prioritize these three pillars to maximize your gains.</p>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-teal-50 p-8 rounded-2xl text-center">
+                        <div class="text-4xl">🍎</div>
+                        <h3 class="mt-4 text-xl font-semibold text-teal-800">Nutrition</h3>
+                        <p class="mt-2 text-teal-700">Fuel your work, repair your muscles. Carbs are for energy, protein is for repair.</p>
+                        <p class="mt-4 text-sm text-left text-slate-600"><strong>Pre-Ride:</strong> A carb-rich meal 2-4 hours before. <br><strong>During (>90min):</strong> 30-60g carbs per hour. <br><strong>Post-Ride:</strong> Carbs + Protein (20-30g) within 60 mins.</p>
+                    </div>
+                    <div class="bg-sky-50 p-8 rounded-2xl text-center">
+                        <div class="text-4xl">💧</div>
+                        <h3 class="mt-4 text-xl font-semibold text-sky-800">Hydration</h3>
+                        <p class="mt-2 text-sky-700">Essential for performance and recovery. Don't wait until you're thirsty.</p>
+                        <p class="mt-4 text-sm text-left text-slate-600">Maintain consistent fluid intake throughout the day. Dehydration increases perceived effort and slows recovery.</p>
+                    </div>
+                    <div class="bg-violet-50 p-8 rounded-2xl text-center">
+                        <div class="text-4xl">😴</div>
+                        <h3 class="mt-4 text-xl font-semibold text-violet-800">Sleep</h3>
+                        <p class="mt-2 text-violet-700">Your most powerful recovery tool. This is when adaptation happens.</p>
+                         <p class="mt-4 text-sm text-left text-slate-600">Aim for 7-9 hours of quality sleep per night. This is non-negotiable for muscle repair and hormone regulation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-slate-800 text-white">
+            <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-400">
+                <p>This interactive guide is based on the "Rapid Return to Endurance Cycling" report. It is intended for informational purposes and should be adapted based on individual fitness and health. Always listen to your body.</p>
+            </div>
+        </footer>
+    </main>
+
+    <div id="plan-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60 modal-backdrop opacity-0 pointer-events-none">
+        <div id="modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto p-6 sm:p-8 transform scale-95 modal-content">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 id="modal-title" class="text-2xl font-bold text-slate-800"></h3>
+                    <p id="modal-day" class="text-sm font-medium text-orange-600"></p>
+                </div>
+                <button id="close-modal-btn" class="text-slate-400 hover:text-slate-700">&times;</button>
+            </div>
+            <div class="mt-6">
+                <p class="font-semibold text-slate-700">📋 Workout:</p>
+                <p id="modal-workout" class="mt-1 text-slate-600"></p>
+                <p class="mt-4 font-semibold text-slate-700">💡 Rationale:</p>
+                <p id="modal-rationale" class="mt-1 text-slate-600"></p>
+                <p class="mt-4 font-semibold text-slate-700">🎯 Target Effort (RPE):</p>
+                <div id="modal-rpe" class="mt-2 w-full bg-slate-200 rounded-full h-4 relative">
+                    <div id="rpe-bar" class="bg-gradient-to-r from-teal-400 to-red-500 h-4 rounded-full"></div>
+                    <span id="rpe-indicator" class="absolute top-1/2 -translate-y-1/2 h-5 w-5 bg-white border-2 border-slate-700 rounded-full shadow-md"></span>
+                    <div class="flex justify-between text-xs mt-1 px-1"><span>Easy</span><span>Moderate</span><span>Hard</span><span>Max</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const physiologyData = {
+        'VO₂max': {
+            decline: -8,
+            regain: 4,
+            explanation: 'Maximal oxygen uptake (VO₂max) declines quickly but responds well to high-intensity training. HIIT sessions are key to "waking up" this system for rapid aerobic gains.'
+        },
+        'Plasma Volume': {
+            decline: -10,
+            regain: 8,
+            explanation: 'One of the fastest adaptations to training. Consistent riding, even at low intensity, quickly increases blood plasma volume, improving cardiovascular efficiency and making efforts feel easier.'
+        },
+        'Lactate Threshold': {
+            decline: -12,
+            regain: 5,
+            explanation: 'Your ability to sustain hard efforts decreases significantly. While harder to train quickly, targeted threshold and VO₂max intervals will begin to improve it.'
+        },
+        'Muscle Glycogen': {
+            decline: -18,
+            regain: 10,
+            explanation: 'Your muscle fuel stores shrink during a break. Consistent riding and proper carbohydrate nutrition will help restore them, improving your energy for longer efforts.'
+        }
+    };
+
+    const trainingPlan = [
+        { day: 1, week: 1, focus: "Rest/Active Recovery", workout: "30-45 minutes Zone 1 (very easy spin).", rationale: "Promote blood flow and prepare mentally for the week. Recovery starts on day one.", rpe: [1,2] },
+        { day: 2, week: 1, focus: "Moderate Endurance", workout: "60-75 minutes Zone 2 (steady, conversational pace).", rationale: "Re-acclimate to time in the saddle and improve pedaling mechanics without causing too much stress.", rpe: [3,4] },
+        { day: 3, week: 1, focus: "HIIT: VO₂max Stimulus", workout: "10-15 min warm-up, then 3-4 reps of [3 min @ hard effort / 3 min easy recovery], then 10-15 min cool-down.", rationale: "A potent stimulus to kick-start improvements in your aerobic capacity (VO₂max).", rpe: [8,9] },
+        { day: 4, week: 1, focus: "Active Recovery", workout: "30-60 minutes Zone 1 (very easy spin).", rationale: "Aid recovery from the previous day's intensity. This is crucial for adaptation.", rpe: [1,2] },
+        { day: 5, week: 1, focus: "Endurance + Sprints", workout: "75-90 minutes Zone 1/low Z2, including 3-4 x 30s maximal sprints with 4-5 mins full recovery between.", rationale: "A low-strain way to activate neuromuscular pathways and maintain power, based on key academic research.", rpe: [3,5] },
+        { day: 6, week: 1, focus: "Longer Endurance", workout: "90-100 minutes Zone 2. Keep the effort consistent and sustainable.", rationale: "Build confidence and practice pacing for sustained efforts. This is more about psychology than physiology at this stage.", rpe: [3,5] },
+        { day: 7, week: 1, focus: "Full Rest", workout: "Complete rest. No cycling.", rationale: "Crucial for physical and mental recovery. Your body adapts and gets stronger during rest, not during training.", rpe: [0,0] },
+        { day: 8, week: 2, focus: "Active Recovery", workout: "30-45 minutes Zone 1 spin.", rationale: "Prepare the body for the final week of intensity while promoting recovery.", rpe: [1,2] },
+        { day: 9, week: 2, focus: "HIIT: VO₂max or Sprints", workout: "Option A (VO₂max): 4-5 reps of [3 min hard / 3 min easy]. Option B (Sprints): 6-8 reps of [30s max / 90s easy].", rationale: "Increase the stimulus from Week 1. Choose based on how you feel; both are effective for sharpening fitness.", rpe: [8,9] },
+        { day: 10, week: 2, focus: "Moderate Endurance", workout: "60 minutes Zone 2.", rationale: "Maintain aerobic conditioning and feel for the bike without adding significant fatigue.", rpe: [3,4] },
+        { day: 11, week: 2, focus: "HIIT: Shorter/Sharper", workout: "5-6 reps of [1 min hard / 2 min easy].", rationale: "A final sharp stimulus to maintain top-end fitness without inducing excessive fatigue before the program starts.", rpe: [9,9] },
+        { day: 12, week: 2, focus: "Active Recovery/Rest", workout: "30 minutes Zone 1 or complete rest.", rationale: "Begin the taper. The goal now is to shed fatigue and absorb the training.", rpe: [1,2] },
+        { day: 13, week: 2, focus: "Openers", workout: "20-30 min Zone 1, with 2-3 x 30s efforts @ Z4/5 intensity (brisk, not max).", rationale: "Keep the legs feeling responsive and ready, without causing fatigue. 'Opening up' the system.", rpe: [6,7] },
+        { day: 14, week: 2, focus: "Full Rest", workout: "Complete rest. Let your body fully recover and supercompensate.", rationale: "Final preparation for the start of your endurance program. You should feel fresh and ready.", rpe: [0,0] },
+    ];
+    
+    let retrainingChart;
+
+    function createOrUpdateChart(metric) {
+        const data = physiologyData[metric];
+        document.getElementById('chart-explanation').textContent = data.explanation;
+
+        const chartData = {
+            labels: ['Typical Decline (2-4 wks)', 'Potential Regain (2 wks)'],
+            datasets: [{
+                label: '% Change',
+                data: [data.decline, data.regain],
+                backgroundColor: ['#f87171', '#4ade80'],
+                borderColor: ['#ef4444', '#22c55e'],
+                borderWidth: 2,
+                borderRadius: 5,
+            }]
+        };
+
+        const config = {
+            type: 'bar',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Approximate % Change',
+                            font: { size: 14 }
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.x !== null) {
+                                    label += context.parsed.x + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        if (retrainingChart) {
+            retrainingChart.data = chartData;
+            retrainingChart.update();
+        } else {
+            const ctx = document.getElementById('retrainingChart').getContext('2d');
+            retrainingChart = new Chart(ctx, config);
+        }
+    }
+    
+    function initMetricSelector() {
+        const selectorContainer = document.getElementById('metric-selector');
+        Object.keys(physiologyData).forEach((metric, index) => {
+            const button = document.createElement('button');
+            button.textContent = metric;
+            button.dataset.metric = metric;
+            button.className = 'px-3 py-1.5 text-sm font-medium rounded-lg transition';
+            if (index === 0) {
+                button.classList.add('bg-orange-600', 'text-white', 'shadow');
+            } else {
+                button.classList.add('bg-white', 'text-slate-600', 'hover:bg-orange-100');
+            }
+            button.onclick = (e) => {
+                const selectedMetric = e.target.dataset.metric;
+                createOrUpdateChart(selectedMetric);
+                
+                selectorContainer.querySelectorAll('button').forEach(btn => {
+                    btn.classList.remove('bg-orange-600', 'text-white', 'shadow');
+                    btn.classList.add('bg-white', 'text-slate-600', 'hover:bg-orange-100');
+                });
+                e.target.classList.add('bg-orange-600', 'text-white', 'shadow');
+                e.target.classList.remove('bg-white', 'text-slate-600', 'hover:bg-orange-100');
+            };
+            selectorContainer.appendChild(button);
+        });
+        createOrUpdateChart(Object.keys(physiologyData)[0]);
+    }
+
+    function initTrainingPlan() {
+        const container = document.getElementById('plan-container');
+        container.innerHTML = `
+            <div class="mb-8">
+                <h3 class="text-2xl font-bold text-slate-800 text-center">Week 1: Re-Acclimation</h3>
+                <div id="week1-grid" class="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold text-slate-800 text-center">Week 2: Sharpening</h3>
+                <div id="week2-grid" class="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
+            </div>
+        `;
+        const week1Grid = document.getElementById('week1-grid');
+        const week2Grid = document.getElementById('week2-grid');
+
+        trainingPlan.forEach(dayData => {
+            const card = document.createElement('div');
+            card.className = 'plan-card bg-white p-4 rounded-xl shadow-md cursor-pointer border-2 border-transparent hover:border-orange-500';
+            card.innerHTML = `
+                <div class="text-sm font-bold text-orange-600">Day ${dayData.day}</div>
+                <div class="mt-1 font-semibold text-slate-800">${dayData.focus}</div>
+            `;
+            if (dayData.focus.includes("Rest")) {
+                card.classList.add('bg-slate-50');
+            }
+            card.onclick = () => openModal(dayData);
+            
+            if (dayData.week === 1) {
+                week1Grid.appendChild(card);
+            } else {
+                week2Grid.appendChild(card);
+            }
+        });
+    }
+
+    const modal = document.getElementById('plan-modal');
+    const modalContent = document.getElementById('modal-content');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+
+    function openModal(dayData) {
+        document.getElementById('modal-title').textContent = dayData.focus;
+        document.getElementById('modal-day').textContent = `Week ${dayData.week} - Day ${dayData.day}`;
+        document.getElementById('modal-workout').textContent = dayData.workout;
+        document.getElementById('modal-rationale').textContent = dayData.rationale;
+        
+        const rpeIndicator = document.getElementById('rpe-indicator');
+        const rpeBar = document.getElementById('rpe-bar');
+        const avgRpe = (dayData.rpe[0] + dayData.rpe[1]) / 2;
+        const rpePercentage = (avgRpe / 10) * 100;
+        
+        rpeIndicator.style.left = `calc(${rpePercentage}% - 10px)`;
+        
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modalContent.classList.remove('scale-95');
+    }
+
+    function closeModal() {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modalContent.classList.add('scale-95');
+    }
+
+    closeModalBtn.onclick = closeModal;
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    };
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Escape") closeModal();
+    });
+
+    initMetricSelector();
+    initTrainingPlan();
+});
+</script>
+</body>
+</html>
