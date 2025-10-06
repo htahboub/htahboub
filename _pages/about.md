@@ -6,7 +6,7 @@ subtitle: <a href='https://neu.edu'>Northeastern University</a>. Undergraduate.<
 
 profile:
   align: right
-  image: me.png
+  image: pfp.png
   image_circular: true # crops the image to make it circular
   address: 
 
