@@ -51,11 +51,12 @@ I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jia
 <style>
 .flex-container {
   display: flex;
+  gap: 10px;
   padding: 5px 20px;
 }
 .column {
   flex: 1;
-  padding: 0 13px;
+  padding-left: 15px
 }
 </style>
 
