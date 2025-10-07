@@ -56,11 +56,18 @@ I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jia
 }
 .column {
   flex: 1;
-  padding-left: 15px
+  padding-left: 15px;
 }
 @media (max-width: 790px) {
   .flex-container {
     flex-direction: column;
+    gap: 0;
+  }
+  .column {
+    padding-left: 5px;
+  }
+  .column:first-child ol {
+    margin-bottom: 0;
   }
 }
 </style>
@@ -82,7 +89,7 @@ I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jia
           <ul>
             <li>June 2025 – Present</li>
             <li>Co-leading a project to develop an architecture that unifies two distinct gaze estimation tasks: image scanpath prediction and video saliency prediction.</li>
-            <li>These tasks are closely related as they both ultimately model people's attention shifts while observing visual media.</li>
+            <li>These tasks are closely related as they both ultimately model attention shifts while observing visual media.</li>
           </ul>
       </li>
       <li><b>Egocentric Werewolf strategy classification and utterance prediction</b> with <a href="https://scholar.google.com/citations?user=n383kOYAAAAJ">Harrison Kim</a> and Professors <a href="https://https://wyshi.github.io/">Weiyan Shi</a> and <a href="https://jianghz.me/">Huaizu Jiang</a>
