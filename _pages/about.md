@@ -58,6 +58,11 @@ I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jia
   flex: 1;
   padding-left: 15px
 }
+@media (max-width: 790px) {
+  .flex-container {
+    flex-direction: column;
+  }
+}
 </style>
 
 <h4 style="margin-top: 25px;">Undergraduate Research Experience</h4>
