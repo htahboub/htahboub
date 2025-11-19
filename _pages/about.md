@@ -46,7 +46,7 @@ social: false          # includes social icons at the bottom of the page
 <img style="display: none; position: fixed; left: 20px; bottom: 0;" id="gaster" src="assets/img/gaster.gif" height="400pt">
 Hello! My name is Hamza and I am a computer science & math major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
 
-I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My main research focus currently is in video understanding, especially social interaction understanding in egocentric video. Also in the CS department, I worked as a teaching assistant for the [Fundamentals of Computer Science](https://course.ccs.neu.edu/cs2500/) (CS 2500) course for a couple of semesters.
+I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My research centers on multimodal learning, with a specific emphasis on social interaction understanding and egocentric video to holistically interpret human behavior. I am also interested in medical applications, having spent six months at Genentech R&D working on problems in computer vision and natural language processing in the medical domain.
 
 <style>
 .flex-container {
