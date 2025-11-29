@@ -79,7 +79,7 @@ I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jia
       <!--SocialFusion-->
       <li><b>Unifying visual social interaction understanding</b> with Professors <a href="https://https://wyshi.github.io/">Weiyan Shi</a>, <a href="https://www.ganghua.org/">Gang Hua</a>, and <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
-            <li>February 2025 – September 2025</li>
+            <li>February 2025 – Present</li>
             <li><u>Paper currently under review.</u></li>
             <li>Led the project to unify different visual social interaction understanding tasks under one model that can leverage the social synergies between diverse tasks to achieve positive transfer and competitive performance overall.</li>
             <li>Also revealed that popular VLMs of the same scale suffer from a degradation that impairs their social understanding and leads to negative transfer.</li>
