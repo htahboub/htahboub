@@ -1,4 +1,5 @@
 User-agent: *
 Disallow: /karim
+Disallow: /assets/*
 
 Sitemap: https://htahboub.github.io/sitemap.xml
