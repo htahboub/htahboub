@@ -47,7 +47,7 @@ social: false          # includes social icons at the bottom of the page
 <img style="display: none; position: fixed; left: 20px; bottom: 0;" id="gaster" src="assets/img/gaster.gif" height="400pt">
 Hello! My name is Hamza, and I am a computer science & math major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
 
-I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My research centers on multimodal learning, with a specific emphasis on social interaction understanding and egocentric video to holistically interpret human behavior. I am also interested in medical applications, having spent six months at Genentech R&D working on problems in computer vision and natural language processing in the medical domain.
+I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My research centers on multimodal learning, with a specific emphasis on social interaction understanding and egocentric video to holistically interpret human behavior. I am also interested in medical applications and spent six months at Genentech R&D working on problems in computer vision and natural language processing in domains like nuclei segmentation and medical question answering.
 
 <style>
 .flex-container {
@@ -81,7 +81,7 @@ I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jia
       <li><b>Unifying visual social interaction understanding</b> with Professors <a href="https://https://wyshi.github.io/">Weiyan Shi</a>, <a href="https://www.ganghua.org/">Gang Hua</a>, and <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
             <li>February 2025 – Present</li>
-            <li><u style="color: red;">Accepted at TMLR.</u> <a href="https://arxiv.org/abs/2512.01148">[arxiv]</a> <a href="https://openreview.net/forum?id=ofyheokiex">[openreview]</a></li>
+            <li><u style="color: red;">Accepted at TMLR.</u> <a href="https://arxiv.org/abs/2512.01148">[arxiv]</a> <a href="https://openreview.net/forum?id=ofYhEoKIEx">[openreview]</a></li>
             <li>Led the project to unify different visual social interaction understanding tasks under one model that can leverage the social synergies between diverse tasks to achieve positive transfer and competitive performance overall.</li>
             <li>Also revealed that popular VLMs of the same scale suffer from a degradation that impairs their social understanding and leads to negative transfer.</li>
           </ul>
