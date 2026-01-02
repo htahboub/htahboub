@@ -47,7 +47,7 @@ social: false          # includes social icons at the bottom of the page
 <img style="display: none; position: fixed; left: 20px; bottom: 0;" id="gaster" src="assets/img/gaster.gif" height="400pt">
 Hello! My name is Hamza, and I am a computer science & math major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
 
-I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My research centers on multimodal learning, with a specific emphasis on social interaction understanding and egocentric video to holistically interpret human behavior. I am also interested in medical applications and spent six months at Genentech R&D working on problems in computer vision and natural language processing in domains like nuclei segmentation and medical question answering.
+I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My research centers on multimodal learning, with a specific emphasis on social interaction understanding and egocentric video to holistically interpret human behavior. I am also interested in medical applications; I spent six months at Genentech's R&D department working on problems in computer vision and natural language processing in domains like nuclei segmentation and medical question answering.
 
 <style>
 .flex-container {
@@ -77,41 +77,41 @@ I am an undergraduate research assistant in Professor [Huaizu Jiang](https://jia
 <div class="flex-container">
   <div class="column">
     <ol style="padding-left: 0px">
-      <!--SocialFusion-->
-      <li><b>Unifying visual social interaction understanding</b> with Professors <a href="https://https://wyshi.github.io/">Weiyan Shi</a>, <a href="https://www.ganghua.org/">Gang Hua</a>, and <a href="https://jianghz.me/">Huaizu Jiang</a>
+      <li><b>Addressing social degradation in pre-trained vision-language models</b> with Professors <a href="https://https://wyshi.github.io/">Weiyan Shi</a>, <a href="https://www.ganghua.org/">Gang Hua</a>, and <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
             <li>February 2025 – Present</li>
             <li><u style="color: red;">Accepted at TMLR.</u> <a href="https://arxiv.org/abs/2512.01148">[arxiv]</a> <a href="https://openreview.net/forum?id=ofYhEoKIEx">[openreview]</a></li>
-            <li>Led the project to unify different visual social interaction understanding tasks under one model that can leverage the social synergies between diverse tasks to achieve positive transfer and competitive performance overall.</li>
-            <li>Also revealed that popular VLMs of the same scale suffer from a degradation that impairs their social understanding and leads to negative transfer.</li>
+            <li>Led a project to unify different visual social interaction understanding tasks under one model, leveraging the synergies between diverse tasks to achieve positive transfer and competitive performance overall.</li>
+            <li>Revealed popular VLMs of the same scale suffer a degradation impairing their social understanding and leading to negative transfer, which I uncovered comes from reduced social decodability of the visual representations after VLM training.</li>
+            <li>Working on extending the work to handle complex compositional social tasks.</li>
           </ul>
       </li>
       <li><b>OneGaze</b> with <a href="https://www.linkedin.com/in/joseph-y-gu">Joseph Gu</a> and <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
             <li>June 2025 – Present</li>
             <li>Co-leading a project to develop an architecture that unifies two distinct gaze estimation tasks: image scanpath prediction and video saliency prediction.</li>
-            <li>These tasks are closely related as they both ultimately model attention shifts while observing visual media.</li>
+            <li>These tasks are closely related as they both ultimately model how attention shifts while observing visual media.</li>
           </ul>
       </li>
       <li><b>Egocentric Werewolf strategy classification and utterance prediction</b> with <a href="https://scholar.google.com/citations?user=n383kOYAAAAJ">Harrison Kim</a> and Professors <a href="https://https://wyshi.github.io/">Weiyan Shi</a> and <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
             <li>January 2024 – January 2025</li>
             <li>Led a project to understand subtle social cues from an egocentric perspective.</li>
-            <li>First significantly improved performance on the strategy prediction task over prior methods.</li>
+            <li>Significantly improved performance in strategy prediction over prior methods.</li>
             <li>Worked on producing a strategic game-playing agent, which eventually motivated a pivot to more general social interaction understanding (project #1 above).</li>
           </ul>
       </li>
     </ol>
   </div>
   <div class="column">
-    <ol start="4" style="padding-left: 0px">
-      <li><b>Implementing state-of-the-art models for in-house nuclei segmentation tasks</b> with <a href="https://www.linkedin.com/in/evanliu518/">Evan Liu</a> and <a href="https://scholar.google.com/citations?user=n383kOYAAAAJ">Harrison Kim</a> @ Genentech
+    <ol start=4 style="padding-left: 0px">
+      <li><b>Implementing state-of-the-art models for in-house nuclei segmentation tasks</b> with <a href="https://www.linkedin.com/in/evanliu518/">Evan Liu</a> and <a href="https://scholar.google.com/citations?user=n383kOYAAAAJ">Harrison Kim</a> @ <a href="https://www.gene.com/">Genentech gRED</a>
           <ul>
             <li>October 2023 – December 2023</li>
             <li>Implemented state-of-the-art methods and contributed to novel approaches for nuclei semantic segmentation as part of the Genentech Computer Vision R&D team.</li>
           </ul>
       </li>
-      <li><b>Medical QA fine-tuning</b> with <a href="https://scholar.google.com/citations?user=tIub9CgAAAAJ&hl=en">Dr. Michael Wu</a>, <a href="https://scholar.google.com/citations?user=FWcdgEwAAAAJ&hl=en">Chloe Kim</a>, and <a href="https://scholar.google.com/citations?user=7JbGx6UAAAAJ&hl=en">Ayush Zenith</a> @ Genentech
+      <li><b>Medical QA fine-tuning</b> with <a href="https://scholar.google.com/citations?user=tIub9CgAAAAJ&hl=en">Dr. Michael Wu</a>, <a href="https://scholar.google.com/citations?user=FWcdgEwAAAAJ&hl=en">Chloe Kim</a>, and <a href="https://scholar.google.com/citations?user=7JbGx6UAAAAJ&hl=en">Ayush Zenith</a> @ <a href="https://www.gene.com/">Genentech gRED</a>
           <ul>
             <li>July 2023 – December 2023</li>
             <li>Fine-tuned ensembles of language models and NER/RE models on large-scale in-house medical datasets.</li>
