@@ -3,6 +3,7 @@ permalink: /robots.txt
 ---
 User-agent: *
 Disallow: /karim
+Disallow: /CV.pdf
 Disallow: /assets/*
 
 Sitemap: {{ site.baseurl | prepend: site.url }}/sitemap.xml
