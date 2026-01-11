@@ -80,7 +80,7 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
       <li><b>Addressing social degradation in pre-trained vision-language models</b> with Professors <a href="https://wyshi.github.io/">Weiyan Shi</a>, <a href="https://www.ganghua.org/">Gang Hua</a>, and <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
             <li>February 2025 – Present</li>
-            <li><u style="color: #CC5555; font-weight: bold;">Accepted at TMLR.</u> <a href="https://arxiv.org/abs/2512.01148">[arxiv]</a> <a href="https://openreview.net/forum?id=ofYhEoKIEx">[openreview]</a></li>
+            <li><u style="color: #f00; font-weight: bold;">Accepted at TMLR.</u> <a href="https://arxiv.org/abs/2512.01148">[arxiv]</a> <a href="https://openreview.net/forum?id=ofYhEoKIEx">[openreview]</a></li>
             <li>Led a project to unify different visual social interaction understanding tasks under one model, leveraging the synergies between diverse tasks to achieve positive transfer and competitive performance overall.</li>
             <li>Revealed popular VLMs of the same scale suffer a degradation impairing their social understanding and leading to negative transfer, which I uncovered comes from reduced social decodability of the visual representations after VLM training.</li>
             <li>Working on extending the work to handle complex compositional social tasks.</li>
