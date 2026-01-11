@@ -77,7 +77,7 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
 <div class="flex-container">
   <div class="column">
     <ol style="padding-left: 0px">
-      <li><b>Addressing social degradation in pre-trained vision-language models</b> with Professors <a href="https://https://wyshi.github.io/">Weiyan Shi</a>, <a href="https://www.ganghua.org/">Gang Hua</a>, and <a href="https://jianghz.me/">Huaizu Jiang</a>
+      <li><b>Addressing social degradation in pre-trained vision-language models</b> with Professors <a href="https://wyshi.github.io/">Weiyan Shi</a>, <a href="https://www.ganghua.org/">Gang Hua</a>, and <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
             <li>February 2025 – Present</li>
             <li><u style="color: #CC5555; font-weight: bold;">Accepted at TMLR.</u> <a href="https://arxiv.org/abs/2512.01148">[arxiv]</a> <a href="https://openreview.net/forum?id=ofYhEoKIEx">[openreview]</a></li>
@@ -93,7 +93,7 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
             <li>These tasks are closely related as they both ultimately model how attention shifts while observing visual media.</li>
           </ul>
       </li>
-      <li><b>Egocentric Werewolf strategy classification and utterance prediction</b> with <a href="https://scholar.google.com/citations?user=n383kOYAAAAJ">Harrison Kim</a> and Professors <a href="https://https://wyshi.github.io/">Weiyan Shi</a> and <a href="https://jianghz.me/">Huaizu Jiang</a>
+      <li><b>Egocentric Werewolf strategy classification and utterance prediction</b> with <a href="https://scholar.google.com/citations?user=n383kOYAAAAJ">Harrison Kim</a> and Professors <a href="https://wyshi.github.io/">Weiyan Shi</a> and <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
             <li>January 2024 – January 2025</li>
             <li>Led a project to understand subtle social cues from an egocentric perspective.</li>
