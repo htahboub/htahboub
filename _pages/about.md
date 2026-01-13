@@ -105,10 +105,10 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
   </div>
   <div class="column">
     <ol start=4 style="padding-left: 0px">
-      <li><b>Implementing state-of-the-art models for in-house nuclei segmentation tasks</b> with <a href="https://www.linkedin.com/in/evanliu518/">Evan Liu</a> and <a href="https://scholar.google.com/citations?user=n383kOYAAAAJ">Harrison Kim</a> @ <a href="https://www.gene.com/">Genentech gRED</a>
+      <li><b>Modeling nuclei segmentation</b> with <a href="https://www.linkedin.com/in/evanliu518/">Evan Liu</a> and <a href="https://scholar.google.com/citations?user=n383kOYAAAAJ">Harrison Kim</a> @ <a href="https://www.gene.com/">Genentech gRED</a>
           <ul>
             <li>October 2023 – December 2023</li>
-            <li>Implemented state-of-the-art methods and contributed to novel approaches for nuclei semantic segmentation as part of the Genentech Computer Vision R&D team.</li>
+            <li>Contributed to novel approaches and implemented state-of-the-art methods for nuclei semantic segmentation as part of the Genentech Computer Vision R&D team.</li>
           </ul>
       </li>
       <li><b>Medical QA fine-tuning</b> with <a href="https://scholar.google.com/citations?user=tIub9CgAAAAJ&hl=en">Dr. Michael Wu</a>, <a href="https://scholar.google.com/citations?user=FWcdgEwAAAAJ&hl=en">Chloe Kim</a>, and <a href="https://scholar.google.com/citations?user=7JbGx6UAAAAJ&hl=en">Ayush Zenith</a> @ <a href="https://www.gene.com/">Genentech gRED</a>
