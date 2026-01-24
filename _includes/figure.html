@@ -14,7 +14,7 @@
     {% endif %}
 
     <!-- Fallback to the original file -->
-    <a href="https://www.strava.com/athletes/47831089"><img 
+    <img id="me"
       src="{{ include.path | relative_url }}"
       {% if include.class %}class="{{ include.class }}"{% endif %}  
       {% if include.width %}width="{{ include.width }}"{% else %}width="auto"{% endif %} 
@@ -27,7 +27,7 @@
       {% if include.title %}title="{{ include.title }}"{% endif %} 
       {% if include.zoomable %}data-zoomable{% endif %}
       onerror="this.onerror=null; $('.responsive-img-srcset').remove();"
-    /></a>
+    />
 
   </picture>
 

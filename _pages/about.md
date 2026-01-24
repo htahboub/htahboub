@@ -26,8 +26,8 @@ social: false          # includes social icons at the bottom of the page
             current++;
             if (pattern.length === current || isTimePassed) {
                 current = 0;
-                document.getElementById("howard").style.display = "block";
-                document.getElementById("gaster").style.display = "block";
+                document.getElementById("howard").classList.toggle('hidden');
+                document.getElementById("gaster").classList.toggle('hidden');
             }
         } else {
             current = 0;
@@ -36,15 +36,15 @@ social: false          # includes social icons at the bottom of the page
 
     document.addEventListener('keydown', keyHandler, false);
 
-    function checkTime() {
-        isTimePassed = true;
-        document.getElementById("howard").style.display = "block";
-        document.getElementById("gaster").style.display = "block";
-    }
-    setTimeout(checkTime, 144e5); // 4 hours
+    const me = document.getElementById('me');
+    me.addEventListener('click', function(event) {
+      event.preventDefault();
+      document.getElementById("howard").classList.toggle('hidden');
+      document.getElementById("gaster").classList.toggle('hidden');
+    });
 </script>
-<img style="display: none; position: fixed; right: 0; bottom: 35px;" id="howard" src="assets/img/howard.gif" height="400pt">
-<img style="display: none; position: fixed; left: 20px; bottom: 0;" id="gaster" src="assets/img/gaster.gif" height="400pt">
+<img class="hidden" style="position: fixed; right: 0; bottom: 35px;" id="howard" src="assets/img/howard.gif" height="400pt">
+<img class="hidden" style="position: fixed; left: 20px; bottom: 0;" id="gaster" src="assets/img/gaster.gif" height="400pt">
 Hello! My name is Hamza, and I am a computer science & math major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
 
 I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My research centers on multimodal learning, with a specific emphasis on social interaction understanding and egocentric video to holistically interpret human behavior. I am also interested in medical applications; I spent six months at Genentech's R&D department working on problems in computer vision and natural language processing in domains like nuclei segmentation and medical question answering.
@@ -70,6 +70,9 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
   .column:first-child ol {
     margin-bottom: 0;
   }
+}
+.hidden {
+  display: none;
 }
 </style>
 
