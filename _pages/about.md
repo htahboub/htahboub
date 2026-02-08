@@ -50,7 +50,7 @@ social: false          # includes social icons at the bottom of the page
           document.getElementById("gaster").classList.toggle('hidden');
       }
     }
-    setTimeout(checkTime, 18e5); // 30 minutes
+    setTimeout(checkTime, 6e5); // 10 minutes
 </script>
 <img class="hidden" style="position: fixed; right: 0; bottom: 35px;" id="howard" draggable="false" src="assets/img/howard.gif" height="400pt">
 <img class="hidden" style="position: fixed; left: 20px; bottom: 0;" id="gaster" draggable="false" src="assets/img/gaster.gif" height="400pt">
