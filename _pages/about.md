@@ -22,9 +22,9 @@ social: false          # includes social icons at the bottom of the page
     var isTimePassed = false;
 
     var keyHandler = function (event) {
-        if (isTimePassed || (pattern.indexOf(event.key) >= 0 && event.key === pattern[current])) {
+        if (pattern.indexOf(event.key) >= 0 && event.key === pattern[current]) {
             current++;
-            if (pattern.length === current || isTimePassed) {
+            if (pattern.length === current) {
                 current = 0;
                 document.getElementById("howard").classList.toggle('hidden');
                 document.getElementById("gaster").classList.toggle('hidden');
