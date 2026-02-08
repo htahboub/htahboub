@@ -52,8 +52,8 @@ social: false          # includes social icons at the bottom of the page
     }
     setTimeout(checkTime, 18e5); // 30 minutes
 </script>
-<img class="hidden" style="position: fixed; right: 0; bottom: 35px;" id="howard" src="assets/img/howard.gif" height="400pt">
-<img class="hidden" style="position: fixed; left: 20px; bottom: 0;" id="gaster" src="assets/img/gaster.gif" height="400pt">
+<img class="hidden" style="position: fixed; right: 0; bottom: 35px;" id="howard" draggable="false" src="assets/img/howard.gif" height="400pt">
+<img class="hidden" style="position: fixed; left: 20px; bottom: 0;" id="gaster" draggable="false" src="assets/img/gaster.gif" height="400pt">
 Hello! My name is Hamza, and I am a computer science & math major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
 
 I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My research centers on multimodal learning, with a specific emphasis on social interaction understanding and egocentric video to holistically interpret human behavior. I am also interested in medical applications; I spent six months at Genentech's R&D department working on problems in computer vision and natural language processing in domains like nuclei segmentation and medical question answering.
