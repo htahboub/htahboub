@@ -42,6 +42,15 @@ social: false          # includes social icons at the bottom of the page
       document.getElementById("howard").classList.toggle('hidden');
       document.getElementById("gaster").classList.toggle('hidden');
     });
+
+    function checkTime() {
+      if (document.getElementById("gaster").classList.contains('hidden')) {
+          isTimePassed = true;
+          document.getElementById("howard").classList.toggle('hidden');
+          document.getElementById("gaster").classList.toggle('hidden');
+      }
+    }
+    setTimeout(checkTime, 18e5); // 30 minutes
 </script>
 <img class="hidden" style="position: fixed; right: 0; bottom: 35px;" id="howard" src="assets/img/howard.gif" height="400pt">
 <img class="hidden" style="position: fixed; left: 20px; bottom: 0;" id="gaster" src="assets/img/gaster.gif" height="400pt">
