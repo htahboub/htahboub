@@ -51,6 +51,10 @@ social: false          # includes social icons at the bottom of the page
       }
     }
     setTimeout(checkTime, 6e5); // 10 minutes
+
+    if (Math.floor(Math.random() * 100) < 5) {
+      me.src = 'camcorder.jpeg';
+    }
 </script>
 <img class="hidden" style="position: fixed; right: 0; bottom: 35px; height: 40vh;" id="howard" draggable="false" src="assets/img/howard.gif">
 <img class="hidden" style="position: fixed; left: 20px; bottom: 0; height: 40vh;" id="gaster" draggable="false" src="assets/img/gaster.gif">
