@@ -52,12 +52,12 @@ social: false          # includes social icons at the bottom of the page
     }
     setTimeout(checkTime, 6e5); // 10 minutes
 
-    if (Math.floor(Math.random() * 1000) < 1) {
+    if (Math.floor(Math.random() * 1000) < 2) {
       me.src = 'assets/img/little.jpeg';
-    } else if (Math.floor(Math.random() * 1000) < 51) {
+    } else if (Math.floor(Math.random() * 1000) < 52) {
       me.src = 'assets/img/camcorder.jpeg';
-    } else if (Math.floor(Math.random() * 1000) < 101) {
-      me.src = 'assets/img/bike_k5.png';
+    } else if (Math.floor(Math.random() * 1000) < 102) {
+      me.src = 'assets/img/bike.png';
     }
 </script>
 <img class="hidden" style="position: fixed; right: 0; bottom: 35px; height: 40vh;" id="howard" draggable="false" src="assets/img/howard.gif">
@@ -93,7 +93,7 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
 }
 </style>
 
-<h4 style="margin-top: 25px;">Undergraduate Research Experience</h4>
+<h4 style="margin-top: 25px;">Research Experience</h4>
 <div class="flex-container">
   <div class="column">
     <ol style="padding-left: 0px">
