@@ -52,8 +52,12 @@ social: false          # includes social icons at the bottom of the page
     }
     setTimeout(checkTime, 6e5); // 10 minutes
 
-    if (Math.floor(Math.random() * 100) < 5) {
+    if (Math.floor(Math.random() * 1000) < 1) {
+      me.src = 'assets/img/little.jpeg';
+    } else if (Math.floor(Math.random() * 1000) < 51) {
       me.src = 'assets/img/camcorder.jpeg';
+    } else if (Math.floor(Math.random() * 1000) < 101) {
+      me.src = 'assets/img/bike_k5.png';
     }
 </script>
 <img class="hidden" style="position: fixed; right: 0; bottom: 35px; height: 40vh;" id="howard" draggable="false" src="assets/img/howard.gif">
