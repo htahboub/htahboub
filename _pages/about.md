@@ -21,8 +21,6 @@ social: false          # includes social icons at the bottom of the page
     var current = 0;
     var isTimePassed = false;
 
-    document.getElementById("mapmyvisitors-widget").classList.toggle('hidden');
-
     var keyHandler = function (event) {
         if (pattern.indexOf(event.key) >= 0 && event.key === pattern[current]) {
             current++;
@@ -168,6 +166,7 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
 </div>
 
 <script type='text/javascript' id='mapmyvisitors' src='https://mapmyvisitors.com/map.js?cl=0e1633&w=700&t=t&d=Zafdp7ft2cDE4aSunDpTfezHWG9zBmB8OkmxY7M4hIo&co=0b4975&cmo=2f840f&cmn=cc3a3a&ct=cdd4d9'></script>
+<script>document.getElementById("mapmyvisitors-widget").classList.toggle('hidden');</script>
 
 <!--You can find me on LinkedIn <a target="" href="https://linkedin.com/in/hamzatahboub">here</a> and my resume <a target="" href="https://hamzatahboub.com/resume.pdf">here</a>.-->
 <!--If you're curious about my work or have potential opportunities and collaborations in mind, feel free to reach out!-->
