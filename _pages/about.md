@@ -97,8 +97,7 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  -webkit-user-drag: none;
-  user-drag: none;
+  z-index: -999;
 }
 </style>
 
