@@ -28,6 +28,7 @@ social: false          # includes social icons at the bottom of the page
                 current = 0;
                 document.getElementById("howard").classList.toggle('hidden');
                 document.getElementById("gaster").classList.toggle('hidden');
+                document.getElementById("map").classList.toggle('hidden');
             }
         } else {
             current = 0;
@@ -163,6 +164,8 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
     </ol>
   </div>
 </div>
+
+<a href='https://mapmyvisitors.com/web/1c2lk' id="map" class="hidden" title='Visit tracker'><img src='https://mapmyvisitors.com/map.png?cl=0e1633&w=500&t=n&d=Zafdp7ft2cDE4aSunDpTfezHWG9zBmB8OkmxY7M4hIo&co=0b4975&ct=cdd4d9'/></a>
 
 <!--You can find me on LinkedIn <a target="" href="https://linkedin.com/in/hamzatahboub">here</a> and my resume <a target="" href="https://hamzatahboub.com/resume.pdf">here</a>.-->
 <!--If you're curious about my work or have potential opportunities and collaborations in mind, feel free to reach out!-->
