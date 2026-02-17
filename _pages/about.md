@@ -166,8 +166,11 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
 </div>
 
 <script type='text/javascript' id='mapmyvisitors' src='https://mapmyvisitors.com/map.js?cl=0e1633&w=700&t=t&d=Zafdp7ft2cDE4aSunDpTfezHWG9zBmB8OkmxY7M4hIo&co=0b4975&cmo=2f840f&cmn=cc3a3a&ct=cdd4d9'></script>
-<script>document.getElementsByClassName("mapmyvisitors-map-container")[0].classList.toggle('hidden');</script>
-
+<script></script>
+setTimeout(() => {
+  document.getElementsByClassName("mapmyvisitors-map-container")[0].classList.toggle('hidden');
+  document.getElementById("mapmyvisitors-widget").style.display = "none";
+}, 500);
 <!--You can find me on LinkedIn <a target="" href="https://linkedin.com/in/hamzatahboub">here</a> and my resume <a target="" href="https://hamzatahboub.com/resume.pdf">here</a>.-->
 <!--If you're curious about my work or have potential opportunities and collaborations in mind, feel free to reach out!-->
 
