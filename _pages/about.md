@@ -28,7 +28,7 @@ social: false          # includes social icons at the bottom of the page
                 current = 0;
                 document.getElementById("howard").classList.toggle('hidden');
                 document.getElementById("gaster").classList.toggle('hidden');
-                document.getElementsByClassName("mapmyvisitors-map-container")[0].classList.toggle('hidden');
+                document.getElementById("mapmyvisitors-widget").style.display = "block";
             }
         } else {
             current = 0;
@@ -166,12 +166,7 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
 </div>
 
 <script type='text/javascript' id='mapmyvisitors' src='https://mapmyvisitors.com/map.js?cl=0e1633&w=700&t=t&d=Zafdp7ft2cDE4aSunDpTfezHWG9zBmB8OkmxY7M4hIo&co=0b4975&cmo=2f840f&cmn=cc3a3a&ct=cdd4d9'></script>
-<script>
-setTimeout(() => {
-  document.getElementsByClassName("mapmyvisitors-map-container")[0].classList.toggle('hidden');
-  document.getElementById("mapmyvisitors-widget").style.display = "none";
-}, 500);
-</script>
+<script>setTimeout(() => {document.getElementById("mapmyvisitors-widget").style.display = "none";}, 500);</script>
 <!--You can find me on LinkedIn <a target="" href="https://linkedin.com/in/hamzatahboub">here</a> and my resume <a target="" href="https://hamzatahboub.com/resume.pdf">here</a>.-->
 <!--If you're curious about my work or have potential opportunities and collaborations in mind, feel free to reach out!-->
 
