@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='https://neu.edu'>Northeastern University</a>. Undergraduate.<br>tahboub.h [at] northeastern [dot] edu
+subtitle: <a href='https://neu.edu'>Northeastern University</a>. Research Assistant.<br>tahboub.h [at] northeastern [dot] edu
 
 profile:
   align: right
@@ -63,9 +63,9 @@ social: false          # includes social icons at the bottom of the page
 </script>
 <img class="hidden unselectable" style="position: fixed; right: 0; bottom: 35px; height: 40vh;" id="howard" draggable="false" src="assets/img/howard.gif">
 <img class="hidden unselectable" style="position: fixed; left: 20px; bottom: 0; height: 40vh;" id="gaster" draggable="false" src="assets/img/gaster.gif">
-Hello! My name is Hamza, and I am a computer science & math major at Northeastern University's [Khoury College of Computer Sciences](https://www.khoury.northeastern.edu/).
+Hello! My name is Hamza, and I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. I graduated from Northeastern University with a major in computer science and mathematics.
 
-I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. My research centers on multimodal learning, with a specific emphasis on social interaction understanding and egocentric video to holistically interpret human behavior. I am also interested in medical applications; I spent six months at Genentech's R&D department working on problems in computer vision and natural language processing in domains like nuclei segmentation and medical question answering.
+My research centers on multimodal learning, with a specific emphasis on social interaction understanding and egocentric video to holistically interpret human behavior. I am interested in both social intelligence from both an understanding and a generation point of view. My work on the former was published in TMLR, in which I investigated why pre-trained VLMs struggle to model multiple social perception tasks simultaneously, uncovering a phenomenon we termed "social degradation" and overcoming it to achieve positive transfer across diverse social tasks. Today, I am working on the generation side: improving the social coherence of video generation models to produce more realistic human-centric videos.
 
 <style>
 .flex-container {
@@ -106,6 +106,13 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
 <div class="flex-container">
   <div class="column">
     <ol style="padding-left: 0px">
+      <li><b>Human-centric video generation</b> with <a href="https://www.linkedin.com/in/joseph-y-gu">Joseph Gu</a> and <a href="https://jianghz.me/">Huaizu Jiang</a>
+          <ul>
+            <li>June 2025 – Present</li>
+            <li>Addressing the weakness of video generation models in generating socially coherent scenes.</li>
+            <li>Building diffusion/flow models to address these gaps by explicitly modeling each agent in the video (intent, beliefs, knowledge, etc...) in a latent space that allows the model to perform higher-order reasoning about realistic goals and actions.</li>
+          </ul>
+      </li>
       <li><b>Addressing social degradation in pre-trained vision-language models</b> with Professors <a href="https://wyshi.github.io/">Weiyan Shi</a>, <a href="https://www.ganghua.org/">Gang Hua</a>, and <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
             <li>February 2025 – Present</li>
@@ -113,13 +120,6 @@ I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Vis
             <li>Led a project to unify different visual social interaction understanding tasks under one model, leveraging the synergies between diverse tasks to achieve positive transfer and competitive performance overall.</li>
             <li>Revealed popular VLMs of the same scale suffer a degradation impairing their social understanding and leading to negative transfer, which I uncovered comes from reduced social decodability of the visual representations after VLM training.</li>
             <li>Working on extending the work to handle complex compositional social tasks.</li>
-          </ul>
-      </li>
-      <li><b>OneGaze</b> with <a href="https://www.linkedin.com/in/joseph-y-gu">Joseph Gu</a> and <a href="https://jianghz.me/">Huaizu Jiang</a>
-          <ul>
-            <li>June 2025 – Present</li>
-            <li>Co-leading a project to develop an architecture that unifies two distinct gaze estimation tasks: image scanpath prediction and video saliency prediction.</li>
-            <li>These tasks are closely related as they both ultimately model how attention shifts while observing visual media.</li>
           </ul>
       </li>
       <li><b>Egocentric Werewolf strategy classification and utterance prediction</b> with <a href="https://scholar.google.com/citations?user=n383kOYAAAAJ">Harrison Kim</a> and Professors <a href="https://wyshi.github.io/">Weiyan Shi</a> and <a href="https://jianghz.me/">Huaizu Jiang</a>
