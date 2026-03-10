@@ -63,9 +63,11 @@ social: false          # includes social icons at the bottom of the page
 </script>
 <img class="hidden unselectable" style="position: fixed; right: 0; bottom: 35px; height: 40vh;" id="howard" draggable="false" src="assets/img/howard.gif">
 <img class="hidden unselectable" style="position: fixed; left: 20px; bottom: 0; height: 40vh;" id="gaster" draggable="false" src="assets/img/gaster.gif">
-Hello! My name is Hamza, and I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence lab at Northeastern University. I graduated from Northeastern University with a major in computer science and mathematics.
+Hello! My name is Hamza, and I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s Visual Intelligence Lab. I graduated from Northeastern University with a major in computer science and mathematics.
 
-My research centers on multimodal learning, with a specific emphasis on social interaction understanding and egocentric video to holistically interpret human behavior. I am interested in both social intelligence from both an understanding and a generation point of view. My work on the former was published in TMLR, in which I investigated why pre-trained VLMs struggle to model multiple social perception tasks simultaneously, uncovering a phenomenon we termed "social degradation" and overcoming it to achieve positive transfer across diverse social tasks. Today, I am working on the generation side: improving the social coherence of video generation models to produce more realistic human-centric videos.
+My research centers on multimodal learning, with a specific emphasis on social interaction and egocentric video to holistically understand human behavior. I am interested in social intelligence from both an understanding and a generation point of view. My work on the former was published in TMLR, in which I investigated why pre-trained VLMs struggle to model multiple social perception tasks simultaneously, uncovering a phenomenon we termed "social degradation" and overcoming it to achieve positive transfer across diverse social tasks.
+
+Today, I am working on the generation side: I aim to improve the social coherence of video generation models to generate more realistic human-centric videos.
 
 <style>
 .flex-container {
@@ -108,14 +110,15 @@ My research centers on multimodal learning, with a specific emphasis on social i
     <ol style="padding-left: 0px">
       <li><b>Human-centric video generation</b> with <a href="https://www.linkedin.com/in/joseph-y-gu">Joseph Gu</a> and <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
-            <li>June 2025 – Present</li>
+            <li>January 2026 – Present</li>
             <li>Addressing the weakness of video generation models in generating socially coherent scenes.</li>
-            <li>Building diffusion/flow models to address these gaps by explicitly modeling each agent in the video (intent, beliefs, knowledge, etc...) in a latent space that allows the model to perform higher-order reasoning about realistic goals and actions.</li>
+            <li>Building diffusion and flow models to address these gaps by explicitly modeling each agent in the video</li>
+            <li>By representing intent, belief, and knowledge in a latent space, we can allow the model to perform higher-order reasoning about goals and actions.</li>
           </ul>
       </li>
       <li><b>Addressing social degradation in pre-trained vision-language models</b> with Professors <a href="https://wyshi.github.io/">Weiyan Shi</a>, <a href="https://www.ganghua.org/">Gang Hua</a>, and <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
-            <li>February 2025 – Present</li>
+            <li>February 2025 – December 2025</li>
             <li><u style="color: #c00; font-weight: bold;">Published in TMLR.</u> <a href="https://arxiv.org/abs/2512.01148">[arxiv]</a> <a href="https://openreview.net/forum?id=ofYhEoKIEx">[openreview]</a></li>
             <li>Led a project to unify different visual social interaction understanding tasks under one model, leveraging the synergies between diverse tasks to achieve positive transfer and competitive performance overall.</li>
             <li>Revealed popular VLMs of the same scale suffer a degradation impairing their social understanding and leading to negative transfer, which I uncovered comes from reduced social decodability of the visual representations after VLM training.</li>
