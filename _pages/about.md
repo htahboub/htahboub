@@ -112,7 +112,7 @@ Today, I am working on the generation side: I aim to improve the social coherenc
           <ul>
             <li>January 2026 – Present</li>
             <li>Addressing the weakness of video generation models in generating socially coherent scenes.</li>
-            <li>Building diffusion and flow models to address these gaps by explicitly modeling each agent in the video</li>
+            <li>Building diffusion and flow models to address these gaps by explicitly modeling each agent in the video.</li>
             <li>By representing intent, belief, and knowledge in a latent space, we can allow the model to perform higher-order reasoning about goals and actions.</li>
           </ul>
       </li>
