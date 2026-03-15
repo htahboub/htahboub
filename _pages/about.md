@@ -108,7 +108,7 @@ Today, I am working on the generation side: I aim to improve the social coherenc
 <div class="flex-container">
   <div class="column">
     <ol style="padding-left: 0px">
-      <li><b>Human-centric video generation</b> with <a href="https://www.linkedin.com/in/joseph-y-gu">Joseph Gu</a> and <a href="https://jianghz.me/">Huaizu Jiang</a>
+      <li><b>Human-centric video generation</b> with <a href="https://jianghz.me/">Huaizu Jiang</a>
           <ul>
             <li>January 2026 – Present</li>
             <li>Addressing the weakness of video generation models in generating socially coherent scenes.</li>
