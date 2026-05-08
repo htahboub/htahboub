@@ -19,7 +19,6 @@ social: false          # includes social icons at the bottom of the page
 <script>
     var pattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
     var current = 0;
-    var isTimePassed = false;
 
     var keyHandler = function (event) {
         if (pattern.indexOf(event.key) >= 0 && event.key === pattern[current]) {
@@ -46,12 +45,15 @@ social: false          # includes social icons at the bottom of the page
 
     function checkTime() {
       if (document.getElementById("gaster").classList.contains('hidden')) {
-          isTimePassed = true;
           document.getElementById("howard").classList.toggle('hidden');
           document.getElementById("gaster").classList.toggle('hidden');
       }
     }
     setTimeout(checkTime, 6e5); // 10 minutes
+
+    window.addEventListener('load', function() {
+      if (['#dance', '#party', '#secret'].includes(window.location.hash)) checkTime()
+    });
 
     if (Math.floor(Math.random() * 1000) < 2) {
       me.src = 'assets/img/little.jpeg';
