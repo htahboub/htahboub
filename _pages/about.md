@@ -52,7 +52,7 @@ social: false          # includes social icons at the bottom of the page
     setTimeout(checkTime, 6e5); // 10 minutes
 
     window.addEventListener('load', function() {
-      if (['#dance', '#party', '#secret'].includes(window.location.hash)) checkTime()
+      if (['#dance', '#party', '#secret', '#s'].includes(window.location.hash)) checkTime()
     });
 
     if (Math.floor(Math.random() * 1000) < 2) {
