@@ -697,6 +697,8 @@
         quota: null,
       };
       let state = loadState();
+      let lastPersistedSnapshot = JSON.stringify(state);
+      if (storageInfo.recoveredFrom !== "new") storageInfo.lastSavedAt = state.updatedAt || null;
       let session = null;
 
       function createEmptyState() {
@@ -790,7 +792,7 @@
       }
 
       function saveState(options = {}) {
-        const { stamp = true } = options;
+        const { stamp = true, force = false } = options;
         if (stamp) {
           const now = Date.now();
           state.updatedAt = now;
@@ -798,6 +800,11 @@
           state.storageVersion = 2;
         }
         const serialized = JSON.stringify(state);
+        if (!force && serialized === lastPersistedSnapshot) {
+          renderStorageStatus();
+          return;
+        }
+        lastPersistedSnapshot = serialized;
         storageInfo.lastSavedAt = state.updatedAt || Date.now();
         writeLocalCopies(serialized);
         writeCookieCheckpoint();
@@ -989,21 +996,28 @@
 
         const candidates = [{ source: storageInfo.recoveredFrom || "local", state }];
         try {
-          candidates.push({ source: "IndexedDB", state: normalizeState(await readIndexedDb(IDB_KEY)) });
+          const indexedDbState = normalizeState(await readIndexedDb(IDB_KEY));
+          if (indexedDbState) storageInfo.indexedDb = "ready";
+          candidates.push({ source: "IndexedDB", state: indexedDbState });
         } catch (error) {
           storageInfo.indexedDb = "read failed";
         }
-        candidates.push({ source: "Cache Storage", state: normalizeState(await readCacheState()) });
+        const cacheState = normalizeState(await readCacheState());
+        if (cacheState) storageInfo.cache = "ready";
+        candidates.push({ source: "Cache Storage", state: cacheState });
 
         const best = chooseBestState(candidates);
         if (best && best.state && isStateNewer(best.state, state)) {
           state = best.state;
+          lastPersistedSnapshot = JSON.stringify(state);
           storageInfo.recoveredFrom = best.source;
-          saveState({ stamp: false });
+          saveState({ stamp: false, force: true });
           renderSavedStats();
           renderSessionStats();
+        } else if (storageInfo.recoveredFrom && storageInfo.recoveredFrom !== "new" && storageInfo.recoveredFrom !== STORAGE_KEY) {
+          saveState({ stamp: false, force: true });
         } else {
-          saveState({ stamp: false });
+          renderStorageStatus();
         }
         renderStorageStatus();
       }
