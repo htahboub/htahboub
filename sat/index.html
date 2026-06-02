@@ -683,6 +683,7 @@
       let pdfDocumentPromise = null;
       const renderedPageCache = new Map();
       let storageDb = null;
+      let storageDbOpenPromise = null;
       let pendingIndexedDbWrite = null;
       let indexedDbWriteInFlight = false;
       let storageInfo = {
@@ -840,6 +841,12 @@
         } catch (error) {}
       }
 
+      function deleteCookieCheckpoint() {
+        try {
+          document.cookie = `${COOKIE_KEY}=; max-age=0; path=/; SameSite=Lax`;
+        } catch (error) {}
+      }
+
       function openStorageDb() {
         return new Promise((resolve, reject) => {
           if (!("indexedDB" in window)) {
@@ -855,6 +862,26 @@
           request.onsuccess = () => resolve(request.result);
           request.onerror = () => reject(request.error || new Error("IndexedDB failed"));
         });
+      }
+
+      function ensureStorageDb() {
+        if (storageDb) return Promise.resolve(storageDb);
+        if (storageDbOpenPromise) return storageDbOpenPromise;
+        storageDbOpenPromise = openStorageDb()
+          .then((db) => {
+            storageDb = db;
+            storageInfo.indexedDb = "ready";
+            return db;
+          })
+          .catch((error) => {
+            storageInfo.indexedDb = "unavailable";
+            throw error;
+          })
+          .finally(() => {
+            storageDbOpenPromise = null;
+            renderStorageStatus();
+          });
+        return storageDbOpenPromise;
       }
 
       function readIndexedDb(key) {
@@ -883,22 +910,37 @@
         });
       }
 
-      function deleteIndexedDb(key) {
+      function deleteStorageDb() {
         return new Promise((resolve, reject) => {
-          if (!storageDb) {
+          if (!("indexedDB" in window)) {
             resolve();
             return;
           }
-          const transaction = storageDb.transaction(IDB_STORE, "readwrite");
-          transaction.objectStore(IDB_STORE).delete(key);
-          transaction.oncomplete = () => resolve();
-          transaction.onerror = () => reject(transaction.error || new Error("IndexedDB delete failed"));
+          if (storageDb) {
+            storageDb.close();
+            storageDb = null;
+          }
+          storageDbOpenPromise = null;
+          const request = indexedDB.deleteDatabase(IDB_NAME);
+          request.onsuccess = () => resolve();
+          request.onerror = () => reject(request.error || new Error("IndexedDB delete failed"));
+          request.onblocked = () => reject(new Error("IndexedDB delete blocked"));
         });
       }
 
       function queueIndexedDbWrite(serialized) {
         pendingIndexedDbWrite = serialized;
-        if (!storageDb || indexedDbWriteInFlight) return;
+        if (indexedDbWriteInFlight) return;
+        if (!storageDb) {
+          ensureStorageDb()
+            .then(() => flushIndexedDbWrite())
+            .catch(() => {
+              storageInfo.indexedDb = "failed";
+              storageInfo.warning = "IndexedDB could not be written.";
+              renderStorageStatus();
+            });
+          return;
+        }
         flushIndexedDbWrite();
       }
 
@@ -923,6 +965,10 @@
       async function readCacheState() {
         if (!("caches" in window)) return null;
         try {
+          if (caches.has && !(await caches.has(CACHE_NAME))) {
+            storageInfo.cache = "empty";
+            return null;
+          }
           const cache = await caches.open(CACHE_NAME);
           const response = await cache.match(CACHE_STATE_URL);
           if (!response) return null;
@@ -952,10 +998,18 @@
           });
       }
 
-      async function deleteCacheState() {
+      async function deleteProgressCache() {
         if (!("caches" in window)) return;
-        const cache = await caches.open(CACHE_NAME);
-        await cache.delete(CACHE_STATE_URL);
+        await caches.delete(CACHE_NAME);
+      }
+
+      async function refreshStorageEstimate() {
+        if (!navigator.storage || !navigator.storage.estimate) return;
+        try {
+          const estimate = await navigator.storage.estimate();
+          storageInfo.usage = estimate.usage || 0;
+          storageInfo.quota = estimate.quota || 0;
+        } catch (error) {}
       }
 
       async function requestDurableStorage() {
@@ -974,11 +1028,7 @@
               storageInfo.persistent = "standard";
             }
           }
-          if (navigator.storage.estimate) {
-            const estimate = await navigator.storage.estimate();
-            storageInfo.usage = estimate.usage || 0;
-            storageInfo.quota = estimate.quota || 0;
-          }
+          await refreshStorageEstimate();
         } catch (error) {
           storageInfo.persistent = "standard";
         }
@@ -988,8 +1038,7 @@
         renderStorageStatus();
         await requestDurableStorage();
         try {
-          storageDb = await openStorageDb();
-          storageInfo.indexedDb = "ready";
+          await ensureStorageDb();
         } catch (error) {
           storageInfo.indexedDb = "unavailable";
         }
@@ -1480,12 +1529,30 @@
         state = createEmptyState();
         state.saveRevision = nextRevision;
         state.updatedAt = Date.now();
+        const serialized = JSON.stringify(state);
+        lastPersistedSnapshot = serialized;
         [STORAGE_KEY, LOCAL_BACKUP_KEY, ...LEGACY_STORAGE_KEYS].forEach(removeLocalStorage);
-        writeCookieCheckpoint();
-        saveState({ stamp: false });
-        deleteIndexedDb(IDB_KEY).then(() => queueIndexedDbWrite(JSON.stringify(state))).catch(() => {});
-        deleteCacheState().then(() => queueCacheWrite(JSON.stringify(state))).catch(() => {});
+        // Keep a tiny local reset marker so stale async mirrors cannot restore old history.
+        writeLocalCopies(serialized);
+        deleteCookieCheckpoint();
+        pendingIndexedDbWrite = null;
+        storageInfo.recoveredFrom = STORAGE_KEY;
+        storageInfo.lastSavedAt = state.updatedAt;
+        storageInfo.indexedDb = storageDb ? "clearing" : storageInfo.indexedDb;
+        storageInfo.cache = "clearing";
         renderSavedStats();
+        Promise.allSettled([deleteStorageDb(), deleteProgressCache()])
+          .then(async ([indexedDbResult, cacheResult]) => {
+            if (indexedDbResult.status === "rejected") {
+              storageInfo.indexedDb = "clear failed";
+              storageInfo.warning = "IndexedDB could not be fully cleared.";
+            } else {
+              storageInfo.indexedDb = "cleared";
+            }
+            storageInfo.cache = cacheResult.status === "rejected" ? "clear failed" : "cleared";
+            await refreshStorageEstimate();
+            renderStorageStatus();
+          });
       }
 
       function escapeHtml(value) {
