@@ -905,6 +905,7 @@
       const IDB_STORE = "snapshots";
       const IDB_KEY = "progress";
       const CACHE_NAME = "sat-rw-trainer-progress-v1";
+      const PAGE_ASSET_CACHE_NAME = "sat-rw-trainer-page-assets-v1";
       const CACHE_STATE_URL = new URL("__sat_progress_state__", location.href).href;
       const COOKIE_KEY = "sat_rw_trainer_checkpoint";
       const WEAKNESS_WINDOW = 30;
@@ -981,6 +982,9 @@
       const renderedPageCache = new Map();
       const renderedPagePromises = new Map();
       const questionLayoutCache = new Map();
+      let preparedFirstPick = null;
+      let preparedFirstKey = null;
+      let preparedFirstWarmPromise = null;
       let audioContext = null;
       let confettiParticles = [];
       let confettiAnimationFrame = null;
@@ -1279,6 +1283,7 @@
         renderQuestion(session.current);
         renderSavedStats();
         renderSessionStats();
+        if (session.recordedAttempt) prepareUpcomingQuestion();
         return true;
       }
 
@@ -1701,8 +1706,7 @@
         return pool[Math.floor(Math.random() * pool.length)];
       }
 
-      function chooseQuestion() {
-        const used = session.usedIds;
+      function chooseQuestionFromUsed(used) {
         const shouldTarget = Math.random() < TARGET_RATE;
         let targetSkill = shouldTarget ? weightedWeakSkill() : null;
         let pool = [];
@@ -1716,9 +1720,75 @@
           if (!pool.length) pool = QUESTIONS;
         }
         const question = randomFrom(pool);
-        session.usedIds.add(question.id);
-        if (targetSkill) session.targeted += 1;
         return { question, targetSkill };
+      }
+
+      function chooseQuestion() {
+        return chooseQuestionFromUsed(session.usedIds);
+      }
+
+      function reservePickedQuestion(picked) {
+        if (!session || !picked || !picked.question) return;
+        session.usedIds.add(picked.question.id);
+        if (picked.targetSkill) session.targeted += 1;
+      }
+
+      function firstPreparationKey() {
+        return [
+          Number(state.saveRevision) || 0,
+          state.attempts.length,
+          Number(state.updatedAt) || 0,
+        ].join(":");
+      }
+
+      function prepareFirstQuestion() {
+        if (session || elements.setupView.hidden) return;
+        const key = firstPreparationKey();
+        if (preparedFirstPick && preparedFirstKey === key) return;
+        preparedFirstKey = key;
+        preparedFirstPick = chooseQuestionFromUsed(new Set());
+        preparedFirstWarmPromise = warmQuestionAssets(preparedFirstPick.question).catch(() => null);
+      }
+
+      function takePreparedFirstQuestion() {
+        if (!preparedFirstPick || preparedFirstKey !== firstPreparationKey()) return null;
+        const picked = preparedFirstPick;
+        preparedFirstPick = null;
+        preparedFirstKey = null;
+        preparedFirstWarmPromise = null;
+        return picked;
+      }
+
+      function prepareUpcomingQuestion() {
+        if (!session || session.preparedNext || session.answered.length >= session.limit) return;
+        const picked = chooseQuestion();
+        session.preparedNext = picked;
+        warmQuestionAssets(picked.question).catch(() => null);
+      }
+
+      function prepareSpeculativeQuestion() {
+        if (!session || session.preparedNext || session.currentNumber >= session.limit) return;
+        const picked = chooseQuestion();
+        session.preparedNext = picked;
+        warmQuestionAssets(picked.question).catch(() => null);
+      }
+
+      function beginQuestion(picked) {
+        if (!session || !picked || !picked.question) return;
+        reservePickedQuestion(picked);
+        session.current = picked.question;
+        session.targetSkill = picked.targetSkill;
+        session.selectedLetter = null;
+        session.wrongLetters = [];
+        session.recordedAttempt = null;
+        session.completed = false;
+        session.currentNumber = session.answered.length + 1;
+        elements.rationaleText.innerHTML = "";
+        delete elements.rationaleText.dataset.questionId;
+        renderQuestion(picked.question);
+        renderSessionStats();
+        saveActiveSession();
+        prepareSpeculativeQuestion();
       }
 
       function startPractice() {
@@ -1736,9 +1806,10 @@
           recordedAttempt: null,
           completed: false,
           currentNumber: 1,
+          preparedNext: null,
         };
         showView("practice");
-        nextQuestion();
+        beginQuestion(takePreparedFirstQuestion() || chooseQuestion());
       }
 
       function nextQuestion() {
@@ -1747,19 +1818,9 @@
           renderSummary();
           return;
         }
-        const picked = chooseQuestion();
-        session.current = picked.question;
-        session.targetSkill = picked.targetSkill;
-        session.selectedLetter = null;
-        session.wrongLetters = [];
-        session.recordedAttempt = null;
-        session.completed = false;
-        session.currentNumber = session.answered.length + 1;
-        elements.rationaleText.innerHTML = "";
-        delete elements.rationaleText.dataset.questionId;
-        renderQuestion(picked.question);
-        renderSessionStats();
-        saveActiveSession();
+        const picked = session.preparedNext || chooseQuestion();
+        session.preparedNext = null;
+        beginQuestion(picked);
       }
 
       function renderQuestion(question) {
@@ -1855,6 +1916,8 @@
           renderSavedStats();
           renderSessionStats();
           saveActiveSession();
+          session.preparedNext = null;
+          prepareUpcomingQuestion();
           return;
         }
 
@@ -1874,6 +1937,7 @@
         renderSavedStats();
         renderSessionStats();
         saveActiveSession();
+        prepareUpcomingQuestion();
       }
 
       function syncChoiceState() {
@@ -2166,6 +2230,7 @@
         elements.setupView.hidden = name !== "setup";
         elements.practiceView.hidden = name !== "practice";
         elements.summaryView.hidden = name !== "summary";
+        if (name === "setup") window.setTimeout(prepareFirstQuestion, 0);
       }
 
       async function loadPdfJs() {
@@ -2219,9 +2284,35 @@
         return `${PAGE_PDF_DIR}/page-${String(pageNumber).padStart(4, "0")}.pdf`;
       }
 
+      function pagePdfRequestUrl(pageNumber) {
+        return new URL(pagePdfUrl(pageNumber), location.href).href;
+      }
+
+      async function readPageAssetCache(url) {
+        if (!("caches" in window)) return null;
+        try {
+          const cache = await caches.open(PAGE_ASSET_CACHE_NAME);
+          return await cache.match(url);
+        } catch (error) {
+          return null;
+        }
+      }
+
+      async function writePageAssetCache(url, response) {
+        if (!("caches" in window) || !response || !response.ok) return;
+        try {
+          const cache = await caches.open(PAGE_ASSET_CACHE_NAME);
+          await cache.put(url, response);
+        } catch (error) {}
+      }
+
       async function fetchPagePdfData(pageNumber) {
-        const response = await fetch(pagePdfUrl(pageNumber), { cache: "force-cache" });
+        const url = pagePdfRequestUrl(pageNumber);
+        const cached = await readPageAssetCache(url);
+        if (cached && cached.ok) return new Uint8Array(await cached.arrayBuffer());
+        const response = await fetch(url, { cache: "force-cache" });
         if (!response.ok) throw new Error(`Page PDF ${pageNumber} unavailable.`);
+        writePageAssetCache(url, response.clone());
         return new Uint8Array(await response.arrayBuffer());
       }
 
@@ -2241,6 +2332,16 @@
           }
         }
         return pagePdfDocumentPromises.get(key);
+      }
+
+      async function warmQuestionAssets(question) {
+        if (!question) return;
+        const layout = await getQuestionLayout(question);
+        const pages = new Set([layout.questionPage]);
+        Object.values(layout.choices || {}).forEach((crops) => {
+          (crops || []).forEach((crop) => pages.add(crop.page));
+        });
+        await Promise.all([...pages].filter(Boolean).map((pageNumber) => loadPdfPage(pageNumber)));
       }
 
       function getQuestionLayout(question) {
@@ -2503,8 +2604,12 @@
         }
       }
 
+      function currentPdfScale() {
+        return Math.min(2.85, Math.max(2.1, (window.devicePixelRatio || 1.6) * 1.15));
+      }
+
       async function createCropCanvas(pageNumber, topY, bottomY, options = {}) {
-        const scale = Math.min(2.85, Math.max(2.1, (window.devicePixelRatio || 1.6) * 1.15));
+        const scale = currentPdfScale();
         const renderedPage = await getRenderedPdfPage(pageNumber, scale);
         const fullCanvas = renderedPage.canvas;
         const baseViewport = renderedPage.baseViewport;
