@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
   <title>SAT Reading & Writing Adaptive Trainer</title>
   <style>
     :root {
@@ -37,8 +38,17 @@
     button { cursor: pointer; }
     [hidden] { display: none !important; }
 
+    .confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
     .shell {
-      width: min(1180px, calc(100vw - 32px));
+      width: min(1300px, calc(100vw - 32px));
       margin: 0 auto;
       padding: 26px 0 42px;
     }
@@ -192,6 +202,52 @@
       gap: 10px;
       align-items: center;
     }
+    .toggle-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      color: var(--ink);
+      font-size: 0.92rem;
+      font-weight: 760;
+      cursor: pointer;
+      user-select: none;
+    }
+    .toggle-row input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .toggle-track {
+      position: relative;
+      width: 46px;
+      height: 26px;
+      flex: 0 0 auto;
+      pointer-events: none;
+      border: 1px solid #c7d2dc;
+      border-radius: 999px;
+      background: #e9edf2;
+      transition: background 160ms ease, border-color 160ms ease;
+    }
+    .toggle-track::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 7px rgba(28, 38, 48, 0.22);
+      transition: transform 160ms ease;
+    }
+    .toggle-row input:checked + .toggle-track {
+      border-color: var(--teal);
+      background: var(--teal);
+    }
+    .toggle-row input:checked + .toggle-track::after {
+      transform: translateX(20px);
+    }
 
     .chips {
       display: flex;
@@ -258,7 +314,7 @@
 
     .practice-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 294px;
+      grid-template-columns: minmax(0, 1fr) 268px;
       gap: 18px;
       align-items: start;
     }
@@ -280,7 +336,7 @@
       font-weight: 750;
     }
     .question-body {
-      padding: 22px;
+      padding: 26px;
     }
     .question-text {
       max-width: 74ch;
@@ -307,6 +363,24 @@
       color: var(--ink);
       text-align: left;
       line-height: 1.45;
+    }
+    .choice-crop-stack {
+      display: grid;
+      gap: 6px;
+      align-self: center;
+      min-width: 0;
+      width: 100%;
+    }
+    .choice-crop-stack .pdf-page-crop {
+      border: 0;
+      border-radius: 4px;
+      box-shadow: none;
+      background: transparent;
+    }
+    .choice-loading {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
     }
     .choice:hover {
       border-color: rgba(15, 118, 110, 0.45);
@@ -427,8 +501,12 @@
       background: #fff;
       box-shadow: 0 8px 22px rgba(28, 38, 48, 0.07);
     }
+    .question-pdf .pdf-page-crop {
+      border-color: #c7d4dd;
+      box-shadow: 0 12px 30px rgba(28, 38, 48, 0.1);
+    }
     .question-pdf {
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
     .muted {
       color: var(--muted);
@@ -485,6 +563,7 @@
   </style>
 </head>
 <body>
+  <canvas id="confettiCanvas" class="confetti-canvas" aria-hidden="true"></canvas>
   <div class="shell">
     <header class="topbar">
       <div>
@@ -519,6 +598,11 @@
               <button class="btn small" data-count="25">25</button>
             </div>
           </div>
+          <label class="toggle-row">
+            <input id="hidePracticeHints" type="checkbox">
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span>Blind practice</span>
+          </label>
           <button id="startBtn" class="btn primary">Start Practice</button>
           <div class="button-row">
             <button id="exportBtn" class="btn small">Export Data</button>
@@ -576,10 +660,15 @@
             <div class="mini-grid">
               <div class="mini-stat muted">Set<span><strong id="setPercent">--</strong></span></div>
               <div class="mini-stat muted">Last 20 Qs<span><strong id="sideRolling">--</strong></span></div>
-              <div class="mini-stat muted">Targeted<span><strong id="targetedCount">0</strong></span></div>
+              <div class="mini-stat muted" id="targetedStat">Targeted<span><strong id="targetedCount">0</strong></span></div>
               <div class="mini-stat muted">Left<span><strong id="questionsLeft">0</strong></span></div>
             </div>
-            <div>
+            <label class="toggle-row">
+              <input id="hidePracticeHintsLive" type="checkbox">
+              <span class="toggle-track" aria-hidden="true"></span>
+              <span>Blind practice</span>
+            </label>
+            <div id="weaknessTargetsPanel">
               <h3>Weakness Targets</h3>
               <div class="chips" id="sideWeaknesses"></div>
             </div>
@@ -618,6 +707,7 @@
       const PDFJS_WORKER_URL = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
       const STORAGE_KEY = "sat_rw_adaptive_trainer_v2";
       const LOCAL_BACKUP_KEY = `${STORAGE_KEY}:local-backup`;
+      const PREFS_KEY = `${STORAGE_KEY}:prefs`;
       const LEGACY_STORAGE_KEYS = ["sat_rw_adaptive_trainer_v1"];
       const IDB_NAME = "sat_rw_adaptive_trainer";
       const IDB_STORE = "snapshots";
@@ -629,6 +719,9 @@
       const SCORE_WINDOW = 20;
       const TARGET_RATE = 0.5;
       const PAGE_CACHE_LIMIT = 8;
+      const PDF_HORIZONTAL_INSET = 12;
+      const CHOICE_HORIZONTAL_INSET = 8;
+      const CONFETTI_COLORS = ["#0f766e", "#2f64d6", "#c88418", "#dc5f55", "#27824a", "#7c3aed", "#f4b942"];
       const byId = new Map(QUESTIONS.map((question) => [question.id, question]));
       const bySkill = QUESTIONS.reduce((map, question) => {
         if (!map.has(question.skill)) map.set(question.skill, []);
@@ -637,6 +730,7 @@
       }, new Map());
 
       const elements = {
+        confettiCanvas: document.getElementById("confettiCanvas"),
         setupView: document.getElementById("setupView"),
         practiceView: document.getElementById("practiceView"),
         summaryView: document.getElementById("summaryView"),
@@ -644,6 +738,8 @@
         overallAccuracy: document.getElementById("overallAccuracy"),
         rollingAccuracy: document.getElementById("rollingAccuracy"),
         questionCount: document.getElementById("questionCount"),
+        hidePracticeHints: document.getElementById("hidePracticeHints"),
+        hidePracticeHintsLive: document.getElementById("hidePracticeHintsLive"),
         startBtn: document.getElementById("startBtn"),
         exportBtn: document.getElementById("exportBtn"),
         importBtn: document.getElementById("importBtn"),
@@ -668,8 +764,10 @@
         sessionScore: document.getElementById("sessionScore"),
         setPercent: document.getElementById("setPercent"),
         sideRolling: document.getElementById("sideRolling"),
+        targetedStat: document.getElementById("targetedStat"),
         targetedCount: document.getElementById("targetedCount"),
         questionsLeft: document.getElementById("questionsLeft"),
+        weaknessTargetsPanel: document.getElementById("weaknessTargetsPanel"),
         sideWeaknesses: document.getElementById("sideWeaknesses"),
         summaryScore: document.getElementById("summaryScore"),
         summaryMissed: document.getElementById("summaryMissed"),
@@ -682,6 +780,11 @@
       let pdfJsPromise = null;
       let pdfDocumentPromise = null;
       const renderedPageCache = new Map();
+      const questionLayoutCache = new Map();
+      let audioContext = null;
+      let confettiParticles = [];
+      let confettiAnimationFrame = null;
+      let confettiLastFrame = 0;
       let storageDb = null;
       let storageDbOpenPromise = null;
       let pendingIndexedDbWrite = null;
@@ -700,6 +803,7 @@
       let state = loadState();
       let lastPersistedSnapshot = JSON.stringify(state);
       if (storageInfo.recoveredFrom !== "new") storageInfo.lastSavedAt = state.updatedAt || null;
+      let prefs = loadPrefs();
       let session = null;
 
       function createEmptyState() {
@@ -790,6 +894,41 @@
         storageInfo.local = "ready";
         storageInfo.recoveredFrom = best ? best.source : "new";
         return best ? best.state : createEmptyState();
+      }
+
+      function loadPrefs() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(PREFS_KEY) || "{}");
+          return { hidePracticeHints: Boolean(parsed.hidePracticeHints) };
+        } catch (error) {
+          return { hidePracticeHints: false };
+        }
+      }
+
+      function savePrefs() {
+        try {
+          localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+        } catch (error) {}
+      }
+
+      function syncPracticeHintControls() {
+        [elements.hidePracticeHints, elements.hidePracticeHintsLive].forEach((input) => {
+          if (input) input.checked = Boolean(prefs.hidePracticeHints);
+        });
+      }
+
+      function applyPracticeHintVisibility() {
+        const hide = Boolean(prefs.hidePracticeHints);
+        [elements.questionMeta, elements.targetMeta, elements.targetedStat, elements.weaknessTargetsPanel].forEach((element) => {
+          if (element) element.hidden = hide;
+        });
+      }
+
+      function setPracticeHintsHidden(value) {
+        prefs.hidePracticeHints = Boolean(value);
+        savePrefs();
+        syncPracticeHintControls();
+        applyPracticeHintVisibility();
       }
 
       function saveState(options = {}) {
@@ -1264,19 +1403,42 @@
         elements.questionMeta.append(chip(question.domain, "teal"), chip(question.skill), chip(question.difficulty, "amber"));
         elements.targetMeta.innerHTML = "";
         elements.targetMeta.append(session.targetSkill ? chip("Targeted", "coral") : chip("Broad draw"));
+        applyPracticeHintVisibility();
 
         renderQuestionPdf(question, elements.questionRender);
+        renderChoiceButtons(question, null, true);
+        getQuestionLayout(question)
+          .then((layout) => {
+            if (!session || session.current.id !== question.id || !elements.answerPanel.hidden) return;
+            renderChoiceButtons(question, layout);
+          })
+          .catch(() => {
+            if (!session || session.current.id !== question.id || !elements.answerPanel.hidden) return;
+            renderChoiceButtons(question, null, false);
+          });
+      }
+
+      function renderChoiceButtons(question, layout = null, loading = false) {
         elements.choices.innerHTML = "";
         ["A", "B", "C", "D"].forEach((letter) => {
           const button = document.createElement("button");
           button.className = "choice";
-          button.innerHTML = `<span class="letter">${letter}</span><span>Choose ${letter}</span>`;
-          button.addEventListener("click", () => answer(letter));
+          const fallback = loading ? `Rendering choice ${letter}...` : `Choice ${letter}`;
+          button.innerHTML = `<span class="letter">${letter}</span><span class="choice-crop-stack" data-choice="${letter}"><span class="choice-loading">${fallback}</span></span>`;
+          button.addEventListener("click", (event) => answer(letter, event.currentTarget));
           elements.choices.append(button);
+          const crops = layout && layout.choices ? layout.choices[letter] : null;
+          if (crops && crops.length) {
+            renderPdfCrops(button.querySelector(".choice-crop-stack"), crops, {
+              placeholder: `Rendering choice ${letter}...`,
+              placeholderClass: "choice-loading",
+              errorText: `Choice ${letter}`,
+            });
+          }
         });
       }
 
-      function answer(letter) {
+      function answer(letter, sourceButton = null) {
         const question = session.current;
         const ok = letter === question.correct;
         const attempt = {
@@ -1293,6 +1455,7 @@
         saveState();
         session.answered.push(attempt);
         if (!ok) session.mistakes.push({ attempt, question });
+        playAnswerFeedback(ok, sourceButton);
 
         [...elements.choices.querySelectorAll(".choice")].forEach((button) => {
           const option = button.querySelector(".letter").textContent;
@@ -1312,6 +1475,154 @@
         renderRationalePdf(question, elements.rationaleText);
         renderSavedStats();
         renderSessionStats();
+      }
+
+      function playAnswerFeedback(ok, sourceButton) {
+        try {
+          if (ok) {
+            launchConfetti(sourceButton);
+            playCorrectSound();
+          } else {
+            playWrongSound();
+          }
+        } catch (error) {}
+      }
+
+      function getAudioContext() {
+        const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextCtor) return null;
+        if (!audioContext) audioContext = new AudioContextCtor();
+        if (audioContext.state === "suspended") audioContext.resume().catch(() => {});
+        return audioContext;
+      }
+
+      function scheduleTone(context, frequency, start, duration, volume, type = "sine", endFrequency = null) {
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, start);
+        if (endFrequency) {
+          oscillator.frequency.exponentialRampToValueAtTime(Math.max(20, endFrequency), start + duration * 0.92);
+        }
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(volume, start + 0.018);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+        oscillator.start(start);
+        oscillator.stop(start + duration + 0.03);
+      }
+
+      function playCorrectSound() {
+        const context = getAudioContext();
+        if (!context) return;
+        const now = context.currentTime + 0.02;
+        [523.25, 659.25, 783.99, 1046.5].forEach((frequency, index) => {
+          scheduleTone(context, frequency, now + index * 0.065, 0.18, 0.08, "triangle");
+        });
+        scheduleTone(context, 1318.5, now + 0.24, 0.24, 0.055, "sine");
+      }
+
+      function playWrongSound() {
+        const context = getAudioContext();
+        if (!context) return;
+        const now = context.currentTime + 0.02;
+        scheduleTone(context, 220, now, 0.38, 0.105, "sine", 110);
+        scheduleTone(context, 146.83, now + 0.08, 0.46, 0.095, "triangle", 73.42);
+        scheduleTone(context, 73.42, now + 0.22, 0.34, 0.08, "sine", 45);
+      }
+
+      function resizeConfettiCanvas() {
+        const canvas = elements.confettiCanvas;
+        if (!canvas) return 1;
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const nextWidth = Math.ceil(width * dpr);
+        const nextHeight = Math.ceil(height * dpr);
+        if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
+          canvas.width = nextWidth;
+          canvas.height = nextHeight;
+          canvas.style.width = `${width}px`;
+          canvas.style.height = `${height}px`;
+        }
+        return dpr;
+      }
+
+      function launchConfetti(sourceButton) {
+        const canvas = elements.confettiCanvas;
+        if (!canvas) return;
+        resizeConfettiCanvas();
+        const rect = sourceButton ? sourceButton.getBoundingClientRect() : null;
+        const originX = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+        const originY = rect ? rect.top + rect.height / 2 : window.innerHeight * 0.38;
+        for (let index = 0; index < 210; index += 1) {
+          const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.35;
+          const speed = 4.2 + Math.random() * 8.2;
+          const drift = (Math.random() - 0.5) * 2.4;
+          confettiParticles.push({
+            x: originX + (Math.random() - 0.5) * 28,
+            y: originY + (Math.random() - 0.5) * 18,
+            vx: Math.cos(angle) * speed + drift,
+            vy: Math.sin(angle) * speed - Math.random() * 3.4,
+            size: 5 + Math.random() * 8,
+            rotation: Math.random() * Math.PI * 2,
+            spin: (Math.random() - 0.5) * 0.34,
+            color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+            life: 0,
+            ttl: 95 + Math.random() * 70,
+            shape: Math.random() > 0.84 ? "circle" : "rect",
+          });
+        }
+        if (!confettiAnimationFrame) {
+          confettiLastFrame = 0;
+          confettiAnimationFrame = requestAnimationFrame(animateConfetti);
+        }
+      }
+
+      function animateConfetti(timestamp) {
+        const canvas = elements.confettiCanvas;
+        if (!canvas) return;
+        const dpr = resizeConfettiCanvas();
+        const context = canvas.getContext("2d");
+        const width = canvas.width / dpr;
+        const height = canvas.height / dpr;
+        const delta = confettiLastFrame ? Math.min(34, timestamp - confettiLastFrame) : 16.7;
+        const step = delta / 16.7;
+        confettiLastFrame = timestamp;
+        context.setTransform(dpr, 0, 0, dpr, 0, 0);
+        context.clearRect(0, 0, width, height);
+        confettiParticles = confettiParticles.filter((particle) => {
+          particle.life += step;
+          particle.vx *= 0.988;
+          particle.vy += 0.18 * step;
+          particle.x += particle.vx * step;
+          particle.y += particle.vy * step;
+          particle.rotation += particle.spin * step;
+          const visible = particle.life < particle.ttl && particle.y < height + 60;
+          if (!visible) return false;
+          const fade = Math.max(0, 1 - particle.life / particle.ttl);
+          context.save();
+          context.globalAlpha = Math.min(1, fade * 1.35);
+          context.translate(particle.x, particle.y);
+          context.rotate(particle.rotation);
+          context.fillStyle = particle.color;
+          if (particle.shape === "circle") {
+            context.beginPath();
+            context.arc(0, 0, particle.size * 0.45, 0, Math.PI * 2);
+            context.fill();
+          } else {
+            context.fillRect(-particle.size / 2, -particle.size * 0.28, particle.size, particle.size * 0.56);
+          }
+          context.restore();
+          return true;
+        });
+        if (confettiParticles.length) {
+          confettiAnimationFrame = requestAnimationFrame(animateConfetti);
+        } else {
+          confettiAnimationFrame = null;
+          context.clearRect(0, 0, width, height);
+        }
       }
 
       function renderSessionStats() {
@@ -1334,6 +1645,7 @@
         } else {
           rows.forEach((row) => elements.sideWeaknesses.append(chip(`${row.skill}: ${row.count}`, "coral")));
         }
+        applyPracticeHintVisibility();
       }
 
       function renderSummary() {
@@ -1402,15 +1714,159 @@
         return pdfDocumentPromise;
       }
 
-      function renderQuestionPdf(question, container) {
-        const crops = [];
-        for (let page = question.startPage; page <= question.correctPage; page += 1) {
-          const topY = page === question.startPage ? question.questionTopY : question.pageHeight;
-          if (page < question.correctPage) {
-            crops.push({ page, topY, bottomY: 0 });
-          } else {
-            crops.push({ page, topY, bottomY: question.questionBottomY });
+      function getQuestionLayout(question) {
+        if (!questionLayoutCache.has(question.id)) {
+          questionLayoutCache.set(question.id, buildQuestionLayout(question));
+        }
+        return questionLayoutCache.get(question.id);
+      }
+
+      async function buildQuestionLayout(question) {
+        const pdf = await loadPdfDocument();
+        const lines = [];
+        for (let pageNumber = question.startPage; pageNumber <= question.correctPage; pageNumber += 1) {
+          const page = await pdf.getPage(pageNumber);
+          const textContent = await page.getTextContent();
+          lines.push(...textLinesFromItems(textContent.items, pageNumber, page.view[3] || question.pageHeight));
+        }
+        lines.sort((a, b) => a.pageNumber - b.pageNumber || b.y - a.y);
+        lines.forEach((line, index) => {
+          line.index = index;
+        });
+
+        let answerLine = null;
+        let correctLine = null;
+        const choiceStarts = [];
+        let inAnswerSection = false;
+        lines.forEach((line) => {
+          const marker = normalizedMarkerText(line.text);
+          if (!inAnswerSection) {
+            if (/^Answer$/i.test(marker)) {
+              answerLine = line;
+              inAnswerSection = true;
+            }
+            return;
           }
+          if (/^Correct Answer\b/i.test(marker)) {
+            correctLine = line;
+            inAnswerSection = false;
+            return;
+          }
+          const match = marker.match(/^([A-D])[.)]\s*/);
+          if (match && !choiceStarts.some((choice) => choice.letter === match[1])) {
+            choiceStarts.push({ letter: match[1], line });
+          }
+        });
+
+        const choices = ["A", "B", "C", "D"].reduce((result, letter) => {
+          const start = choiceStarts.find((choice) => choice.letter === letter);
+          const startIndex = start ? choiceStarts.indexOf(start) : -1;
+          const next = startIndex >= 0 ? choiceStarts[startIndex + 1] || null : null;
+          const endLine = next ? next.line : correctLine;
+          result[letter] = start ? choiceCropsFromLines(question, lines, start.line, endLine) : [];
+          return result;
+        }, {});
+
+        return {
+          answerPage: answerLine ? answerLine.pageNumber : question.correctPage,
+          questionBottomY: answerLine ? Math.min(question.pageHeight, answerLine.y + 15) : question.questionBottomY,
+          choices,
+        };
+      }
+
+      function choiceCropsFromLines(question, lines, startLine, endLine) {
+        const selected = lines.filter((line) => line.index >= startLine.index && (!endLine || line.index < endLine.index));
+        const byPage = selected.reduce((map, line) => {
+          if (!map.has(line.pageNumber)) map.set(line.pageNumber, []);
+          map.get(line.pageNumber).push(line);
+          return map;
+        }, new Map());
+        return [...byPage.entries()]
+          .sort((a, b) => a[0] - b[0])
+          .map(([page, pageLines]) => {
+            const maxY = Math.max(...pageLines.map((line) => line.y));
+            const minY = Math.min(...pageLines.map((line) => line.y));
+            return {
+              page,
+              topY: Math.min(question.pageHeight, maxY + 11),
+              bottomY: Math.max(0, minY - 8),
+              horizontalInset: CHOICE_HORIZONTAL_INSET,
+            };
+          })
+          .filter((crop) => crop.topY > crop.bottomY);
+      }
+
+      function textLinesFromItems(items, pageNumber, pageHeight) {
+        const rows = [];
+        items.forEach((item, index) => {
+          const raw = String(item.str || "");
+          if (!raw) return;
+          const transform = item.transform || [];
+          const x = Number(transform[4]) || 0;
+          const y = Number(transform[5]) || 0;
+          let row = rows.find((candidate) => Math.abs(candidate.y - y) < 2.5);
+          if (!row) {
+            row = { pageNumber, pageHeight, y, parts: [] };
+            rows.push(row);
+          }
+          row.parts.push({ x, width: Number(item.width) || 0, text: raw, index });
+        });
+        return rows.map((row) => ({
+          pageNumber: row.pageNumber,
+          pageHeight: row.pageHeight,
+          y: row.y,
+          text: joinLineParts(row.parts),
+        })).filter((line) => line.text);
+      }
+
+      function joinLineParts(parts) {
+        const ordered = parts.sort((a, b) => a.x - b.x || a.index - b.index);
+        let line = "";
+        let lastEnd = null;
+        ordered.forEach((part) => {
+          const text = part.text.trim();
+          const estimatedWidth = part.width || Math.max(3, text.length * 4.6);
+          if (!text) {
+            if (line && !line.endsWith(" ")) line += " ";
+            lastEnd = Math.max(lastEnd || 0, part.x + estimatedWidth);
+            return;
+          }
+          const needsSpace = line && !line.endsWith(" ") && lastEnd !== null && part.x - lastEnd > 4.5 && !/^[,.;:!?)]/.test(text);
+          line += `${needsSpace ? " " : ""}${text}`;
+          lastEnd = Math.max(lastEnd || 0, part.x + estimatedWidth);
+        });
+        return cleanLineText(line);
+      }
+
+      function cleanLineText(value) {
+        return String(value || "")
+          .replace(/\s+/g, " ")
+          .replace(/\s+([,.;:!?])/g, "$1")
+          .trim();
+      }
+
+      function normalizedMarkerText(value) {
+        return cleanLineText(value).replace(/\s+/g, " ");
+      }
+
+      async function renderQuestionPdf(question, container) {
+        container.dataset.questionId = question.id;
+        container.innerHTML = '<div class="empty">Rendering PDF...</div>';
+        let layout = null;
+        try {
+          layout = await getQuestionLayout(question);
+        } catch (error) {}
+        if (container.dataset.questionId !== question.id) return;
+        const finalPage = layout ? layout.answerPage : question.correctPage;
+        const finalBottomY = layout ? layout.questionBottomY : question.questionBottomY;
+        const crops = [];
+        for (let page = question.startPage; page <= finalPage; page += 1) {
+          const topY = page === question.startPage ? question.questionTopY : question.pageHeight;
+          crops.push({
+            page,
+            topY,
+            bottomY: page === finalPage ? finalBottomY : 0,
+          });
         }
         renderPdfCrops(container, crops);
       }
@@ -1425,27 +1881,45 @@
         renderPdfCrops(container, crops);
       }
 
-      async function renderPdfCrops(container, crops) {
+      async function renderPdfCrops(container, crops, options = {}) {
         const token = Symbol("render");
         container.dataset.renderToken = String(Date.now()) + Math.random();
         const currentToken = container.dataset.renderToken;
-        container.innerHTML = '<div class="empty">Rendering PDF…</div>';
+        const placeholder = document.createElement("div");
+        placeholder.className = options.placeholderClass || "empty";
+        placeholder.textContent = options.placeholder || "Rendering PDF...";
+        container.innerHTML = "";
+        container.append(placeholder);
         try {
           await loadPdfDocument();
           if (container.dataset.renderToken !== currentToken) return;
           container.innerHTML = "";
+          let rendered = 0;
           for (const crop of crops) {
             if (container.dataset.renderToken !== currentToken) return;
-            const canvas = await createCropCanvas(crop.page, crop.topY, crop.bottomY);
-            if (canvas) container.append(canvas);
+            const canvas = await createCropCanvas(crop.page, crop.topY, crop.bottomY, crop);
+            if (canvas) {
+              container.append(canvas);
+              rendered += 1;
+            }
+          }
+          if (!rendered) {
+            const empty = document.createElement("div");
+            empty.className = options.placeholderClass || "empty";
+            empty.textContent = options.errorText || "PDF crop unavailable.";
+            container.append(empty);
           }
         } catch (error) {
-          container.innerHTML = `<div class="empty">Could not render the PDF. Keep <strong>${PDF_URL}</strong> next to this HTML file and allow the PDF.js CDN to load.</div>`;
+          const fallback = document.createElement("div");
+          fallback.className = options.placeholderClass || "empty";
+          fallback.textContent = options.errorText || `Could not render the PDF. Keep ${PDF_URL} next to this HTML file and allow the PDF.js CDN to load.`;
+          container.innerHTML = "";
+          container.append(fallback);
           console.error(error);
         }
       }
 
-      async function createCropCanvas(pageNumber, topY, bottomY) {
+      async function createCropCanvas(pageNumber, topY, bottomY, options = {}) {
         const pdf = await loadPdfDocument();
         const page = await pdf.getPage(pageNumber);
         const baseViewport = page.getViewport({ scale: 1 });
@@ -1454,7 +1928,7 @@
         const cropBottom = Math.min(pageHeight, (pageHeight - bottomY));
         if (cropBottom - cropTop < 4) return null;
 
-        const scale = Math.min(2.35, Math.max(1.65, window.devicePixelRatio || 1.65));
+        const scale = Math.min(2.85, Math.max(2.1, (window.devicePixelRatio || 1.6) * 1.15));
         const cacheKey = `${pageNumber}:${scale}`;
         let fullCanvas = renderedPageCache.get(cacheKey);
         if (!fullCanvas) {
@@ -1471,21 +1945,25 @@
           }
         }
 
+        const horizontalInset = Math.min(options.horizontalInset ?? PDF_HORIZONTAL_INSET, baseViewport.width * 0.08);
+        const scaledLeft = Math.max(0, Math.floor(horizontalInset * scale));
+        const scaledRight = Math.max(0, Math.floor(horizontalInset * scale));
+        const scaledWidth = Math.max(1, fullCanvas.width - scaledLeft - scaledRight);
         const scaledTop = Math.max(0, Math.floor(cropTop * scale));
         const scaledHeight = Math.max(1, Math.ceil((cropBottom - cropTop) * scale));
         const cropCanvas = document.createElement("canvas");
         cropCanvas.className = "pdf-page-crop";
-        cropCanvas.width = fullCanvas.width;
+        cropCanvas.width = scaledWidth;
         cropCanvas.height = scaledHeight;
         cropCanvas.getContext("2d").drawImage(
           fullCanvas,
-          0,
+          scaledLeft,
           scaledTop,
-          fullCanvas.width,
+          scaledWidth,
           scaledHeight,
           0,
           0,
-          fullCanvas.width,
+          scaledWidth,
           scaledHeight
         );
         cropCanvas.style.width = "100%";
@@ -1572,6 +2050,9 @@
       elements.importBtn.addEventListener("click", () => elements.importFile.click());
       elements.importFile.addEventListener("change", (event) => importData(event.target.files[0]));
       elements.resetBtn.addEventListener("click", resetHistory);
+      [elements.hidePracticeHints, elements.hidePracticeHintsLive].forEach((input) => {
+        if (input) input.addEventListener("change", (event) => setPracticeHintsHidden(event.currentTarget.checked));
+      });
       window.addEventListener("pagehide", () => saveState({ stamp: false }));
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "hidden") saveState({ stamp: false });
@@ -1582,6 +2063,8 @@
         });
       });
 
+      syncPracticeHintControls();
+      applyPracticeHintVisibility();
       renderSavedStats();
       initPersistence();
     })();
