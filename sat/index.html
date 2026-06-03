@@ -3,24 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="data:,">
-  <title>SAT Reading & Writing Adaptive Trainer</title>
+  <meta name="theme-color" content="#f4f5f2">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f766e'/%3E%3Cpath d='M15 16h18c5 0 9 4 9 9v23H24c-5 0-9-4-9-9V16z' fill='%23ffffff' opacity='.95'/%3E%3Cpath d='M24 25h17M24 33h13' stroke='%230f766e' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M36 44l6 6 12-16' fill='none' stroke='%23f4b942' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <title>SAT Reading & Writing Practice</title>
   <style>
     :root {
-      --bg: #f6f7fb;
-      --surface: #ffffff;
-      --surface-strong: #eef5f4;
-      --ink: #1d2730;
-      --muted: #66717d;
-      --line: #dce2e8;
-      --teal: #0f766e;
-      --teal-dark: #0b5f59;
-      --coral: #dc5f55;
-      --amber: #c88418;
-      --blue: #2f64d6;
-      --green: #27824a;
-      --red: #c83e38;
-      --shadow: 0 18px 50px rgba(32, 45, 58, 0.12);
+      --desk: #f4f5f2;
+      --paper: #ffffff;
+      --paper-soft: #fbfbf8;
+      --paper-inset: #f1f3ef;
+      --paper-mark: #e7ebe5;
+      --graphite: #171b18;
+      --graphite-2: #4b534d;
+      --graphite-3: #777f79;
+      --graphite-faint: #a0a8a2;
+      --line: rgba(25, 36, 30, 0.14);
+      --line-soft: rgba(25, 36, 30, 0.08);
+      --line-strong: rgba(25, 36, 30, 0.2);
+      --scantron: #2f6f63;
+      --scantron-dark: #265a51;
+      --scantron-soft: #edf4f1;
+      --proof-blue: #3f5f86;
+      --proof-blue-soft: #f0f4f8;
+      --pencil: #9d7a3c;
+      --pencil-soft: #faf5e8;
+      --margin-red: #a95d58;
+      --margin-red-soft: #faf0ef;
+      --correct-green: #376f49;
+      --correct-green-soft: #eef6f0;
+      --bg: var(--desk);
+      --surface: var(--paper);
+      --surface-strong: var(--paper-soft);
+      --ink: var(--graphite);
+      --muted: var(--graphite-3);
+      --teal: var(--scantron);
+      --teal-dark: var(--scantron-dark);
+      --coral: var(--margin-red);
+      --amber: var(--pencil);
+      --blue: var(--proof-blue);
+      --green: var(--correct-green);
+      --red: var(--margin-red);
+      --shadow: 0 1px 2px rgba(20, 31, 29, 0.045), 0 8px 20px rgba(29, 49, 45, 0.055);
+      --shadow-tight: 0 1px 2px rgba(20, 31, 29, 0.05), 0 4px 12px rgba(29, 49, 45, 0.045);
+      --focus-ring: 0 0 0 3px rgba(47, 111, 99, 0.16);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--ink);
     }
@@ -30,12 +56,20 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        linear-gradient(180deg, rgba(15, 118, 110, 0.09), rgba(246, 247, 251, 0) 280px),
-        var(--bg);
+      background: var(--bg);
+      color: var(--graphite);
     }
     button, input { font: inherit; }
     button { cursor: pointer; }
+    button, input { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, input:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-color: rgba(15, 118, 110, 0.42);
+    }
+    ::selection {
+      background: rgba(15, 118, 110, 0.18);
+    }
     [hidden] { display: none !important; }
 
     .confetti-canvas {
@@ -48,97 +82,113 @@
     }
 
     .shell {
-      width: min(1300px, calc(100vw - 32px));
+      width: min(1180px, calc(100vw - 32px));
       margin: 0 auto;
-      padding: 26px 0 42px;
+      padding: 24px 0 44px;
     }
 
     .topbar {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 24px;
-      align-items: end;
-      margin-bottom: 24px;
+      align-items: center;
+      margin-bottom: 16px;
     }
     .eyebrow {
-      margin: 0 0 8px;
-      color: var(--teal-dark);
-      font-size: 0.78rem;
-      font-weight: 760;
+      display: block;
+      min-height: 0;
+      margin: 0 0 4px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--graphite-3);
+      font-size: 0.72rem;
+      font-weight: 740;
       letter-spacing: 0;
       text-transform: uppercase;
     }
     h1, h2, h3, p { margin-top: 0; }
     h1 {
       margin-bottom: 0;
-      font-size: clamp(1.8rem, 4vw, 3.2rem);
-      line-height: 1.02;
+      color: var(--graphite);
+      font-size: clamp(1.55rem, 2vw, 2rem);
+      font-weight: 760;
+      line-height: 1.08;
       letter-spacing: 0;
     }
     h2 {
-      margin-bottom: 14px;
-      font-size: 1.12rem;
+      margin-bottom: 16px;
+      color: var(--graphite);
+      font-size: 1.02rem;
+      font-weight: 800;
       letter-spacing: 0;
     }
     h3 {
-      margin-bottom: 10px;
-      font-size: 1rem;
+      margin-bottom: 8px;
+      color: var(--graphite-2);
+      font-size: 0.9rem;
+      font-weight: 800;
       letter-spacing: 0;
     }
     .top-stats {
       display: grid;
-      grid-template-columns: repeat(3, minmax(96px, auto));
-      gap: 10px;
+      grid-template-columns: repeat(3, minmax(96px, 1fr));
+      gap: 6px;
     }
     .stat {
-      min-height: 72px;
-      padding: 13px 15px;
-      border: 1px solid var(--line);
+      min-height: 56px;
+      padding: 10px 12px;
+      border: 1px solid var(--line-soft);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.84);
-      box-shadow: 0 8px 24px rgba(25, 34, 44, 0.06);
+      background: rgba(255, 255, 255, 0.64);
+      box-shadow: none;
+      backdrop-filter: none;
     }
     .stat-label {
       display: block;
-      margin-bottom: 5px;
-      color: var(--muted);
-      font-size: 0.75rem;
-      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--graphite-3);
+      font-size: 0.66rem;
+      font-weight: 720;
       letter-spacing: 0;
       text-transform: uppercase;
     }
     .stat-value {
-      font-size: 1.35rem;
-      font-weight: 820;
+      color: var(--graphite);
+      font-variant-numeric: tabular-nums;
+      font-size: 1.12rem;
+      font-weight: 760;
       line-height: 1;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: minmax(300px, 0.8fr) minmax(0, 1.2fr);
-      gap: 18px;
+      grid-template-columns: minmax(320px, 0.72fr) minmax(0, 1.28fr);
+      gap: 16px;
       align-items: start;
     }
     .panel {
-      border: 1px solid var(--line);
+      border: 1px solid var(--line-soft);
       border-radius: 8px;
       background: var(--surface);
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-tight);
     }
-    .panel-pad { padding: 22px; }
+    .panel-pad { padding: 24px; }
 
     .setup-panel {
       display: grid;
-      gap: 18px;
+      gap: 16px;
     }
     .field {
       display: grid;
       gap: 8px;
     }
     .field label {
-      color: var(--muted);
-      font-size: 0.86rem;
-      font-weight: 750;
+      color: var(--graphite-2);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
     }
     .count-row {
       display: grid;
@@ -149,45 +199,59 @@
     input[type="number"] {
       width: 100%;
       min-height: 48px;
-      padding: 10px 12px;
+      padding: 12px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: #fbfcfe;
+      background: var(--paper-inset);
       color: var(--ink);
       font-size: 1rem;
-      font-weight: 700;
+      font-weight: 760;
+      transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
     }
     .btn {
-      min-height: 44px;
+      min-height: 40px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: #fff;
+      background: rgba(255, 255, 251, 0.9);
       color: var(--ink);
-      padding: 10px 14px;
-      font-weight: 760;
-      transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease;
+      padding: 10px 16px;
+      font-size: 0.92rem;
+      font-weight: 780;
+      transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease, color 120ms ease;
     }
     .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(28, 38, 48, 0.11);
+      transform: none;
+      border-color: var(--line-strong);
+      background: #fff;
+      box-shadow: none;
+    }
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
     }
     .btn.primary {
       border-color: var(--teal);
       background: var(--teal);
       color: #fff;
+      box-shadow: none;
     }
-    .btn.primary:hover { background: var(--teal-dark); }
+    .btn.primary:hover {
+      border-color: var(--teal-dark);
+      background: var(--teal-dark);
+      box-shadow: none;
+    }
     .btn.ghost {
       background: transparent;
       box-shadow: none;
     }
     .btn.danger {
       color: var(--red);
-      border-color: rgba(200, 62, 56, 0.35);
+      border-color: rgba(200, 73, 64, 0.24);
+      background: rgba(255, 240, 238, 0.72);
     }
     .btn.small {
       min-height: 36px;
-      padding: 7px 10px;
+      padding: 8px 12px;
       font-size: 0.86rem;
     }
     .btn:disabled {
@@ -199,17 +263,46 @@
     .button-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
+    }
+    .history-tools {
+      margin-top: 2px;
+      border-top: 1px solid var(--line-soft);
+      padding-top: 12px;
+    }
+    .history-tools summary {
+      width: max-content;
+      max-width: 100%;
+      color: var(--graphite-3);
+      font-size: 0.84rem;
+      font-weight: 760;
+      list-style: none;
+      cursor: pointer;
+    }
+    .history-tools summary::-webkit-details-marker {
+      display: none;
+    }
+    .history-tools summary::before {
+      content: "+";
+      display: inline-block;
+      width: 1.2em;
+      color: var(--graphite-faint);
+    }
+    .history-tools details[open] summary::before {
+      content: "-";
+    }
+    .history-tools .button-row {
+      margin-top: 10px;
     }
     .toggle-row {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      min-height: 42px;
-      color: var(--ink);
-      font-size: 0.92rem;
-      font-weight: 760;
+      gap: 8px;
+      min-height: 40px;
+      color: var(--graphite-2);
+      font-size: 0.9rem;
+      font-weight: 780;
       cursor: pointer;
       user-select: none;
     }
@@ -220,13 +313,13 @@
     }
     .toggle-track {
       position: relative;
-      width: 46px;
-      height: 26px;
+      width: 48px;
+      height: 28px;
       flex: 0 0 auto;
       pointer-events: none;
-      border: 1px solid #c7d2dc;
+      border: 1px solid var(--line);
       border-radius: 999px;
-      background: #e9edf2;
+      background: var(--paper-mark);
       transition: background 160ms ease, border-color 160ms ease;
     }
     .toggle-track::after {
@@ -238,7 +331,7 @@
       height: 20px;
       border-radius: 50%;
       background: #fff;
-      box-shadow: 0 2px 7px rgba(28, 38, 48, 0.22);
+      box-shadow: 0 2px 8px rgba(28, 38, 48, 0.22);
       transition: transform 160ms ease;
     }
     .toggle-row input:checked + .toggle-track {
@@ -246,7 +339,7 @@
       background: var(--teal);
     }
     .toggle-row input:checked + .toggle-track::after {
-      transform: translateX(20px);
+      transform: translateX(22px);
     }
 
     .chips {
@@ -257,65 +350,70 @@
     .chip {
       display: inline-flex;
       align-items: center;
-      min-height: 30px;
+      min-height: 28px;
       max-width: 100%;
-      gap: 7px;
-      border: 1px solid var(--line);
+      gap: 8px;
+      border: 1px solid var(--line-soft);
       border-radius: 999px;
-      padding: 6px 10px;
-      background: #fbfcfe;
-      color: var(--muted);
-      font-size: 0.82rem;
-      font-weight: 700;
+      padding: 4px 8px;
+      background: rgba(248, 250, 246, 0.86);
+      color: var(--graphite-3);
+      font-size: 0.78rem;
+      font-weight: 760;
       line-height: 1.1;
     }
     .chip strong { color: var(--ink); }
     .chip.teal {
-      border-color: rgba(15, 118, 110, 0.28);
-      background: #eef8f6;
+      border-color: rgba(15, 118, 110, 0.2);
+      background: var(--scantron-soft);
       color: var(--teal-dark);
     }
     .chip.coral {
-      border-color: rgba(220, 95, 85, 0.28);
-      background: #fff1ef;
+      border-color: rgba(200, 73, 64, 0.22);
+      background: var(--margin-red-soft);
       color: #a33d36;
     }
     .chip.amber {
-      border-color: rgba(200, 132, 24, 0.28);
-      background: #fff8e8;
+      border-color: rgba(183, 121, 31, 0.22);
+      background: var(--pencil-soft);
       color: #8a5a0b;
     }
 
     .weak-list {
       display: grid;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 8px;
+      margin-top: 16px;
     }
     .weak-row {
       display: grid;
-      grid-template-columns: minmax(120px, 1fr) minmax(120px, 0.8fr) 58px;
-      gap: 10px;
+      grid-template-columns: minmax(120px, 1fr) minmax(120px, 0.8fr) 56px;
+      gap: 12px;
       align-items: center;
-      color: var(--muted);
-      font-size: 0.9rem;
+      min-height: 32px;
+      color: var(--graphite-3);
+      font-size: 0.86rem;
+    }
+    .weak-row strong {
+      color: var(--graphite-2);
+      font-weight: 760;
     }
     .bar {
-      height: 10px;
+      height: 8px;
       overflow: hidden;
       border-radius: 999px;
-      background: #e9edf2;
+      background: var(--paper-mark);
     }
     .bar span {
       display: block;
       height: 100%;
       border-radius: inherit;
-      background: linear-gradient(90deg, var(--coral), var(--amber));
+      background: linear-gradient(90deg, var(--margin-red), var(--pencil));
     }
 
     .practice-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 268px;
-      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) 292px;
+      gap: 16px;
       align-items: start;
     }
     .question-panel {
@@ -324,19 +422,20 @@
     .question-head {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
+      gap: 16px;
       align-items: flex-start;
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--line);
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--line-soft);
       background: var(--surface-strong);
     }
     .progress-text {
-      color: var(--muted);
-      font-size: 0.88rem;
-      font-weight: 750;
+      color: var(--graphite-2);
+      font-size: 0.84rem;
+      font-weight: 820;
     }
     .question-body {
-      padding: 26px;
+      padding: 24px;
+      background: var(--paper);
     }
     .question-text {
       max-width: 74ch;
@@ -348,21 +447,22 @@
     }
     .choices {
       display: grid;
-      gap: 10px;
+      gap: 12px;
     }
     .choice {
       display: grid;
-      grid-template-columns: 38px minmax(0, 1fr);
+      grid-template-columns: 40px minmax(0, 1fr);
       gap: 12px;
       width: 100%;
-      min-height: 58px;
+      min-height: 64px;
       padding: 12px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--line-soft);
       border-radius: 8px;
-      background: #fff;
+      background: var(--paper-soft);
       color: var(--ink);
       text-align: left;
       line-height: 1.45;
+      transition: border-color 120ms ease, background 120ms ease, box-shadow 120ms ease, transform 120ms ease;
     }
     .choice-crop-stack {
       display: grid;
@@ -373,7 +473,7 @@
     }
     .choice-crop-stack .pdf-page-crop {
       border: 0;
-      border-radius: 4px;
+      border-radius: 6px;
       box-shadow: none;
       background: transparent;
     }
@@ -382,71 +482,114 @@
       font-size: 0.9rem;
       font-weight: 700;
     }
-    .choice:hover {
-      border-color: rgba(15, 118, 110, 0.45);
-      box-shadow: 0 8px 18px rgba(28, 38, 48, 0.08);
+    .choice:not(:disabled):hover {
+      transform: none;
+      border-color: rgba(15, 118, 110, 0.34);
+      background: #fff;
+      box-shadow: none;
+    }
+    .choice.selected {
+      border-color: rgba(49, 95, 186, 0.55);
+      background: var(--proof-blue-soft);
+      box-shadow: inset 0 0 0 1px rgba(49, 95, 186, 0.16);
+    }
+    .choice.selected .letter {
+      background: var(--blue);
+      color: #fff;
+    }
+    .choice:disabled {
+      cursor: default;
     }
     .letter {
       display: inline-grid;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       place-items: center;
       border-radius: 8px;
-      background: #eef1f4;
-      color: var(--ink);
+      background: var(--paper-mark);
+      color: var(--graphite-2);
+      font-size: 0.95rem;
       font-weight: 850;
+      transition: background 120ms ease, color 120ms ease;
     }
     .choice.correct {
-      border-color: rgba(39, 130, 74, 0.62);
-      background: #effaf3;
+      border-color: rgba(40, 121, 70, 0.36);
+      background: var(--correct-green-soft);
     }
     .choice.correct .letter {
       background: var(--green);
       color: #fff;
     }
     .choice.wrong {
-      border-color: rgba(200, 62, 56, 0.58);
-      background: #fff1ef;
+      border-color: rgba(200, 73, 64, 0.36);
+      background: var(--margin-red-soft);
     }
     .choice.wrong .letter {
       background: var(--red);
       color: #fff;
     }
 
+    .choice-tools {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: var(--paper-inset);
+    }
+    .selection-status {
+      color: var(--graphite-3);
+      font-size: 0.9rem;
+      font-weight: 760;
+      line-height: 1.4;
+    }
+    .selection-status.good {
+      color: var(--teal-dark);
+    }
+    .selection-status.bad {
+      color: #a33d36;
+    }
+
     .answer-panel {
       display: grid;
       gap: 12px;
       margin-top: 16px;
-      border-top: 1px solid var(--line);
-      padding-top: 16px;
+      border-top: 1px solid var(--line-soft);
+      padding: 16px;
+      border-radius: 8px;
+      background: var(--paper-soft);
     }
     .rationale {
-      color: #384652;
+      color: var(--graphite-2);
       line-height: 1.55;
       white-space: pre-wrap;
     }
     .side-panel {
       display: grid;
-      gap: 14px;
-      padding: 18px;
+      gap: 16px;
+      padding: 16px;
       position: sticky;
       top: 16px;
+      box-shadow: var(--shadow-tight);
     }
     .meter {
       display: grid;
       gap: 8px;
     }
     .meter-line {
-      height: 12px;
+      height: 8px;
       border-radius: 999px;
       overflow: hidden;
-      background: #e8edf2;
+      background: var(--paper-mark);
     }
     .meter-line span {
       display: block;
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--teal), var(--blue));
+      background: linear-gradient(90deg, var(--scantron), var(--proof-blue));
       transition: width 180ms ease;
     }
     .mini-grid {
@@ -455,21 +598,29 @@
       gap: 8px;
     }
     .mini-stat {
-      border: 1px solid var(--line);
+      border: 1px solid var(--line-soft);
       border-radius: 8px;
-      padding: 10px;
-      background: #fbfcfe;
+      padding: 12px;
+      background: var(--paper-soft);
+      color: var(--graphite-3);
+      font-size: 0.78rem;
+      font-weight: 760;
+      text-transform: uppercase;
     }
     .mini-stat strong {
       display: block;
-      margin-top: 5px;
+      margin-top: 8px;
+      color: var(--graphite);
+      font-variant-numeric: tabular-nums;
       font-size: 1.18rem;
+      font-weight: 850;
+      text-transform: none;
     }
 
     .summary-grid {
       display: grid;
-      grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
-      gap: 18px;
+      grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+      gap: 16px;
       align-items: start;
     }
     .mistake-list {
@@ -477,57 +628,47 @@
       gap: 12px;
     }
     .mistake {
-      border: 1px solid var(--line);
+      border: 1px solid var(--line-soft);
       border-radius: 8px;
-      background: #fff;
+      background: var(--paper);
       padding: 16px;
+      box-shadow: var(--shadow-tight);
     }
     .mistake .question-snippet {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       color: #2a3640;
       line-height: 1.5;
     }
     .pdf-render-stack {
       display: grid;
       gap: 12px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .pdf-page-crop {
       display: block;
       width: 100%;
       height: auto;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(26, 45, 41, 0.16);
       border-radius: 8px;
-      background: #fff;
-      box-shadow: 0 8px 22px rgba(28, 38, 48, 0.07);
+      background: var(--paper);
+      box-shadow: 0 1px 2px rgba(20, 31, 29, 0.05);
     }
     .question-pdf .pdf-page-crop {
-      border-color: #c7d4dd;
-      box-shadow: 0 12px 30px rgba(28, 38, 48, 0.1);
+      border-color: rgba(26, 45, 41, 0.18);
+      box-shadow: 0 1px 2px rgba(20, 31, 29, 0.06), 0 8px 18px rgba(29, 49, 45, 0.055);
     }
     .question-pdf {
-      margin-bottom: 22px;
+      margin-bottom: 24px;
     }
     .muted {
       color: var(--muted);
     }
-    .vault {
-      display: grid;
-      gap: 10px;
-      border-top: 1px solid var(--line);
-      padding-top: 16px;
-    }
-    .storage-detail {
-      color: var(--muted);
-      font-size: 0.84rem;
-      line-height: 1.45;
-    }
     .empty {
-      border: 1px dashed #c8d2dc;
+      border: 1px dashed rgba(26, 45, 41, 0.18);
       border-radius: 8px;
       padding: 18px;
-      color: var(--muted);
-      background: rgba(255,255,255,0.7);
+      color: var(--graphite-3);
+      background: rgba(255, 255, 251, 0.64);
     }
 
     @media (max-width: 900px) {
@@ -543,21 +684,41 @@
     }
     @media (max-width: 620px) {
       .shell {
-        width: min(100vw - 20px, 1180px);
-        padding-top: 18px;
+        width: min(1180px, calc(100vw - 28px));
+        padding-top: 16px;
       }
-      .top-stats, .mini-grid, .weak-row, .count-row {
+      .top-stats, .mini-grid, .weak-row {
         grid-template-columns: 1fr;
+      }
+      .count-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .count-row input {
+        grid-column: 1 / -1;
+      }
+      .topbar {
+        gap: 16px;
+      }
+      h1 {
+        font-size: 1.72rem;
+      }
+      .panel-pad, .question-body {
+        padding: 16px;
       }
       .question-head {
         display: grid;
+        padding: 16px;
       }
       .choice {
-        grid-template-columns: 34px minmax(0, 1fr);
+        grid-template-columns: 36px minmax(0, 1fr);
+        padding: 12px;
+      }
+      .choice-tools {
+        grid-template-columns: 1fr;
       }
       .letter {
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
       }
     }
   </style>
@@ -567,8 +728,8 @@
   <div class="shell">
     <header class="topbar">
       <div>
-        <p class="eyebrow">SAT Reading and Writing</p>
-        <h1>Adaptive Question Bank Trainer</h1>
+        <p class="eyebrow">Practice</p>
+        <h1>SAT Reading &amp; Writing</h1>
       </div>
       <div class="top-stats" aria-label="Saved performance">
         <div class="stat">
@@ -604,22 +765,22 @@
             <span>Blind practice</span>
           </label>
           <button id="startBtn" class="btn primary">Start Practice</button>
-          <div class="button-row">
-            <button id="exportBtn" class="btn small">Export Data</button>
-            <button id="importBtn" class="btn small">Import Data</button>
-            <button id="resetBtn" class="btn small danger">Reset History</button>
+          <div class="history-tools">
+            <details>
+              <summary>History tools</summary>
+              <div class="button-row">
+                <button id="exportBtn" class="btn small">Export Backup</button>
+                <button id="importBtn" class="btn small">Import Backup</button>
+                <button id="resetBtn" class="btn small danger">Reset History</button>
+              </div>
+            </details>
             <input id="importFile" type="file" accept="application/json" hidden>
           </div>
-          <div class="chips" id="bankChips"></div>
-          <div class="vault">
-            <h3>Data Vault</h3>
-            <div class="chips" id="storageStatusChips"></div>
-            <div class="storage-detail" id="storageStatusDetail"></div>
-          </div>
+          <div class="chips" id="bankChips" hidden></div>
         </div>
 
         <div class="panel panel-pad">
-          <h2>Weakness Profile</h2>
+          <h2>Focus Areas</h2>
           <div class="chips" id="weaknessChips"></div>
           <div class="weak-list" id="weaknessList"></div>
         </div>
@@ -638,10 +799,14 @@
             <div class="question-body">
               <div class="pdf-render-stack question-pdf" id="questionRender"></div>
               <div class="choices" id="choices"></div>
+              <div class="choice-tools">
+                <div class="selection-status" id="selectionStatus">Select an answer to check.</div>
+                <button id="checkBtn" class="btn primary" disabled>Check Answer</button>
+              </div>
               <div id="answerPanel" class="answer-panel" hidden>
                 <div class="chips" id="answerChips"></div>
                 <div class="rationale" id="rationaleText"></div>
-                <div class="button-row">
+                <div class="button-row" id="answerActions">
                   <button id="nextBtn" class="btn primary">Next Question</button>
                   <button id="finishBtn" class="btn">Finish Set</button>
                 </div>
@@ -755,9 +920,12 @@
         targetMeta: document.getElementById("targetMeta"),
         questionRender: document.getElementById("questionRender"),
         choices: document.getElementById("choices"),
+        selectionStatus: document.getElementById("selectionStatus"),
+        checkBtn: document.getElementById("checkBtn"),
         answerPanel: document.getElementById("answerPanel"),
         answerChips: document.getElementById("answerChips"),
         rationaleText: document.getElementById("rationaleText"),
+        answerActions: document.getElementById("answerActions"),
         nextBtn: document.getElementById("nextBtn"),
         finishBtn: document.getElementById("finishBtn"),
         sessionMeter: document.getElementById("sessionMeter"),
@@ -779,7 +947,9 @@
 
       let pdfJsPromise = null;
       let pdfDocumentPromise = null;
+      let pdfRuntimeWarmupStarted = false;
       const renderedPageCache = new Map();
+      const renderedPagePromises = new Map();
       const questionLayoutCache = new Map();
       let audioContext = null;
       let confettiParticles = [];
@@ -814,6 +984,86 @@
           saveRevision: 0,
           storageVersion: 2,
           attempts: [],
+          activeSession: null,
+        };
+      }
+
+      function cleanLetter(value) {
+        const letter = String(value || "").trim().toUpperCase();
+        return /^[A-D]$/.test(letter) ? letter : null;
+      }
+
+      function normalizeAttempt(attempt) {
+        if (!attempt || !byId.has(attempt.id)) return null;
+        const question = byId.get(attempt.id);
+        const selected = cleanLetter(attempt.selected);
+        if (!selected) return null;
+        const ok = typeof attempt.ok === "boolean" ? attempt.ok : selected === question.correct;
+        return {
+          id: question.id,
+          selected,
+          correct: question.correct,
+          ok,
+          domain: question.domain,
+          skill: question.skill,
+          difficulty: question.difficulty,
+          ts: Number(attempt.ts) || Date.now(),
+        };
+      }
+
+      function serializeAttempt(attempt) {
+        const normalized = normalizeAttempt(attempt);
+        return normalized ? { ...normalized } : null;
+      }
+
+      function uniqueLetters(values, correctLetter = null) {
+        const seen = new Set();
+        (Array.isArray(values) ? values : []).forEach((value) => {
+          const letter = cleanLetter(value);
+          if (letter && letter !== correctLetter) seen.add(letter);
+        });
+        return [...seen];
+      }
+
+      function normalizeActiveSession(raw) {
+        if (!raw || typeof raw !== "object") return null;
+        const currentId = typeof raw.currentId === "string" && byId.has(raw.currentId) ? raw.currentId : null;
+        if (!currentId) return null;
+        const currentQuestion = byId.get(currentId);
+        const limit = Math.min(100, Math.max(1, Number.parseInt(raw.limit || "20", 10) || 20));
+        const answered = (Array.isArray(raw.answered) ? raw.answered : [])
+          .map(normalizeAttempt)
+          .filter(Boolean)
+          .slice(0, limit);
+        const scoredMistakes = answered.filter((attempt) => !attempt.ok);
+        const mistakes = (Array.isArray(raw.mistakes) ? raw.mistakes : [])
+          .map(normalizeAttempt)
+          .filter((attempt) => attempt && !attempt.ok);
+        const selectedLetter = cleanLetter(raw.selectedLetter);
+        const recordedAttempt = normalizeAttempt(raw.recordedAttempt)
+          || answered.find((attempt) => attempt.id === currentId)
+          || null;
+        const usedIds = new Set(
+          (Array.isArray(raw.usedIds) ? raw.usedIds : [])
+            .filter((id) => typeof id === "string" && byId.has(id))
+        );
+        answered.forEach((attempt) => usedIds.add(attempt.id));
+        usedIds.add(currentId);
+        const wrongLetters = uniqueLetters(raw.wrongLetters, currentQuestion.correct);
+        return {
+          status: "practice",
+          limit,
+          answered,
+          mistakes: mistakes.length ? mistakes : scoredMistakes,
+          usedIds: [...usedIds],
+          currentId,
+          targetSkill: typeof raw.targetSkill === "string" && bySkill.has(raw.targetSkill) ? raw.targetSkill : null,
+          targeted: Math.min(limit, Math.max(0, Number.parseInt(raw.targeted || "0", 10) || 0)),
+          selectedLetter: selectedLetter && !wrongLetters.includes(selectedLetter) ? selectedLetter : null,
+          wrongLetters,
+          recordedAttempt,
+          completed: Boolean(raw.completed && recordedAttempt),
+          currentNumber: Math.min(limit, Math.max(1, Number.parseInt(raw.currentNumber || answered.length + 1, 10) || 1)),
         };
       }
 
@@ -828,7 +1078,7 @@
           }
         }
         if (!parsed || !Array.isArray(parsed.attempts)) return null;
-        const attempts = parsed.attempts.filter((attempt) => attempt && byId.has(attempt.id));
+        const attempts = parsed.attempts.map(normalizeAttempt).filter(Boolean);
         const newestAttempt = attempts.reduce((newest, attempt) => Math.max(newest, Number(attempt.ts) || 0), 0);
         return {
           createdAt: parsed.createdAt || new Date(newestAttempt || Date.now()).toISOString(),
@@ -836,6 +1086,7 @@
           saveRevision: Number(parsed.saveRevision || attempts.length || 0),
           storageVersion: 2,
           attempts,
+          activeSession: normalizeActiveSession(parsed.activeSession),
         };
       }
 
@@ -929,6 +1180,76 @@
         savePrefs();
         syncPracticeHintControls();
         applyPracticeHintVisibility();
+      }
+
+      function serializeSession(active = session) {
+        if (!active || !active.current) return null;
+        const answered = (active.answered || []).map(serializeAttempt).filter(Boolean);
+        const mistakes = (active.mistakes || []).map(serializeAttempt).filter((attempt) => attempt && !attempt.ok);
+        const recordedAttempt = serializeAttempt(active.recordedAttempt);
+        return normalizeActiveSession({
+          status: "practice",
+          limit: active.limit,
+          answered,
+          mistakes,
+          usedIds: active.usedIds instanceof Set ? [...active.usedIds] : active.usedIds,
+          currentId: active.current.id,
+          targetSkill: active.targetSkill,
+          targeted: active.targeted,
+          selectedLetter: active.selectedLetter,
+          wrongLetters: active.wrongLetters,
+          recordedAttempt,
+          completed: active.completed,
+          currentNumber: active.currentNumber,
+        });
+      }
+
+      function hydrateSession(raw) {
+        const normalized = normalizeActiveSession(raw);
+        if (!normalized) return null;
+        return {
+          limit: normalized.limit,
+          answered: normalized.answered,
+          mistakes: normalized.mistakes,
+          usedIds: new Set(normalized.usedIds),
+          current: byId.get(normalized.currentId),
+          targetSkill: normalized.targetSkill,
+          targeted: normalized.targeted,
+          selectedLetter: normalized.selectedLetter,
+          wrongLetters: normalized.wrongLetters,
+          recordedAttempt: normalized.recordedAttempt,
+          completed: normalized.completed,
+          currentNumber: normalized.currentNumber,
+        };
+      }
+
+      function saveActiveSession(options = {}) {
+        const serialized = serializeSession(session);
+        if (!serialized) return;
+        state.activeSession = serialized;
+        saveState(options);
+      }
+
+      function clearActiveSession(options = {}) {
+        state.activeSession = null;
+        saveState(options);
+      }
+
+      function syncActiveSessionBeforeSave() {
+        if (session && !elements.summaryView.hidden) {
+          state.activeSession = serializeSession(session);
+        }
+      }
+
+      function resumeActiveSession() {
+        const restored = hydrateSession(state.activeSession);
+        if (!restored) return false;
+        session = restored;
+        showView("practice");
+        renderQuestion(session.current);
+        renderSavedStats();
+        renderSessionStats();
+        return true;
       }
 
       function saveState(options = {}) {
@@ -1291,21 +1612,23 @@
         elements.overallAccuracy.textContent = percent(correct, total);
         elements.rollingAccuracy.textContent = recentQuestionAccuracy();
 
-        elements.bankChips.innerHTML = "";
-        const domainCount = new Set(QUESTIONS.map((question) => question.domain)).size;
-        const skillCount = new Set(QUESTIONS.map((question) => question.skill)).size;
-        elements.bankChips.append(
-          chip(`${QUESTIONS.length.toLocaleString()} questions`, "teal"),
-          chip(`${domainCount} domains`),
-          chip(`${skillCount} skills`),
-          chip("PDF-rendered", "amber")
-        );
+        if (elements.bankChips) {
+          elements.bankChips.innerHTML = "";
+          const domainCount = new Set(QUESTIONS.map((question) => question.domain)).size;
+          const skillCount = new Set(QUESTIONS.map((question) => question.skill)).size;
+          elements.bankChips.append(
+            chip(`${QUESTIONS.length.toLocaleString()} questions`, "teal"),
+            chip(`${domainCount} domains`),
+            chip(`${skillCount} skills`),
+            chip("PDF-rendered", "amber")
+          );
+        }
 
         const weakness = weaknessRows();
         elements.weaknessChips.innerHTML = "";
-        elements.weaknessChips.append(chip(`Target window: last ${WEAKNESS_WINDOW} misses`, "amber"));
+        elements.weaknessChips.append(chip(`Based on last ${WEAKNESS_WINDOW} misses`, "amber"));
         if (!weakness.length) {
-          elements.weaknessChips.append(chip("No saved misses yet", "teal"));
+          elements.weaknessChips.append(chip("No misses yet", "teal"));
         } else {
           weakness.slice(0, 4).forEach((row) => elements.weaknessChips.append(chip(`${row.skill}: ${row.count}`, "coral")));
         }
@@ -1319,7 +1642,7 @@
         if (!rows.length) {
           const empty = document.createElement("div");
           empty.className = "empty";
-          empty.textContent = "History will appear here after practice.";
+          empty.textContent = "Focus areas will appear here after practice.";
           elements.weaknessList.append(empty);
         } else {
           rows.slice(0, 8).forEach((row) => {
@@ -1378,12 +1701,18 @@
           current: null,
           targetSkill: null,
           targeted: 0,
+          selectedLetter: null,
+          wrongLetters: [],
+          recordedAttempt: null,
+          completed: false,
+          currentNumber: 1,
         };
         showView("practice");
         nextQuestion();
       }
 
       function nextQuestion() {
+        if (session && session.current && !session.completed) return;
         if (!session || session.answered.length >= session.limit) {
           renderSummary();
           return;
@@ -1391,14 +1720,20 @@
         const picked = chooseQuestion();
         session.current = picked.question;
         session.targetSkill = picked.targetSkill;
-        elements.answerPanel.hidden = true;
+        session.selectedLetter = null;
+        session.wrongLetters = [];
+        session.recordedAttempt = null;
+        session.completed = false;
+        session.currentNumber = session.answered.length + 1;
         elements.rationaleText.innerHTML = "";
+        delete elements.rationaleText.dataset.questionId;
         renderQuestion(picked.question);
         renderSessionStats();
+        saveActiveSession();
       }
 
       function renderQuestion(question) {
-        elements.progressText.textContent = `Question ${session.answered.length + 1} of ${session.limit}`;
+        elements.progressText.textContent = `Question ${session.currentNumber} of ${session.limit}`;
         elements.questionMeta.innerHTML = "";
         elements.questionMeta.append(chip(question.domain, "teal"), chip(question.skill), chip(question.difficulty, "amber"));
         elements.targetMeta.innerHTML = "";
@@ -1407,13 +1742,14 @@
 
         renderQuestionPdf(question, elements.questionRender);
         renderChoiceButtons(question, null, true);
+        renderCurrentFeedback();
         getQuestionLayout(question)
           .then((layout) => {
-            if (!session || session.current.id !== question.id || !elements.answerPanel.hidden) return;
+            if (!session || session.current.id !== question.id) return;
             renderChoiceButtons(question, layout);
           })
           .catch(() => {
-            if (!session || session.current.id !== question.id || !elements.answerPanel.hidden) return;
+            if (!session || session.current.id !== question.id) return;
             renderChoiceButtons(question, null, false);
           });
       }
@@ -1423,9 +1759,10 @@
         ["A", "B", "C", "D"].forEach((letter) => {
           const button = document.createElement("button");
           button.className = "choice";
+          button.dataset.letter = letter;
           const fallback = loading ? `Rendering choice ${letter}...` : `Choice ${letter}`;
           button.innerHTML = `<span class="letter">${letter}</span><span class="choice-crop-stack" data-choice="${letter}"><span class="choice-loading">${fallback}</span></span>`;
-          button.addEventListener("click", (event) => answer(letter, event.currentTarget));
+          button.addEventListener("click", () => selectChoice(letter));
           elements.choices.append(button);
           const crops = layout && layout.choices ? layout.choices[letter] : null;
           if (crops && crops.length) {
@@ -1436,14 +1773,18 @@
             });
           }
         });
+        syncChoiceState();
       }
 
-      function answer(letter, sourceButton = null) {
-        const question = session.current;
-        const ok = letter === question.correct;
-        const attempt = {
+      function buttonForLetter(letter) {
+        return [...elements.choices.querySelectorAll(".choice")]
+          .find((button) => button.dataset.letter === letter) || null;
+      }
+
+      function buildAttempt(question, selected, ok) {
+        return {
           id: question.id,
-          selected: letter,
+          selected,
           correct: question.correct,
           ok,
           domain: question.domain,
@@ -1451,30 +1792,131 @@
           difficulty: question.difficulty,
           ts: Date.now(),
         };
-        state.attempts.push(attempt);
-        saveState();
-        session.answered.push(attempt);
-        if (!ok) session.mistakes.push({ attempt, question });
-        playAnswerFeedback(ok, sourceButton);
+      }
 
-        [...elements.choices.querySelectorAll(".choice")].forEach((button) => {
-          const option = button.querySelector(".letter").textContent;
-          button.disabled = true;
-          if (option === question.correct) button.classList.add("correct");
-          if (option === letter && !ok) button.classList.add("wrong");
-        });
+      function selectChoice(letter) {
+        if (!session || !session.current || session.completed || session.wrongLetters.includes(letter)) return;
+        session.selectedLetter = letter;
+        syncChoiceState();
+        renderCurrentFeedback();
+        saveActiveSession();
+      }
 
-        elements.answerChips.innerHTML = "";
-        elements.answerChips.append(
-          chip(ok ? "Correct" : "Missed", ok ? "teal" : "coral"),
-          chip(`Selected: ${letter}`),
-          chip(`Correct answer: ${question.correct}`)
-        );
-        elements.answerPanel.hidden = false;
-        elements.nextBtn.textContent = session.answered.length >= session.limit ? "View Summary" : "Next Question";
-        renderRationalePdf(question, elements.rationaleText);
+      function submitSelectedAnswer() {
+        if (!session || !session.current || session.completed || !session.selectedLetter) return;
+        const question = session.current;
+        const letter = session.selectedLetter;
+        const ok = letter === question.correct;
+        const sourceButton = buttonForLetter(letter);
+
+        if (!ok) {
+          if (!session.wrongLetters.includes(letter)) session.wrongLetters.push(letter);
+          if (!session.recordedAttempt) {
+            const attempt = buildAttempt(question, letter, false);
+            state.attempts.push(attempt);
+            session.answered.push(attempt);
+            session.mistakes.push(attempt);
+            session.recordedAttempt = attempt;
+          }
+          session.selectedLetter = null;
+          playAnswerFeedback(false, sourceButton);
+          syncChoiceState();
+          renderCurrentFeedback();
+          renderSavedStats();
+          renderSessionStats();
+          saveActiveSession();
+          return;
+        }
+
+        if (!session.recordedAttempt) {
+          const attempt = buildAttempt(question, letter, true);
+          state.attempts.push(attempt);
+          session.answered.push(attempt);
+          session.recordedAttempt = attempt;
+          session.completed = true;
+          playAnswerFeedback(true, sourceButton);
+        } else {
+          session.completed = true;
+        }
+
+        syncChoiceState();
+        renderCurrentFeedback();
         renderSavedStats();
         renderSessionStats();
+        saveActiveSession();
+      }
+
+      function syncChoiceState() {
+        if (!session || !session.current) return;
+        const question = session.current;
+        [...elements.choices.querySelectorAll(".choice")].forEach((button) => {
+          const letter = button.dataset.letter;
+          button.classList.remove("selected", "correct", "wrong");
+          button.disabled = false;
+          if (session.wrongLetters.includes(letter)) {
+            button.classList.add("wrong");
+            button.disabled = true;
+          }
+          if (session.completed && letter === question.correct) {
+            button.classList.add("correct");
+          }
+          if (!session.completed && session.selectedLetter === letter) {
+            button.classList.add("selected");
+          }
+          if (session.completed) button.disabled = true;
+        });
+        elements.checkBtn.disabled = Boolean(session.completed || !session.selectedLetter);
+        elements.checkBtn.textContent = session.completed ? "Checked" : "Check Answer";
+      }
+
+      function renderCurrentFeedback() {
+        if (!session || !session.current) return;
+        const question = session.current;
+        elements.selectionStatus.classList.remove("good", "bad");
+
+        if (session.completed) {
+          const recovered = session.recordedAttempt && !session.recordedAttempt.ok;
+          elements.selectionStatus.textContent = recovered
+            ? "Correct now. This question is saved as a miss for weakness practice."
+            : "Correct. Move on when you are ready.";
+          elements.selectionStatus.classList.add(recovered ? "bad" : "good");
+          elements.answerChips.innerHTML = "";
+          if (recovered) {
+            elements.answerChips.append(
+              chip("Scored as missed", "coral"),
+              chip(`First try: ${session.recordedAttempt.selected}`),
+              chip(`Correct: ${question.correct}`, "teal")
+            );
+          } else {
+            elements.answerChips.append(
+              chip("Correct", "teal"),
+              chip(`Selected: ${session.recordedAttempt.selected}`),
+              chip(`Correct: ${question.correct}`)
+            );
+          }
+          elements.answerPanel.hidden = false;
+          elements.nextBtn.textContent = session.answered.length >= session.limit ? "View Summary" : "Next Question";
+          if (elements.rationaleText.dataset.questionId !== question.id) {
+            elements.rationaleText.dataset.questionId = question.id;
+            renderRationalePdf(question, elements.rationaleText);
+          }
+          return;
+        }
+
+        elements.answerPanel.hidden = true;
+        elements.answerChips.innerHTML = "";
+        elements.rationaleText.innerHTML = "";
+        delete elements.rationaleText.dataset.questionId;
+        if (session.recordedAttempt && !session.recordedAttempt.ok) {
+          elements.selectionStatus.textContent = session.selectedLetter
+            ? `Selected ${session.selectedLetter}. Check it when you are ready.`
+            : "Not quite. Choose another answer and check again.";
+          elements.selectionStatus.classList.add("bad");
+        } else if (session.selectedLetter) {
+          elements.selectionStatus.textContent = `Selected ${session.selectedLetter}. Press Check Answer.`;
+        } else {
+          elements.selectionStatus.textContent = "Select an answer, then check it.";
+        }
       }
 
       function playAnswerFeedback(ok, sourceButton) {
@@ -1649,6 +2091,7 @@
       }
 
       function renderSummary() {
+        if (!session) return;
         const answered = session.answered.length;
         const correct = session.answered.filter((attempt) => attempt.ok).length;
         elements.summaryScore.textContent = `${correct} / ${answered} (${percent(correct, answered)})`;
@@ -1662,7 +2105,9 @@
           empty.textContent = "No mistakes in this set.";
           elements.mistakeList.append(empty);
         } else {
-          session.mistakes.forEach(({ attempt, question }, index) => {
+          session.mistakes.forEach((attempt, index) => {
+            const question = byId.get(attempt.id);
+            if (!question) return;
             const item = document.createElement("article");
             item.className = "mistake";
             item.innerHTML = `
@@ -1683,6 +2128,7 @@
           });
         }
         renderSavedStats();
+        clearActiveSession();
         showView("summary");
       }
 
@@ -1700,6 +2146,21 @@
           });
         }
         return pdfJsPromise;
+      }
+
+      function schedulePdfRuntimeWarmup() {
+        if (pdfRuntimeWarmupStarted) return;
+        pdfRuntimeWarmupStarted = true;
+        const warm = () => {
+          loadPdfJs().catch(() => {
+            pdfRuntimeWarmupStarted = false;
+          });
+        };
+        if ("requestIdleCallback" in window) {
+          window.requestIdleCallback(warm, { timeout: 2500 });
+        } else {
+          window.setTimeout(warm, 1200);
+        }
       }
 
       async function loadPdfDocument() {
@@ -1919,31 +2380,47 @@
         }
       }
 
-      async function createCropCanvas(pageNumber, topY, bottomY, options = {}) {
-        const pdf = await loadPdfDocument();
-        const page = await pdf.getPage(pageNumber);
-        const baseViewport = page.getViewport({ scale: 1 });
-        const pageHeight = baseViewport.height;
-        const cropTop = Math.max(0, (pageHeight - topY));
-        const cropBottom = Math.min(pageHeight, (pageHeight - bottomY));
-        if (cropBottom - cropTop < 4) return null;
-
-        const scale = Math.min(2.85, Math.max(2.1, (window.devicePixelRatio || 1.6) * 1.15));
-        const cacheKey = `${pageNumber}:${scale}`;
-        let fullCanvas = renderedPageCache.get(cacheKey);
-        if (!fullCanvas) {
+      async function getRenderedPdfPage(pageNumber, scale) {
+        const cacheKey = `${pageNumber}:${scale.toFixed(3)}`;
+        const cached = renderedPageCache.get(cacheKey);
+        if (cached) return cached;
+        const pending = renderedPagePromises.get(cacheKey);
+        if (pending) return pending;
+        const promise = (async () => {
+          const pdf = await loadPdfDocument();
+          const page = await pdf.getPage(pageNumber);
+          const baseViewport = page.getViewport({ scale: 1 });
           const viewport = page.getViewport({ scale });
-          fullCanvas = document.createElement("canvas");
+          const fullCanvas = document.createElement("canvas");
           fullCanvas.width = Math.ceil(viewport.width);
           fullCanvas.height = Math.ceil(viewport.height);
           const fullContext = fullCanvas.getContext("2d");
           await page.render({ canvasContext: fullContext, viewport }).promise;
-          renderedPageCache.set(cacheKey, fullCanvas);
+          const rendered = { canvas: fullCanvas, baseViewport };
+          renderedPageCache.set(cacheKey, rendered);
           while (renderedPageCache.size > PAGE_CACHE_LIMIT) {
             const firstKey = renderedPageCache.keys().next().value;
             renderedPageCache.delete(firstKey);
           }
+          return rendered;
+        })();
+        renderedPagePromises.set(cacheKey, promise);
+        try {
+          return await promise;
+        } finally {
+          renderedPagePromises.delete(cacheKey);
         }
+      }
+
+      async function createCropCanvas(pageNumber, topY, bottomY, options = {}) {
+        const scale = Math.min(2.85, Math.max(2.1, (window.devicePixelRatio || 1.6) * 1.15));
+        const renderedPage = await getRenderedPdfPage(pageNumber, scale);
+        const fullCanvas = renderedPage.canvas;
+        const baseViewport = renderedPage.baseViewport;
+        const pageHeight = baseViewport.height;
+        const cropTop = Math.max(0, (pageHeight - topY));
+        const cropBottom = Math.min(pageHeight, (pageHeight - bottomY));
+        if (cropBottom - cropTop < 4) return null;
 
         const horizontalInset = Math.min(options.horizontalInset ?? PDF_HORIZONTAL_INSET, baseViewport.width * 0.08);
         const scaledLeft = Math.max(0, Math.floor(horizontalInset * scale));
@@ -1994,6 +2471,8 @@
             state = imported;
             saveState({ stamp: false });
             renderSavedStats();
+            session = null;
+            if (!resumeActiveSession()) showView("setup");
           } catch (error) {
             alert("That data file could not be imported.");
           }
@@ -2004,6 +2483,7 @@
       function resetHistory() {
         if (!confirm("Reset all saved practice history?")) return;
         const nextRevision = Number(state.saveRevision || 0) + 1;
+        session = null;
         state = createEmptyState();
         state.saveRevision = nextRevision;
         state.updatedAt = Date.now();
@@ -2043,9 +2523,13 @@
       }
 
       elements.startBtn.addEventListener("click", startPractice);
+      elements.checkBtn.addEventListener("click", submitSelectedAnswer);
       elements.nextBtn.addEventListener("click", nextQuestion);
       elements.finishBtn.addEventListener("click", renderSummary);
-      elements.againBtn.addEventListener("click", () => showView("setup"));
+      elements.againBtn.addEventListener("click", () => {
+        session = null;
+        showView("setup");
+      });
       elements.exportBtn.addEventListener("click", exportData);
       elements.importBtn.addEventListener("click", () => elements.importFile.click());
       elements.importFile.addEventListener("change", (event) => importData(event.target.files[0]));
@@ -2053,9 +2537,15 @@
       [elements.hidePracticeHints, elements.hidePracticeHintsLive].forEach((input) => {
         if (input) input.addEventListener("change", (event) => setPracticeHintsHidden(event.currentTarget.checked));
       });
-      window.addEventListener("pagehide", () => saveState({ stamp: false }));
+      window.addEventListener("pagehide", () => {
+        syncActiveSessionBeforeSave();
+        saveState({ stamp: false });
+      });
       document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "hidden") saveState({ stamp: false });
+        if (document.visibilityState === "hidden") {
+          syncActiveSessionBeforeSave();
+          saveState({ stamp: false });
+        }
       });
       document.querySelectorAll("[data-count]").forEach((button) => {
         button.addEventListener("click", () => {
@@ -2066,7 +2556,18 @@
       syncPracticeHintControls();
       applyPracticeHintVisibility();
       renderSavedStats();
-      initPersistence();
+      schedulePdfRuntimeWarmup();
+      initPersistence()
+        .then(() => {
+          if (!resumeActiveSession()) {
+            showView("setup");
+          }
+        })
+        .catch(() => {
+          if (!resumeActiveSession()) {
+            showView("setup");
+          }
+        });
     })();
   </script>
 </body>
