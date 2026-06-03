@@ -1940,6 +1940,14 @@
         prepareUpcomingQuestion();
       }
 
+      function primaryAnswerAction() {
+        if (session && session.completed) {
+          nextQuestion();
+          return;
+        }
+        submitSelectedAnswer();
+      }
+
       function syncChoiceState() {
         if (!session || !session.current) return;
         const question = session.current;
@@ -1959,8 +1967,10 @@
           }
           if (session.completed) button.disabled = true;
         });
-        elements.checkBtn.disabled = Boolean(session.completed || !session.selectedLetter);
-        elements.checkBtn.textContent = session.completed ? "Checked" : "Check Answer";
+        elements.checkBtn.disabled = Boolean(!session.completed && !session.selectedLetter);
+        elements.checkBtn.textContent = session.completed
+          ? (session.answered.length >= session.limit ? "View Summary" : "Next Question")
+          : "Check Answer";
       }
 
       function renderCurrentFeedback() {
@@ -2719,7 +2729,7 @@
       }
 
       elements.startBtn.addEventListener("click", startPractice);
-      elements.checkBtn.addEventListener("click", submitSelectedAnswer);
+      elements.checkBtn.addEventListener("click", primaryAnswerAction);
       elements.endSetBtn.addEventListener("click", renderSummary);
       elements.nextBtn.addEventListener("click", nextQuestion);
       elements.finishBtn.addEventListener("click", renderSummary);
