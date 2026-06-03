@@ -540,6 +540,15 @@
       border-radius: 8px;
       background: var(--paper-inset);
     }
+    .choice-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .choice-actions .btn {
+      min-width: 112px;
+    }
     .selection-status {
       color: var(--graphite-3);
       font-size: 0.9rem;
@@ -716,6 +725,14 @@
       .choice-tools {
         grid-template-columns: 1fr;
       }
+      .choice-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        justify-content: stretch;
+      }
+      .choice-actions .btn {
+        min-width: 0;
+      }
       .letter {
         width: 36px;
         height: 36px;
@@ -801,7 +818,10 @@
               <div class="choices" id="choices"></div>
               <div class="choice-tools">
                 <div class="selection-status" id="selectionStatus">Select an answer to check.</div>
-                <button id="checkBtn" class="btn primary" disabled>Check Answer</button>
+                <div class="choice-actions">
+                  <button id="endSetBtn" class="btn">End Set</button>
+                  <button id="checkBtn" class="btn primary" disabled>Check Answer</button>
+                </div>
               </div>
               <div id="answerPanel" class="answer-panel" hidden>
                 <div class="chips" id="answerChips"></div>
@@ -922,6 +942,7 @@
         choices: document.getElementById("choices"),
         selectionStatus: document.getElementById("selectionStatus"),
         checkBtn: document.getElementById("checkBtn"),
+        endSetBtn: document.getElementById("endSetBtn"),
         answerPanel: document.getElementById("answerPanel"),
         answerChips: document.getElementById("answerChips"),
         rationaleText: document.getElementById("rationaleText"),
@@ -2524,6 +2545,7 @@
 
       elements.startBtn.addEventListener("click", startPractice);
       elements.checkBtn.addEventListener("click", submitSelectedAnswer);
+      elements.endSetBtn.addEventListener("click", renderSummary);
       elements.nextBtn.addEventListener("click", nextQuestion);
       elements.finishBtn.addEventListener("click", renderSummary);
       elements.againBtn.addEventListener("click", () => {
