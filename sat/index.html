@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f5f2">
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="modulepreload" href="./assets/pdfjs/pdf.min.mjs">
+  <link rel="preload" href="./assets/pdfjs/pdf.worker.min.mjs" as="script" crossorigin>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f766e'/%3E%3Cpath d='M15 16h18c5 0 9 4 9 9v23H24c-5 0-9-4-9-9V16z' fill='%23ffffff' opacity='.95'/%3E%3Cpath d='M24 25h17M24 33h13' stroke='%230f766e' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M36 44l6 6 12-16' fill='none' stroke='%23f4b942' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <title>SAT Reading & Writing Practice</title>
   <style>
@@ -910,6 +911,7 @@
       const SCORE_WINDOW = 10;
       const TARGET_RATE = 0.5;
       const PAGE_CACHE_LIMIT = 8;
+      const PAGE_DOCUMENT_CACHE_LIMIT = 12;
       const PDF_HORIZONTAL_INSET = 12;
       const CHOICE_HORIZONTAL_INSET = 8;
       const CONFETTI_COLORS = ["#0f766e", "#2f64d6", "#c88418", "#dc5f55", "#27824a", "#7c3aed", "#f4b942"];
@@ -2193,10 +2195,11 @@
             pdfRuntimeWarmupStarted = false;
           });
         };
-        if ("requestIdleCallback" in window) {
-          window.requestIdleCallback(warm, { timeout: 2500 });
+        const afterLoad = () => window.setTimeout(warm, 120);
+        if (document.readyState === "complete") {
+          afterLoad();
         } else {
-          window.setTimeout(warm, 1200);
+          window.addEventListener("load", afterLoad, { once: true });
         }
       }
 
@@ -2216,14 +2219,26 @@
         return `${PAGE_PDF_DIR}/page-${String(pageNumber).padStart(4, "0")}.pdf`;
       }
 
+      async function fetchPagePdfData(pageNumber) {
+        const response = await fetch(pagePdfUrl(pageNumber), { cache: "force-cache" });
+        if (!response.ok) throw new Error(`Page PDF ${pageNumber} unavailable.`);
+        return new Uint8Array(await response.arrayBuffer());
+      }
+
       async function loadPdfPage(pageNumber) {
         const key = Number(pageNumber);
         if (!pagePdfDocumentPromises.has(key)) {
-          const promise = loadPdfJs()
-            .then((pdfjsLib) => pdfjsLib.getDocument({ url: pagePdfUrl(key) }).promise)
+          const pageDataPromise = fetchPagePdfData(key);
+          const promise = Promise.all([loadPdfJs(), pageDataPromise])
+            .then(([pdfjsLib, data]) => pdfjsLib.getDocument({ data }).promise)
             .then((pdf) => ({ pdf, pageNumber: 1 }))
             .catch(() => loadPdfDocument().then((pdf) => ({ pdf, pageNumber: key })));
           pagePdfDocumentPromises.set(key, promise);
+          while (pagePdfDocumentPromises.size > PAGE_DOCUMENT_CACHE_LIMIT) {
+            const firstKey = pagePdfDocumentPromises.keys().next().value;
+            if (firstKey === key) break;
+            pagePdfDocumentPromises.delete(firstKey);
+          }
         }
         return pagePdfDocumentPromises.get(key);
       }
