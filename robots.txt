@@ -1,6 +1,8 @@
 User-agent: *
+Allow: /sat/
 Disallow: /karim
 Disallow: /CV.pdf
 Disallow: /assets/*
 
-Sitemap: https://htahboub.github.io/sitemap.xml
+Sitemap: https://hamzatahboub.com/sitemap.xml
+Sitemap: https://hamzatahboub.com/sat/sitemap.xml
