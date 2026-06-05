@@ -2,8 +2,10 @@
 permalink: /robots.txt
 ---
 User-agent: *
+Allow: /sat/
 Disallow: /karim
 Disallow: /CV.pdf
 Disallow: /assets/*
 
-Sitemap: {{ site.baseurl | prepend: site.url }}/sitemap.xml
+Sitemap: https://hamzatahboub.com/sitemap.xml
+Sitemap: https://hamzatahboub.com/sat/sitemap.xml
