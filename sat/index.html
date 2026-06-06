@@ -413,10 +413,59 @@
       align-items: center;
       justify-content: space-between;
     }
+    .difficulty-total-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
     .difficulty-total {
       color: var(--graphite-3);
       font-size: 0.78rem;
       font-weight: 760;
+    }
+    .info-button {
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--graphite-3);
+      font-size: 0.76rem;
+      font-weight: 850;
+      line-height: 1;
+      cursor: help;
+    }
+    .info-button::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      z-index: 20;
+      width: min(260px, calc(100vw - 48px));
+      padding: 10px 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: var(--graphite);
+      color: #fff;
+      box-shadow: var(--shadow-tight);
+      font-size: 0.78rem;
+      font-weight: 650;
+      line-height: 1.35;
+      text-align: left;
+      white-space: normal;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 4px);
+      transition: opacity 120ms ease, transform 120ms ease;
+    }
+    .info-button:hover::after,
+    .info-button:focus-visible::after {
+      opacity: 1;
+      transform: translate(-50%, 0);
     }
     .toggle-row {
       display: inline-flex;
@@ -918,20 +967,23 @@
                 <h3>Difficulty mix</h3>
                 <div class="difficulty-grid">
                   <label class="difficulty-field" for="difficultyEasy">
-                    <span>Easy %</span>
-                    <input id="difficultyEasy" type="number" min="0" max="100" step="0.01" inputmode="decimal">
+                    <span>Easy weight</span>
+                    <input id="difficultyEasy" type="number" min="0" max="100" step="1" inputmode="decimal">
                   </label>
                   <label class="difficulty-field" for="difficultyMedium">
-                    <span>Medium %</span>
-                    <input id="difficultyMedium" type="number" min="0" max="100" step="0.01" inputmode="decimal">
+                    <span>Medium weight</span>
+                    <input id="difficultyMedium" type="number" min="0" max="100" step="1" inputmode="decimal">
                   </label>
                   <label class="difficulty-field" for="difficultyHard">
-                    <span>Hard %</span>
-                    <input id="difficultyHard" type="number" min="0" max="100" step="0.01" inputmode="decimal">
+                    <span>Hard weight</span>
+                    <input id="difficultyHard" type="number" min="0" max="100" step="1" inputmode="decimal">
                   </label>
                 </div>
                 <div class="difficulty-footer">
-                  <span class="difficulty-total" id="difficultyTotal">Total 100%</span>
+                  <span class="difficulty-total-wrap">
+                    <span class="difficulty-total" id="difficultyTotal">Total 57</span>
+                    <button class="info-button" type="button" aria-label="Difficulty mix help" title="These numbers are ratios, not percentages." data-tooltip="These are ratio weights, not percentages. For example, 20:19:18 means Easy is slightly more likely than Medium, and Medium is slightly more likely than Hard. The total does not need to equal 100.">?</button>
+                  </span>
                   <button id="resetDifficultyBtn" class="btn small" type="button">Reset mix</button>
                 </div>
               </div>
@@ -1062,8 +1114,8 @@
       const TARGET_RATE = 0.5;
       const PAGE_CACHE_LIMIT = 8;
       const PAGE_DOCUMENT_CACHE_LIMIT = 12;
-      const PDF_HORIZONTAL_INSET = 20;
-      const CHOICE_HORIZONTAL_INSET = 16;
+      const PDF_HORIZONTAL_INSET = 0;
+      const CHOICE_HORIZONTAL_INSET = 0;
       const DIFFICULTIES = ["Easy", "Medium", "Hard"];
       const CONFETTI_COLORS = ["#0f766e", "#2f64d6", "#c88418", "#dc5f55", "#27824a", "#7c3aed", "#f4b942"];
       const byId = new Map(QUESTIONS.map((question) => [question.id, question]));
@@ -1072,14 +1124,7 @@
         map.get(question.skill).push(question);
         return map;
       }, new Map());
-      const byDifficulty = QUESTIONS.reduce((map, question) => {
-        map.set(question.difficulty, (map.get(question.difficulty) || 0) + 1);
-        return map;
-      }, new Map());
-      const DEFAULT_DIFFICULTY_DISTRIBUTION = DIFFICULTIES.reduce((distribution, difficulty) => {
-        distribution[difficulty] = ((byDifficulty.get(difficulty) || 0) / QUESTIONS.length) * 100;
-        return distribution;
-      }, {});
+      const DEFAULT_DIFFICULTY_DISTRIBUTION = { Easy: 20, Medium: 19, Hard: 18 };
 
       const elements = {
         confettiCanvas: document.getElementById("confettiCanvas"),
@@ -1381,13 +1426,13 @@
         return total > 0 ? distribution : defaultDifficultyDistribution();
       }
 
-      function formatDifficultyPercent(value) {
+      function formatDifficultyWeight(value) {
         return Number(value).toFixed(2).replace(/\.?0+$/, "");
       }
 
       function difficultyDistributionKey() {
         const distribution = normalizeDifficultyDistribution(prefs.difficultyDistribution);
-        return DIFFICULTIES.map((difficulty) => `${difficulty}:${formatDifficultyPercent(distribution[difficulty])}`).join("|");
+        return DIFFICULTIES.map((difficulty) => `${difficulty}:${formatDifficultyWeight(distribution[difficulty])}`).join("|");
       }
 
       function clearPreparedQuestions() {
@@ -1401,11 +1446,11 @@
         prefs.difficultyDistribution = normalizeDifficultyDistribution(prefs.difficultyDistribution);
         DIFFICULTIES.forEach((difficulty) => {
           const input = elements.difficultyInputs[difficulty];
-          if (input) input.value = formatDifficultyPercent(prefs.difficultyDistribution[difficulty]);
+          if (input) input.value = formatDifficultyWeight(prefs.difficultyDistribution[difficulty]);
         });
         if (elements.difficultyTotal) {
           const total = DIFFICULTIES.reduce((sum, difficulty) => sum + prefs.difficultyDistribution[difficulty], 0);
-          elements.difficultyTotal.textContent = `Total ${formatDifficultyPercent(total)}%`;
+          elements.difficultyTotal.textContent = `Total ${formatDifficultyWeight(total)}`;
         }
       }
 
