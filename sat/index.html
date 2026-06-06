@@ -159,7 +159,7 @@
     }
 
     .shell {
-      width: min(1180px, calc(100vw - 32px));
+      width: min(1360px, calc(100vw - 32px));
       margin: 0 auto;
       padding: 24px 0 44px;
     }
@@ -372,6 +372,52 @@
     .history-tools .button-row {
       margin-top: 10px;
     }
+    .difficulty-settings {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: var(--paper-soft);
+    }
+    .difficulty-settings h3 {
+      margin: 0;
+    }
+    .difficulty-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .difficulty-field {
+      display: grid;
+      gap: 6px;
+    }
+    .difficulty-field span {
+      color: var(--graphite-3);
+      font-size: 0.72rem;
+      font-weight: 820;
+      text-transform: uppercase;
+    }
+    .difficulty-field input[type="number"] {
+      min-height: 40px;
+      padding: 9px 10px;
+      text-align: right;
+      background: #fff;
+      font-size: 0.92rem;
+    }
+    .difficulty-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .difficulty-total {
+      color: var(--graphite-3);
+      font-size: 0.78rem;
+      font-weight: 760;
+    }
     .toggle-row {
       display: inline-flex;
       align-items: center;
@@ -489,7 +535,7 @@
 
     .practice-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 292px;
+      grid-template-columns: minmax(0, 1fr) 232px;
       gap: 16px;
       align-items: start;
     }
@@ -732,7 +778,9 @@
     }
     .pdf-page-crop {
       display: block;
-      width: 100%;
+      width: min(100%, 980px);
+      margin-right: auto;
+      margin-left: auto;
       height: auto;
       border: 1px solid rgba(26, 45, 41, 0.16);
       border-radius: 8px;
@@ -740,6 +788,7 @@
       box-shadow: 0 1px 2px rgba(20, 31, 29, 0.05);
     }
     .question-pdf .pdf-page-crop {
+      width: min(100%, 1040px);
       border-color: rgba(26, 45, 41, 0.18);
       box-shadow: 0 1px 2px rgba(20, 31, 29, 0.06), 0 8px 18px rgba(29, 49, 45, 0.055);
     }
@@ -781,6 +830,9 @@
       }
       .count-row input {
         grid-column: 1 / -1;
+      }
+      .difficulty-grid {
+        grid-template-columns: 1fr;
       }
       .topbar {
         gap: 16px;
@@ -861,7 +913,28 @@
           <button id="startBtn" class="btn primary">Start Practice</button>
           <div class="history-tools">
             <details>
-              <summary>History tools</summary>
+              <summary>Advanced settings</summary>
+              <div class="difficulty-settings">
+                <h3>Difficulty mix</h3>
+                <div class="difficulty-grid">
+                  <label class="difficulty-field" for="difficultyEasy">
+                    <span>Easy %</span>
+                    <input id="difficultyEasy" type="number" min="0" max="100" step="0.01" inputmode="decimal">
+                  </label>
+                  <label class="difficulty-field" for="difficultyMedium">
+                    <span>Medium %</span>
+                    <input id="difficultyMedium" type="number" min="0" max="100" step="0.01" inputmode="decimal">
+                  </label>
+                  <label class="difficulty-field" for="difficultyHard">
+                    <span>Hard %</span>
+                    <input id="difficultyHard" type="number" min="0" max="100" step="0.01" inputmode="decimal">
+                  </label>
+                </div>
+                <div class="difficulty-footer">
+                  <span class="difficulty-total" id="difficultyTotal">Total 100%</span>
+                  <button id="resetDifficultyBtn" class="btn small" type="button">Reset mix</button>
+                </div>
+              </div>
               <div class="button-row">
                 <button id="exportBtn" class="btn small">Export Backup</button>
                 <button id="importBtn" class="btn small">Import Backup</button>
@@ -989,8 +1062,9 @@
       const TARGET_RATE = 0.5;
       const PAGE_CACHE_LIMIT = 8;
       const PAGE_DOCUMENT_CACHE_LIMIT = 12;
-      const PDF_HORIZONTAL_INSET = 12;
-      const CHOICE_HORIZONTAL_INSET = 8;
+      const PDF_HORIZONTAL_INSET = 20;
+      const CHOICE_HORIZONTAL_INSET = 16;
+      const DIFFICULTIES = ["Easy", "Medium", "Hard"];
       const CONFETTI_COLORS = ["#0f766e", "#2f64d6", "#c88418", "#dc5f55", "#27824a", "#7c3aed", "#f4b942"];
       const byId = new Map(QUESTIONS.map((question) => [question.id, question]));
       const bySkill = QUESTIONS.reduce((map, question) => {
@@ -998,6 +1072,14 @@
         map.get(question.skill).push(question);
         return map;
       }, new Map());
+      const byDifficulty = QUESTIONS.reduce((map, question) => {
+        map.set(question.difficulty, (map.get(question.difficulty) || 0) + 1);
+        return map;
+      }, new Map());
+      const DEFAULT_DIFFICULTY_DISTRIBUTION = DIFFICULTIES.reduce((distribution, difficulty) => {
+        distribution[difficulty] = ((byDifficulty.get(difficulty) || 0) / QUESTIONS.length) * 100;
+        return distribution;
+      }, {});
 
       const elements = {
         confettiCanvas: document.getElementById("confettiCanvas"),
@@ -1010,6 +1092,13 @@
         questionCount: document.getElementById("questionCount"),
         hidePracticeHints: document.getElementById("hidePracticeHints"),
         hidePracticeHintsLive: document.getElementById("hidePracticeHintsLive"),
+        difficultyInputs: {
+          Easy: document.getElementById("difficultyEasy"),
+          Medium: document.getElementById("difficultyMedium"),
+          Hard: document.getElementById("difficultyHard"),
+        },
+        difficultyTotal: document.getElementById("difficultyTotal"),
+        resetDifficultyBtn: document.getElementById("resetDifficultyBtn"),
         startBtn: document.getElementById("startBtn"),
         exportBtn: document.getElementById("exportBtn"),
         importBtn: document.getElementById("importBtn"),
@@ -1260,9 +1349,15 @@
       function loadPrefs() {
         try {
           const parsed = JSON.parse(localStorage.getItem(PREFS_KEY) || "{}");
-          return { hidePracticeHints: Boolean(parsed.hidePracticeHints) };
+          return {
+            hidePracticeHints: Boolean(parsed.hidePracticeHints),
+            difficultyDistribution: normalizeDifficultyDistribution(parsed.difficultyDistribution),
+          };
         } catch (error) {
-          return { hidePracticeHints: false };
+          return {
+            hidePracticeHints: false,
+            difficultyDistribution: defaultDifficultyDistribution(),
+          };
         }
       }
 
@@ -1270,6 +1365,69 @@
         try {
           localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
         } catch (error) {}
+      }
+
+      function defaultDifficultyDistribution() {
+        return { ...DEFAULT_DIFFICULTY_DISTRIBUTION };
+      }
+
+      function normalizeDifficultyDistribution(raw) {
+        const distribution = {};
+        DIFFICULTIES.forEach((difficulty) => {
+          const value = Number(raw && raw[difficulty]);
+          distribution[difficulty] = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : DEFAULT_DIFFICULTY_DISTRIBUTION[difficulty];
+        });
+        const total = DIFFICULTIES.reduce((sum, difficulty) => sum + distribution[difficulty], 0);
+        return total > 0 ? distribution : defaultDifficultyDistribution();
+      }
+
+      function formatDifficultyPercent(value) {
+        return Number(value).toFixed(2).replace(/\.?0+$/, "");
+      }
+
+      function difficultyDistributionKey() {
+        const distribution = normalizeDifficultyDistribution(prefs.difficultyDistribution);
+        return DIFFICULTIES.map((difficulty) => `${difficulty}:${formatDifficultyPercent(distribution[difficulty])}`).join("|");
+      }
+
+      function clearPreparedQuestions() {
+        preparedFirstPick = null;
+        preparedFirstKey = null;
+        preparedFirstWarmPromise = null;
+        if (session) session.preparedNext = null;
+      }
+
+      function syncDifficultyControls() {
+        prefs.difficultyDistribution = normalizeDifficultyDistribution(prefs.difficultyDistribution);
+        DIFFICULTIES.forEach((difficulty) => {
+          const input = elements.difficultyInputs[difficulty];
+          if (input) input.value = formatDifficultyPercent(prefs.difficultyDistribution[difficulty]);
+        });
+        if (elements.difficultyTotal) {
+          const total = DIFFICULTIES.reduce((sum, difficulty) => sum + prefs.difficultyDistribution[difficulty], 0);
+          elements.difficultyTotal.textContent = `Total ${formatDifficultyPercent(total)}%`;
+        }
+      }
+
+      function saveDifficultyControls() {
+        const next = {};
+        DIFFICULTIES.forEach((difficulty) => {
+          const input = elements.difficultyInputs[difficulty];
+          next[difficulty] = Number(input ? input.value : 0);
+        });
+        prefs.difficultyDistribution = normalizeDifficultyDistribution(next);
+        savePrefs();
+        syncDifficultyControls();
+        clearPreparedQuestions();
+        prepareFirstQuestion();
+      }
+
+      function resetDifficultyDistribution() {
+        prefs.difficultyDistribution = defaultDifficultyDistribution();
+        savePrefs();
+        syncDifficultyControls();
+        clearPreparedQuestions();
+        prepareFirstQuestion();
       }
 
       function syncPracticeHintControls() {
@@ -1782,18 +1940,36 @@
         return pool[Math.floor(Math.random() * pool.length)];
       }
 
+      function weightedDifficulty() {
+        const distribution = normalizeDifficultyDistribution(prefs.difficultyDistribution);
+        const total = DIFFICULTIES.reduce((sum, difficulty) => sum + distribution[difficulty], 0);
+        let roll = Math.random() * total;
+        for (const difficulty of DIFFICULTIES) {
+          roll -= distribution[difficulty];
+          if (roll <= 0) return difficulty;
+        }
+        return DIFFICULTIES[DIFFICULTIES.length - 1];
+      }
+
+      function applyDifficultyPool(pool, difficulty) {
+        const filtered = pool.filter((question) => question.difficulty === difficulty);
+        return filtered.length ? filtered : pool;
+      }
+
       function chooseQuestionFromUsed(used) {
         const shouldTarget = Math.random() < TARGET_RATE;
         let targetSkill = shouldTarget ? weightedWeakSkill() : null;
+        const targetDifficulty = weightedDifficulty();
         let pool = [];
         if (targetSkill) {
-          pool = (bySkill.get(targetSkill) || []).filter((question) => !used.has(question.id));
-          if (!pool.length) pool = bySkill.get(targetSkill) || [];
+          const skillPool = bySkill.get(targetSkill) || [];
+          const unusedSkillPool = skillPool.filter((question) => !used.has(question.id));
+          pool = applyDifficultyPool(unusedSkillPool.length ? unusedSkillPool : skillPool, targetDifficulty);
         }
         if (!pool.length) {
           targetSkill = null;
-          pool = QUESTIONS.filter((question) => !used.has(question.id));
-          if (!pool.length) pool = QUESTIONS;
+          const unusedPool = QUESTIONS.filter((question) => !used.has(question.id));
+          pool = applyDifficultyPool(unusedPool.length ? unusedPool : QUESTIONS, targetDifficulty);
         }
         const question = randomFrom(pool);
         return { question, targetSkill };
@@ -1814,6 +1990,7 @@
           Number(state.saveRevision) || 0,
           state.attempts.length,
           Number(state.updatedAt) || 0,
+          difficultyDistributionKey(),
         ].join(":");
       }
 
@@ -2820,6 +2997,11 @@
       [elements.hidePracticeHints, elements.hidePracticeHintsLive].forEach((input) => {
         if (input) input.addEventListener("change", (event) => setPracticeHintsHidden(event.currentTarget.checked));
       });
+      DIFFICULTIES.forEach((difficulty) => {
+        const input = elements.difficultyInputs[difficulty];
+        if (input) input.addEventListener("change", saveDifficultyControls);
+      });
+      if (elements.resetDifficultyBtn) elements.resetDifficultyBtn.addEventListener("click", resetDifficultyDistribution);
       window.addEventListener("pagehide", () => {
         syncActiveSessionBeforeSave();
         saveState({ stamp: false });
@@ -2837,6 +3019,7 @@
       });
 
       syncPracticeHintControls();
+      syncDifficultyControls();
       applyPracticeHintVisibility();
       renderSavedStats();
       schedulePdfRuntimeWarmup();
