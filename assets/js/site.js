@@ -56,13 +56,6 @@
         toggleEggs(false);
       });
 
-      if (Math.floor(Math.random() * 1000) < 2) {
-        me.src = "assets/img/little.jpeg";
-      } else if (Math.floor(Math.random() * 100) < 5) {
-        me.src = "assets/img/bike.jpg";
-      } else if (Math.floor(Math.random() * 200) < 1) {
-        me.src = "assets/img/camcorder.jpeg";
-      }
     }
 
     window.setTimeout(revealEggs, 36e5);
