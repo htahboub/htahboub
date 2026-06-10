@@ -14,6 +14,13 @@ news: false            # includes a list of news items
 latest_posts: false    # includes a list of the newest posts
 selected_papers: false # includes a list of papers marked as "selected={true}"
 social: false          # includes social icons at the bottom of the page
+distort_background:
+  image: /assets/img/distort-filler-bg0.webp
+  opacity: 1
+  blend_mode: overlay
+  base_color: "#170d02"
+  filter: invert(1)
+  sensitivity: 0.5
 # bundle exec jekyll serve --lsi
 ---
 <script>
@@ -49,7 +56,7 @@ social: false          # includes social icons at the bottom of the page
           document.getElementById("gaster").classList.toggle('hidden');
       }
     }
-    setTimeout(checkTime, 6e5); // 10 minutes
+    setTimeout(checkTime, 36e5); // 60 minutes
 
     window.addEventListener('load', function() {
       if (['#dance', '#party', '#secret', '#s'].includes(window.location.hash)) checkTime()

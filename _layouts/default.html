@@ -10,10 +10,25 @@
   </head>
 
   <!-- Body -->
-  <body class="{% if site.navbar_fixed %}fixed-top-nav{% endif %} {% unless site.footer_fixed %}sticky-bottom-footer{% endunless %}">
+  <body class="{% if site.navbar_fixed %}fixed-top-nav{% endif %} {% unless site.footer_fixed %}sticky-bottom-footer{% endunless %}{% if page.distort_background %} distort-bg-page{% endif %}"{% if page.distort_background %} style="--distort-bg-opacity: {{ page.distort_background.opacity | default: 1 }}; --distort-bg-blend-mode: {{ page.distort_background.blend_mode | default: 'overlay' }}; --distort-bg-base-color: {{ page.distort_background.base_color | default: 'var(--global-bg-color)' }}; --distort-bg-filter: {{ page.distort_background.filter | default: 'none' }};"{% endif %}>
 
     <!-- Header -->
     {%- include header.html %}
+
+    {% if page.distort_background %}
+    <!-- Interactive distortion background -->
+    <div
+      class="distort-background"
+      data-distort-background
+      data-bg-src="{{ page.distort_background.image | relative_url }}"
+      data-sensitivity="{{ page.distort_background.sensitivity | default: 1 }}"
+      style="position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; overflow: hidden; pointer-events: none;"
+      aria-hidden="true"
+    >
+      <canvas style="position: fixed; inset: 0; width: 100vw; height: 100vh;"></canvas>
+      <img src="{{ page.distort_background.image | relative_url }}" alt="" draggable="false" fetchpriority="high" style="position: fixed; inset: 0; width: 100vw; height: 100vh; max-width: none; object-fit: cover;">
+    </div>
+    {% endif %}
 
     <!-- Content -->
     <div class="container mt-5">
@@ -58,5 +73,8 @@
     {% include scripts/mathjax.html %}
     {% include scripts/analytics.html %}
     {% include scripts/progressBar.html %}
+    {% if page.distort_background %}
+    <script src="{{ '/assets/js/distort_background.js' | relative_url }}"></script>
+    {% endif %}
   </body>
 </html>

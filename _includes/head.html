@@ -1,6 +1,61 @@
     <!-- Metadata, OpenGraph and Schema.org -->
     {% include metadata.html %}
 
+    {% if page.distort_background %}
+    <link rel="preload" as="image" href="{{ page.distort_background.image | relative_url }}" fetchpriority="high">
+    <style>
+      body.distort-bg-page { background-color: transparent; }
+      body.distort-bg-page::before,
+      .distort-background,
+      .distort-background canvas,
+      .distort-background img {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+      body.distort-bg-page::before {
+        content: "";
+        z-index: 0;
+        background: var(--global-bg-color, #fff);
+        pointer-events: none;
+      }
+      .distort-background {
+        z-index: 0;
+        background: var(--distort-bg-base-color, transparent);
+        filter: var(--distort-bg-filter, none);
+        isolation: isolate;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .distort-background canvas,
+      .distort-background img {
+        object-fit: cover;
+        opacity: var(--distort-bg-opacity, 1);
+        mix-blend-mode: var(--distort-bg-blend-mode, overlay);
+      }
+      .distort-background img { max-width: none; }
+      .distort-background canvas { opacity: 0; }
+      .distort-background.is-ready canvas { opacity: var(--distort-bg-opacity, 1); }
+      .distort-background.is-ready img { opacity: 0; }
+      body.distort-bg-page > .container,
+      body.distort-bg-page > footer.sticky-bottom {
+        position: relative;
+        z-index: 1;
+      }
+      body.distort-bg-page > footer.fixed-bottom {
+        z-index: 1030;
+      }
+      body.distort-bg-page > header {
+        position: relative;
+        z-index: 20;
+      }
+      body.distort-bg-page footer.sticky-bottom {
+        background: var(--global-bg-color, #fff);
+      }
+    </style>
+    {% endif %}
+
     <!-- Bootstrap & MDB -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@{{ site.bootstrap.version }}/dist/css/bootstrap.min.css" rel="stylesheet" integrity="{{ site.bootstrap.integrity.css }}" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@{{ site.mdb.version }}/css/mdb.min.css" integrity="{{ site.mdb.integrity.css }}" crossorigin="anonymous" />
