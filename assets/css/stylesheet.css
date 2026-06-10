@@ -103,6 +103,10 @@ h2 {
   margin-left: auto;
 }
 
+.section-table {
+  margin-top: -28px;
+}
+
 .intro-copy {
   padding: 2.5%;
   width: 63%;
@@ -117,9 +121,10 @@ h2 {
 }
 
 .intro-photo img {
-  width: 100%;
+  display: block;
+  width: 78%;
   max-width: 100%;
-  margin-top: 18px;
+  margin: 18px auto 0;
   object-fit: cover;
   border-radius: 50%;
   cursor: default;
@@ -288,7 +293,12 @@ body.distort-bg-page::before {
   }
 
   .intro-photo img {
+    width: 100%;
     margin-top: 8px;
+  }
+
+  .section-table {
+    margin-top: 0;
   }
 
   .research-grid {
