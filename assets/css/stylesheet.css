@@ -173,6 +173,20 @@ h2 {
   text-decoration: underline;
 }
 
+.research-orb {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0 0;
+}
+
+.research-orb canvas {
+  display: block;
+  width: 256px;
+  height: 256px;
+  margin: 0 auto;
+  image-rendering: pixelated;
+}
+
 .plain-page {
   width: 100%;
   max-width: 800px;
