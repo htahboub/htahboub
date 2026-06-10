@@ -248,7 +248,7 @@
 
   function updateNavbar() {
     if (!navbar) return;
-    var progress = Math.min(Math.max(window.scrollY / 72, 0), 1);
+    var progress = Math.min(Math.max(window.scrollY / 48, 0), 1);
     var mix = 12 + 38 * progress;
     navbar.style.setProperty("--distort-navbar-bg-mix", mix.toFixed(2) + "%");
   }

@@ -1,12 +1,11 @@
-_site
-.bundle
-.sass-cache
-.jekyll-cache
-.jekyll-metadata
-.DS_store
-.ruby-version
-.tweet-cache
-Gemfile.lock
-vendor
-_plugins/ssl_fix.rb
+.DS_Store
+Thumbs.db
+*.log
 
+# Local editor and OS state
+.idea/
+.vscode/
+
+# Local dependency/build output that should not be published
+node_modules/
+package-lock.json
