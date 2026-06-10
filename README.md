@@ -1,5 +1,3 @@
-Hello! My name is Hamza, and I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)'s [Visual Intelligence Lab](https://github.com/neu-vi/). I graduated from Northeastern University with a major in computer science and mathematics.
+Hello! My name is Hamza, and I am a research assistant in Professor [Huaizu Jiang](https://jianghz.me/)’s [Visual Intelligence Lab](https://github.com/neu-vi/). I graduated from Northeastern University with a major in computer science and mathematics.
 
 My research centers on multimodal learning and generation, with a specific emphasis on social interaction and egocentric video to holistically understand human behavior. Today, I am working on the generation side: I aim to improve the social coherence of video generation models to generate more realistic human-centric videos. You can find out more about my work on my [website](https://hamzatahboub.com).
-
-This repository is a static personal site based on Jon Barron's minimalist academic website layout, with a custom interactive background and a preserved SAT practice tool under `/sat/`.
