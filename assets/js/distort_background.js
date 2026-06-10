@@ -6,7 +6,6 @@
 
   var canvas = root.querySelector("canvas");
   var fallback = root.querySelector("img");
-  var navbar = document.querySelector(".navbar");
   var src = root.getAttribute("data-bg-src");
   var sensitivityValue = parseFloat(root.getAttribute("data-sensitivity"));
   var sensitivity = Number.isFinite(sensitivityValue) ? Math.max(0, sensitivityValue) : 1;
@@ -246,15 +245,7 @@
     frame = 0;
   }
 
-  function updateNavbar() {
-    if (!navbar) return;
-    var progress = Math.min(Math.max(window.scrollY / 48, 0), 1);
-    var mix = 12 + 38 * progress;
-    navbar.style.setProperty("--distort-navbar-bg-mix", mix.toFixed(2) + "%");
-  }
-
   window.addEventListener("resize", resize);
-  window.addEventListener("scroll", updateNavbar, { passive: true });
   window.addEventListener("pointermove", function (event) {
     setPointer(event.clientX, event.clientY);
   }, { passive: true });
@@ -268,6 +259,5 @@
   });
 
   resize();
-  updateNavbar();
   start();
 })();
