@@ -34,6 +34,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    // var eggDelayMs = 24 * 60 * 60 * 1000;
     var pattern = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
     var current = 0;
     var me = document.getElementById("me");
@@ -58,7 +59,7 @@
 
     }
 
-    window.setTimeout(revealEggs, 36e5);
+    // window.setTimeout(revealEggs, eggDelayMs);
 
     if (["#dance", "#party", "#secret", "#s"].indexOf(window.location.hash) !== -1) {
       revealEggs();
