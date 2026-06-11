@@ -6,9 +6,57 @@
 
   var useMobileOrb = window.matchMedia("(max-width: 790px), (pointer: coarse)").matches;
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function drawStaticOrb(targetCanvas, mode) {
+    var size = 256;
+    var ctx = targetCanvas.getContext("2d");
+    if (!ctx) return false;
+
+    targetCanvas.width = size;
+    targetCanvas.height = size;
+    targetCanvas.dataset.orbMode = mode;
+    targetCanvas.dataset.orbTriangles = "0";
+    ctx.clearRect(0, 0, size, size);
+    ctx.fillStyle = "rgb(56, 148, 219)";
+
+    for (var y = 20; y < 238; y += 4) {
+      for (var x = 20; x < 238; x += 4) {
+        var nx = (x - 128) / 108;
+        var ny = (y - 128) / 108;
+        var radius = Math.sqrt(nx * nx + ny * ny);
+        if (radius > 1) continue;
+
+        var ridge = Math.sin((nx * 3.2 + ny * 1.7) * 6.0) * 0.5 + 0.5;
+        var crown = Math.max(0, 1 - Math.hypot(nx - 0.45, ny + 0.6) * 2.2);
+        var lower = Math.max(0, 1 - Math.hypot(nx + 0.1, ny - 0.72) * 2.8);
+        var edge = Math.max(0, 1 - radius);
+        var density = 0.06 + ridge * 0.18 + crown * 0.72 + lower * 0.28 + edge * 0.14;
+        var threshold = ((x * 13 + y * 7) % 64) / 64;
+        if (density > threshold) ctx.fillRect(x, y, 1.6, 1.6);
+      }
+    }
+
+    return true;
+  }
+
+  function replaceWithStaticOrb(mode) {
+    var fallbackCanvas = canvas.cloneNode(false);
+    canvas.parentNode.replaceChild(fallbackCanvas, canvas);
+    canvas = fallbackCanvas;
+    drawStaticOrb(canvas, mode);
+  }
+
+  if (useMobileOrb || reduceMotion) {
+    drawStaticOrb(canvas, "static");
+    return;
+  }
+
   var gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: false });
   if (!gl) gl = canvas.getContext("experimental-webgl", { alpha: true, premultipliedAlpha: false });
-  if (!gl) return;
+  if (!gl) {
+    drawStaticOrb(canvas, "fallback");
+    return;
+  }
 
   var vertexShaderSource = "attribute vec3 position;\n\
 \n\
@@ -391,7 +439,13 @@ void main() {\n\
       eye: gl.getUniformLocation(program, "eye"),
       ditherColor: gl.getUniformLocation(program, "ditherColor")
     };
-    var model = identity4();
+    var orbRenderScale = 0.94;
+    var model = [
+      orbRenderScale, 0, 0, 0,
+      0, orbRenderScale, 0, 0,
+      0, 0, orbRenderScale, 0,
+      0, 0, 0, 1
+    ];
     var normal = [1, 0, 0, 0, 1, 0, 0, 0, 1];
     var eye = [0, 0, 1.4];
     var ditherColor = [0.22, 0.58, 0.86];
@@ -479,5 +533,6 @@ void main() {\n\
     });
   } catch (error) {
     console.error("Unable to initialize research orb", error);
+    replaceWithStaticOrb("fallback");
   }
 })();
