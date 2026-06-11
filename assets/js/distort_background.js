@@ -11,6 +11,19 @@
   var sensitivity = Number.isFinite(sensitivityValue) ? Math.max(0, sensitivityValue) : 1;
   if (!canvas || !src) return;
 
+  function shouldUseStaticBackground() {
+    return window.matchMedia("(max-width: 790px), (pointer: coarse), (prefers-reduced-motion: reduce)").matches;
+  }
+
+  if (shouldUseStaticBackground()) {
+    root.dataset.distortMode = "static";
+    root.classList.add("is-fallback");
+    canvas.setAttribute("aria-hidden", "true");
+    return;
+  }
+
+  root.dataset.distortMode = "webgl";
+
   var fragmentShader = [
     "precision highp float;",
     "uniform float t;",

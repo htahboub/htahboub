@@ -4,6 +4,8 @@
   var canvas = document.getElementById("research-orb");
   if (!canvas) return;
 
+  var useMobileOrb = window.matchMedia("(max-width: 790px), (pointer: coarse)").matches;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: false });
   if (!gl) gl = canvas.getContext("experimental-webgl", { alpha: true, premultipliedAlpha: false });
   if (!gl) return;
@@ -371,7 +373,8 @@ void main() {\n\
     var controller = new AbortController();
     var pointer = setupPointer(controller.signal);
     var program = createProgram();
-    var mesh = createIcosphere(6);
+    var meshSubdivisions = useMobileOrb ? 5 : 6;
+    var mesh = createIcosphere(meshSubdivisions);
     var flatPositions = new Float32Array(mesh.positions.flat());
     var flatCells = new Uint16Array(mesh.cells.flat());
     var positionBuffer = gl.createBuffer();
@@ -393,6 +396,11 @@ void main() {\n\
     var eye = [0, 0, 1.4];
     var ditherColor = [0.22, 0.58, 0.86];
     var animationFrame = null;
+    var orbVisible = true;
+    var pageVisible = !document.hidden;
+
+    canvas.dataset.orbSubdivisions = String(meshSubdivisions);
+    canvas.dataset.orbTriangles = String(flatCells.length / 3);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, flatPositions, gl.STATIC_DRAW);
@@ -431,14 +439,42 @@ void main() {\n\
       gl.uniform3fv(uniforms.eye, new Float32Array(eye));
       gl.uniform3fv(uniforms.ditherColor, new Float32Array(ditherColor));
       gl.drawElements(gl.TRIANGLES, flatCells.length, gl.UNSIGNED_SHORT, 0);
-      animationFrame = window.requestAnimationFrame(render);
+      animationFrame = null;
+      scheduleRender();
+    }
+
+    function scheduleRender() {
+      if (!animationFrame && orbVisible && pageVisible && !reduceMotion) {
+        animationFrame = window.requestAnimationFrame(render);
+      }
+    }
+
+    function stopRender() {
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+      animationFrame = null;
     }
 
     resize();
-    animationFrame = window.requestAnimationFrame(render);
+    if (reduceMotion) render(0);
+    else scheduleRender();
+
+    if ("IntersectionObserver" in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        orbVisible = entries[0] && entries[0].isIntersecting;
+        if (orbVisible) scheduleRender();
+        else stopRender();
+      }, { rootMargin: "128px" });
+      observer.observe(canvas);
+    }
+
+    document.addEventListener("visibilitychange", function () {
+      pageVisible = !document.hidden;
+      if (pageVisible) scheduleRender();
+      else stopRender();
+    });
 
     window.addEventListener("pagehide", function () {
-      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+      stopRender();
       controller.abort();
     });
   } catch (error) {

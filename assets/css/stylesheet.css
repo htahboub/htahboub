@@ -290,6 +290,15 @@ body.distort-bg-page::before {
 }
 
 @media (max-width: 790px) {
+  .distort-background canvas {
+    display: none;
+  }
+
+  .distort-background img,
+  .distort-background.is-ready img {
+    opacity: var(--distort-bg-opacity, 1);
+  }
+
   .intro-table,
   .intro-table tbody,
   .intro-table tr,
