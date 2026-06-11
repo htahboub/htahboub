@@ -332,6 +332,26 @@ body.distort-bg-page::before {
   .research-grid ol + ol {
     margin-top: 0;
   }
+
+  .egg {
+    position: absolute;
+    opacity: 0.88;
+    z-index: 0;
+  }
+
+  .egg-howard {
+    right: -28px;
+    top: 348px;
+    bottom: auto;
+    height: min(20vh, 116px);
+  }
+
+  .egg-gaster {
+    left: -20px;
+    top: 318px;
+    bottom: auto;
+    height: min(20vh, 98px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
