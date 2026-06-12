@@ -6,6 +6,10 @@
 
   var useMobileOrb = window.matchMedia("(max-width: 790px), (pointer: coarse)").matches;
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var orbColor = [0.22, 0.58, 0.86];
+  var orbColorCss = "rgb(" + orbColor.map(function (channel) {
+    return Math.round(channel * 255);
+  }).join(", ") + ")";
 
   function drawStaticOrb(targetCanvas, mode) {
     var size = 256;
@@ -17,7 +21,7 @@
     targetCanvas.dataset.orbMode = mode;
     targetCanvas.dataset.orbTriangles = "0";
     ctx.clearRect(0, 0, size, size);
-    ctx.fillStyle = "rgb(56, 148, 219)";
+    ctx.fillStyle = orbColorCss;
 
     for (var y = 20; y < 238; y += 4) {
       for (var x = 20; x < 238; x += 4) {
@@ -170,7 +174,7 @@ void main() {\n\
   fragWorldPos = (model * vec4(P, 1.)).xyz;\n\
 }";
 
-  var fragmentShaderSource = "precision mediump float;\n\
+  var fragmentShaderSource = "precision highp float;\n\
 varying float noiseAmt;\n\
 varying float noiseAmt2;\n\
 varying vec3 fragNrm;\n\
@@ -448,7 +452,7 @@ void main() {\n\
     ];
     var normal = [1, 0, 0, 0, 1, 0, 0, 0, 1];
     var eye = [0, 0, 1.4];
-    var ditherColor = [0.22, 0.58, 0.86];
+    var ditherColor = orbColor;
     var animationFrame = null;
     var orbVisible = true;
     var pageVisible = !document.hidden;

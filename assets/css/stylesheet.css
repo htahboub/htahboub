@@ -176,7 +176,7 @@ h2 {
 .research-orb {
   display: flex;
   justify-content: center;
-  margin: 0;
+  margin: -8px 0 0;
 }
 
 .research-orb canvas {
