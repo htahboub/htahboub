@@ -4,7 +4,6 @@
   var canvas = document.getElementById("research-orb");
   if (!canvas) return;
 
-  var useMobileOrb = window.matchMedia("(max-width: 790px), (pointer: coarse)").matches;
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var orbColor = [0.22, 0.58, 0.86];
   var orbColorCss = "rgb(" + orbColor.map(function (channel) {
@@ -426,7 +425,7 @@ void main() {\n\
     var controller = new AbortController();
     var pointer = setupPointer(controller.signal);
     var program = createProgram();
-    var meshSubdivisions = useMobileOrb ? 5 : 6;
+    var meshSubdivisions = 5;
     var mesh = createIcosphere(meshSubdivisions);
     var flatPositions = new Float32Array(mesh.positions.flat());
     var flatCells = new Uint16Array(mesh.cells.flat());
