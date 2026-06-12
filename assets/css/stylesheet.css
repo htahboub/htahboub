@@ -345,10 +345,10 @@ body.distort-bg-page::before {
   }
 
   .egg-howard {
-    right: -28px;
+    right: 6px;
     top: 348px;
     bottom: auto;
-    height: min(20vh, 116px);
+    height: min(18vh, 104px);
   }
 
   .egg-gaster {
