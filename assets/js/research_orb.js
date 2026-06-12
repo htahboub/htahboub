@@ -46,7 +46,7 @@
     drawStaticOrb(canvas, mode);
   }
 
-  if (useMobileOrb || reduceMotion) {
+  if (reduceMotion) {
     drawStaticOrb(canvas, "static");
     return;
   }
@@ -453,6 +453,7 @@ void main() {\n\
     var orbVisible = true;
     var pageVisible = !document.hidden;
 
+    canvas.dataset.orbMode = "webgl";
     canvas.dataset.orbSubdivisions = String(meshSubdivisions);
     canvas.dataset.orbTriangles = String(flatCells.length / 3);
 
