@@ -333,6 +333,11 @@ body.distort-bg-page::before {
     margin-top: 0;
   }
 
+  .research-orb canvas {
+    background: transparent;
+    mix-blend-mode: darken;
+  }
+
   .egg {
     position: absolute;
     opacity: 0.88;

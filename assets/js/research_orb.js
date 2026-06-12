@@ -55,8 +55,9 @@
     return;
   }
 
-  var gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: false });
-  if (!gl) gl = canvas.getContext("experimental-webgl", { alpha: true, premultipliedAlpha: false });
+  var glOptions = { alpha: true, antialias: false, premultipliedAlpha: true };
+  var gl = canvas.getContext("webgl", glOptions);
+  if (!gl) gl = canvas.getContext("experimental-webgl", glOptions);
   if (!gl) {
     drawStaticOrb(canvas, "fallback");
     return;
@@ -468,6 +469,8 @@ void main() {\n\
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
     gl.disable(gl.CULL_FACE);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.clearColor(0, 0, 0, 0);
 
     function resize() {
