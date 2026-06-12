@@ -264,6 +264,14 @@ body.distort-bg-page::before {
   display: none;
 }
 
+#mapmyvisitors-widget {
+  display: none !important;
+}
+
+#mapmyvisitors-widget.map-visible {
+  display: block !important;
+}
+
 .unselectable {
   -webkit-user-select: none;
   -khtml-user-select: none;

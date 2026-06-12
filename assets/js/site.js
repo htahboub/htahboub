@@ -8,7 +8,7 @@
     if (gaster) gaster.classList.toggle("hidden");
     if (showMap) {
       var map = document.getElementById("mapmyvisitors-widget");
-      if (map) map.style.display = "block";
+      if (map) map.classList.add("map-visible");
     }
   }
 
@@ -17,20 +17,6 @@
     if (!gaster || gaster.classList.contains("hidden")) {
       toggleEggs(false);
     }
-  }
-
-  function hideMapSoon() {
-    var attempts = 0;
-    var timer = window.setInterval(function () {
-      var map = document.getElementById("mapmyvisitors-widget");
-      attempts += 1;
-      if (map) {
-        map.style.display = "none";
-        window.clearInterval(timer);
-      } else if (attempts > 20) {
-        window.clearInterval(timer);
-      }
-    }, 250);
   }
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -64,7 +50,5 @@
     if (["#dance", "#party", "#secret", "#s"].indexOf(window.location.hash) !== -1) {
       revealEggs();
     }
-
-    hideMapSoon();
   });
 })();
