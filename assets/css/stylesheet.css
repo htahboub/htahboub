@@ -225,7 +225,7 @@ body.distort-bg-page::before {
   width: 100vw;
   height: 100vh;
   z-index: 0;
-  background: var(--distort-bg-base-color, transparent);
+  /* background: var(--distort-bg-base-color, transparent); */
   filter: var(--distort-bg-filter, none);
   isolation: isolate;
   overflow: hidden;
