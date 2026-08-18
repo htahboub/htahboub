@@ -141,6 +141,8 @@ h2 {
 
 .research-summary {
   margin: 12px 0 18px;
+  text-align: justify;
+  hyphens: auto;
 }
 
 .research-summary p:last-child {
@@ -163,7 +165,8 @@ h2 {
 }
 
 .research-grid > ol > li {
-  border: 2px solid #5b5b5b;
+  border: 2px solid #0009;
+  border-radius: 10px;
   padding: 10px 12px;
 }
 
@@ -353,7 +356,11 @@ body.distort-bg-page::before {
   .research-grid ol {
     justify-content: flex-start;
   }
-  
+
+  .research-grid > ol > li {
+    margin-bottom: 12px;
+  }
+
   .research-orb canvas {
     background: transparent;
     mix-blend-mode: darken;
