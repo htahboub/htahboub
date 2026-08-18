@@ -155,11 +155,13 @@ h2 {
 
 .research-grid ol {
   margin: 0;
-  padding-left: 20px;
+  padding: 0;
 }
 
 .research-grid > ol > li {
   margin-bottom: 12px;
+  border: 2px solid black;
+  padding: 10px;
 }
 
 .research-grid ul {
