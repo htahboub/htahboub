@@ -161,8 +161,8 @@ h2 {
 
 .research-grid > ol > li {
   margin-bottom: 12px;
-  border: 2px solid black;
-  padding: 10px;
+  border: 2px solid #5b5b5b;
+  padding: 10px 12px;
 }
 
 .research-grid ul {
