@@ -156,6 +156,7 @@ h2 {
 .research-grid ol {
   margin: 0;
   padding: 0;
+  list-style-type: none;
 }
 
 .research-grid > ol > li {
