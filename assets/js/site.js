@@ -1,7 +1,18 @@
 (function () {
   "use strict";
 
+  function loadEggs() {
+    var eggs = [document.getElementById("howard"), document.getElementById("gaster")];
+    for (var i = 0; i < eggs.length; i++) {
+      var egg = eggs[i];
+      if (egg && !egg.getAttribute("src") && egg.getAttribute("data-src")) {
+        egg.src = egg.getAttribute("data-src");
+      }
+    }
+  }
+
   function toggleEggs(showMap) {
+    loadEggs();
     var howard = document.getElementById("howard");
     var gaster = document.getElementById("gaster");
     if (howard) howard.classList.toggle("hidden");
@@ -18,6 +29,8 @@
       toggleEggs(false);
     }
   }
+
+  window.addEventListener("load", loadEggs);
 
   document.addEventListener("DOMContentLoaded", function () {
     // var eggDelayMs = 24 * 60 * 60 * 1000;

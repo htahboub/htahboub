@@ -33,6 +33,7 @@ a,
 li {
   font-family: "Lato", Verdana, Helvetica, sans-serif;
   font-size: 14px;
+  line-height: 1.5;
 }
 
 body {
@@ -70,6 +71,7 @@ h2 {
   margin: 0;
   font-family: "Lato", Verdana, Helvetica, sans-serif;
   font-size: 32px;
+  font-weight: normal;
   text-align: center;
 }
 
@@ -141,8 +143,6 @@ h2 {
 
 .research-summary {
   margin: 12px 0 18px;
-  text-align: justify;
-  hyphens: auto;
 }
 
 .research-summary p:last-child {
@@ -165,9 +165,9 @@ h2 {
 }
 
 .research-grid > ol > li {
-  border: 1.75px solid #0008;
-  border-radius: 10px;
-  padding: 10px 12px;
+  border: 1px solid rgba(51, 65, 85, 0.55);
+  border-radius: 6px;
+  padding: 12px 14px;
 }
 
 .research-grid > ol > li:not(:last-child) {
@@ -179,10 +179,13 @@ h2 {
   padding-left: 18px;
 }
 
+.research-grid ul li:first-child {
+  color: #555;
+}
+
 .paper-note {
   color: #c00;
   font-weight: 700;
-  text-decoration: underline;
 }
 
 .research-orb {
