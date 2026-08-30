@@ -181,6 +181,7 @@ h2 {
 
 .research-grid ul li:first-child {
   color: #555;
+  font-style: italic;
 }
 
 .paper-note {
