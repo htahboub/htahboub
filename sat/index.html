@@ -513,6 +513,55 @@
     .toggle-row input:checked + .toggle-track::after {
       transform: translateX(22px);
     }
+    .toggle-stack {
+      display: grid;
+      gap: 2px;
+    }
+
+    .timers {
+      display: flex;
+      align-items: stretch;
+      gap: 14px;
+    }
+    .timer {
+      display: grid;
+      gap: 6px;
+      min-width: 64px;
+      text-align: right;
+      color: var(--graphite-3);
+      font-size: 0.66rem;
+      font-weight: 720;
+      text-transform: uppercase;
+      transition: color 160ms ease;
+    }
+    .timer:not([hidden]) ~ .timer:not([hidden]) {
+      padding-left: 14px;
+      border-left: 1px solid var(--line-soft);
+    }
+    .timer-value {
+      color: var(--graphite);
+      font-variant-numeric: tabular-nums;
+      font-size: 1.12rem;
+      font-weight: 760;
+      line-height: 1;
+      text-transform: none;
+      transition: color 160ms ease;
+    }
+    .timer.over .timer-value {
+      color: var(--amber);
+    }
+    .timer.stopped {
+      color: var(--graphite-faint);
+    }
+    .timer.stopped .timer-value {
+      color: var(--graphite-3);
+    }
+    .mini-grid.timing {
+      margin-top: 8px;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+      grid-template-columns: none;
+    }
 
     .chips {
       display: flex;
@@ -896,6 +945,9 @@
         display: grid;
         padding: 16px;
       }
+      .timer {
+        text-align: left;
+      }
       .choice {
         grid-template-columns: 36px minmax(0, 1fr);
         padding: 12px;
@@ -954,11 +1006,23 @@
               <button class="btn small" data-count="25">25</button>
             </div>
           </div>
-          <label class="toggle-row">
-            <input id="hidePracticeHints" type="checkbox">
-            <span class="toggle-track" aria-hidden="true"></span>
-            <span>Blind practice</span>
-          </label>
+          <div class="toggle-stack">
+            <label class="toggle-row">
+              <input id="hidePracticeHints" type="checkbox">
+              <span class="toggle-track" aria-hidden="true"></span>
+              <span>Blind practice</span>
+            </label>
+            <label class="toggle-row">
+              <input id="showSetTimer" type="checkbox">
+              <span class="toggle-track" aria-hidden="true"></span>
+              <span>Set timer</span>
+            </label>
+            <label class="toggle-row">
+              <input id="showQuestionTimer" type="checkbox">
+              <span class="toggle-track" aria-hidden="true"></span>
+              <span>Question timer</span>
+            </label>
+          </div>
           <button id="startBtn" class="btn primary">Start Practice</button>
           <div class="history-tools">
             <details>
@@ -1013,7 +1077,16 @@
                 <div class="progress-text" id="progressText">Question 1</div>
                 <div class="chips" id="questionMeta"></div>
               </div>
-              <div class="chips" id="targetMeta"></div>
+              <div class="timers" id="timerPanel" aria-live="off">
+                <div class="timer" id="setTimer" title="Time spent on this set">
+                  <span>Set</span>
+                  <span class="timer-value" id="setTimerValue">0:00</span>
+                </div>
+                <div class="timer" id="questionTimer" title="Time on this question. SAT pace is about 71 seconds per Reading and Writing question.">
+                  <span>Question</span>
+                  <span class="timer-value" id="questionTimerValue">0:00</span>
+                </div>
+              </div>
             </div>
             <div class="question-body">
               <div class="pdf-render-stack question-pdf" id="questionRender"></div>
@@ -1050,11 +1123,23 @@
               <div class="mini-stat muted" id="targetedStat">Targeted<span><strong id="targetedCount">0</strong></span></div>
               <div class="mini-stat muted">Left<span><strong id="questionsLeft">0</strong></span></div>
             </div>
-            <label class="toggle-row">
-              <input id="hidePracticeHintsLive" type="checkbox">
-              <span class="toggle-track" aria-hidden="true"></span>
-              <span>Blind practice</span>
-            </label>
+            <div class="toggle-stack">
+              <label class="toggle-row">
+                <input id="hidePracticeHintsLive" type="checkbox">
+                <span class="toggle-track" aria-hidden="true"></span>
+                <span>Blind practice</span>
+              </label>
+              <label class="toggle-row">
+                <input id="showSetTimerLive" type="checkbox">
+                <span class="toggle-track" aria-hidden="true"></span>
+                <span>Set timer</span>
+              </label>
+              <label class="toggle-row">
+                <input id="showQuestionTimerLive" type="checkbox">
+                <span class="toggle-track" aria-hidden="true"></span>
+                <span>Question timer</span>
+              </label>
+            </div>
             <div id="weaknessTargetsPanel">
               <h3>Weakness Targets</h3>
               <div class="chips" id="sideWeaknesses"></div>
@@ -1072,6 +1157,10 @@
               <div class="mini-stat muted">Missed<strong id="summaryMissed">0</strong></div>
               <div class="mini-stat muted">Last 10 Qs<strong id="summaryRolling">--</strong></div>
               <div class="mini-stat muted">Total<strong id="summaryTotal">0</strong></div>
+            </div>
+            <div class="mini-grid timing" id="summaryTiming">
+              <div class="mini-stat muted" id="summaryTimeStat">Set time<strong id="summaryTime">--</strong></div>
+              <div class="mini-stat muted" id="summaryPaceStat">Avg per question<strong id="summaryPace">--</strong></div>
             </div>
             <div class="button-row" style="margin-top: 16px;">
               <button id="againBtn" class="btn primary">Practice Again</button>
@@ -1117,6 +1206,8 @@
       const PDF_HORIZONTAL_INSET = 0;
       const CHOICE_HORIZONTAL_INSET = 0;
       const DIFFICULTIES = ["Easy", "Medium", "Hard"];
+      const QUESTION_PACE_MS = 71000;
+      const TIMER_TICK_MS = 250;
       const CONFETTI_COLORS = ["#0f766e", "#2f64d6", "#c88418", "#dc5f55", "#27824a", "#7c3aed", "#f4b942"];
       const byId = new Map(QUESTIONS.map((question) => [question.id, question]));
       const bySkill = QUESTIONS.reduce((map, question) => {
@@ -1137,6 +1228,20 @@
         questionCount: document.getElementById("questionCount"),
         hidePracticeHints: document.getElementById("hidePracticeHints"),
         hidePracticeHintsLive: document.getElementById("hidePracticeHintsLive"),
+        showSetTimer: document.getElementById("showSetTimer"),
+        showSetTimerLive: document.getElementById("showSetTimerLive"),
+        showQuestionTimer: document.getElementById("showQuestionTimer"),
+        showQuestionTimerLive: document.getElementById("showQuestionTimerLive"),
+        timerPanel: document.getElementById("timerPanel"),
+        setTimer: document.getElementById("setTimer"),
+        setTimerValue: document.getElementById("setTimerValue"),
+        questionTimer: document.getElementById("questionTimer"),
+        questionTimerValue: document.getElementById("questionTimerValue"),
+        summaryTiming: document.getElementById("summaryTiming"),
+        summaryTimeStat: document.getElementById("summaryTimeStat"),
+        summaryTime: document.getElementById("summaryTime"),
+        summaryPaceStat: document.getElementById("summaryPaceStat"),
+        summaryPace: document.getElementById("summaryPace"),
         difficultyInputs: {
           Easy: document.getElementById("difficultyEasy"),
           Medium: document.getElementById("difficultyMedium"),
@@ -1156,7 +1261,6 @@
         weaknessList: document.getElementById("weaknessList"),
         progressText: document.getElementById("progressText"),
         questionMeta: document.getElementById("questionMeta"),
-        targetMeta: document.getElementById("targetMeta"),
         questionRender: document.getElementById("questionRender"),
         choices: document.getElementById("choices"),
         selectionStatus: document.getElementById("selectionStatus"),
@@ -1219,6 +1323,7 @@
       if (storageInfo.recoveredFrom !== "new") storageInfo.lastSavedAt = state.updatedAt || null;
       let prefs = loadPrefs();
       let session = null;
+      let timerTickHandle = null;
 
       function createEmptyState() {
         const now = Date.now();
@@ -1252,7 +1357,14 @@
           skill: question.skill,
           difficulty: question.difficulty,
           ts: Number(attempt.ts) || Date.now(),
+          durationMs: normalizeDuration(attempt.durationMs),
         };
+      }
+
+      function normalizeDuration(value) {
+        if (value === null || value === undefined || value === "") return null;
+        const duration = Number(value);
+        return Number.isFinite(duration) ? Math.max(0, Math.round(duration)) : null;
       }
 
       function serializeAttempt(attempt) {
@@ -1308,6 +1420,8 @@
           recordedAttempt,
           completed: Boolean(raw.completed && recordedAttempt),
           currentNumber: Math.min(limit, Math.max(1, Number.parseInt(raw.currentNumber || answered.length + 1, 10) || 1)),
+          setElapsedMs: normalizeDuration(raw.setElapsedMs) || 0,
+          questionElapsedMs: normalizeDuration(raw.questionElapsedMs) || 0,
         };
       }
 
@@ -1396,11 +1510,15 @@
           const parsed = JSON.parse(localStorage.getItem(PREFS_KEY) || "{}");
           return {
             hidePracticeHints: Boolean(parsed.hidePracticeHints),
+            showSetTimer: parsed.showSetTimer !== false,
+            showQuestionTimer: parsed.showQuestionTimer !== false,
             difficultyDistribution: normalizeDifficultyDistribution(parsed.difficultyDistribution),
           };
         } catch (error) {
           return {
             hidePracticeHints: false,
+            showSetTimer: true,
+            showQuestionTimer: true,
             difficultyDistribution: defaultDifficultyDistribution(),
           };
         }
@@ -1483,7 +1601,7 @@
 
       function applyPracticeHintVisibility() {
         const hide = Boolean(prefs.hidePracticeHints);
-        [elements.questionMeta, elements.targetMeta, elements.targetedStat, elements.weaknessTargetsPanel].forEach((element) => {
+        [elements.questionMeta, elements.targetedStat, elements.weaknessTargetsPanel].forEach((element) => {
           if (element) element.hidden = hide;
         });
       }
@@ -1493,6 +1611,112 @@
         savePrefs();
         syncPracticeHintControls();
         applyPracticeHintVisibility();
+      }
+
+      function syncTimerControls() {
+        [elements.showSetTimer, elements.showSetTimerLive].forEach((input) => {
+          if (input) input.checked = Boolean(prefs.showSetTimer);
+        });
+        [elements.showQuestionTimer, elements.showQuestionTimerLive].forEach((input) => {
+          if (input) input.checked = Boolean(prefs.showQuestionTimer);
+        });
+      }
+
+      function setTimerPref(key, value) {
+        prefs[key] = Boolean(value);
+        savePrefs();
+        syncTimerControls();
+        syncTimerTicker();
+      }
+
+      function elapsedWithRunning(elapsedMs, runningSince) {
+        const base = Math.max(0, Number(elapsedMs) || 0);
+        return runningSince ? base + Math.max(0, Date.now() - runningSince) : base;
+      }
+
+      function setTimerElapsed(active = session) {
+        return active ? elapsedWithRunning(active.setElapsedMs, active.setRunningSince) : 0;
+      }
+
+      function questionTimerElapsed(active = session) {
+        return active ? elapsedWithRunning(active.questionElapsedMs, active.questionRunningSince) : 0;
+      }
+
+      function pauseSessionTimers() {
+        if (!session) return;
+        session.setElapsedMs = setTimerElapsed();
+        session.setRunningSince = null;
+        session.questionElapsedMs = questionTimerElapsed();
+        session.questionRunningSince = null;
+      }
+
+      function resumeSessionTimers() {
+        if (!session || !session.current || elements.practiceView.hidden) return;
+        const now = Date.now();
+        if (!session.setRunningSince) session.setRunningSince = now;
+        if (!session.recordedAttempt && !session.questionRunningSince) session.questionRunningSince = now;
+        renderTimers();
+      }
+
+      function startQuestionTimer() {
+        if (!session) return;
+        session.questionElapsedMs = 0;
+        session.questionRunningSince = document.visibilityState === "hidden" ? null : Date.now();
+      }
+
+      function stopQuestionTimer() {
+        if (!session) return null;
+        session.questionElapsedMs = questionTimerElapsed();
+        session.questionRunningSince = null;
+        return session.questionElapsedMs;
+      }
+
+      function stopSetTimer() {
+        if (!session) return;
+        session.setElapsedMs = setTimerElapsed();
+        session.setRunningSince = null;
+      }
+
+      function formatDuration(ms) {
+        const totalSeconds = Math.max(0, Math.floor((Number(ms) || 0) / 1000));
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        const pad = (value) => String(value).padStart(2, "0");
+        return hours ? `${hours}:${pad(minutes)}:${pad(seconds)}` : `${minutes}:${pad(seconds)}`;
+      }
+
+      function renderTimers() {
+        const showSet = Boolean(prefs.showSetTimer);
+        const showQuestion = Boolean(prefs.showQuestionTimer);
+        elements.setTimer.hidden = !showSet;
+        elements.questionTimer.hidden = !showQuestion;
+        elements.timerPanel.hidden = !showSet && !showQuestion;
+        elements.summaryTiming.hidden = !showSet && !showQuestion;
+        elements.summaryTimeStat.hidden = !showSet;
+        elements.summaryPaceStat.hidden = !showQuestion;
+        if (!session) return;
+        if (showSet) elements.setTimerValue.textContent = formatDuration(setTimerElapsed());
+        if (showQuestion) {
+          const elapsed = questionTimerElapsed();
+          elements.questionTimerValue.textContent = formatDuration(elapsed);
+          elements.questionTimer.classList.toggle("stopped", Boolean(session.recordedAttempt));
+          elements.questionTimer.classList.toggle("over", !session.recordedAttempt && elapsed >= QUESTION_PACE_MS);
+        }
+      }
+
+      function syncTimerTicker() {
+        const shouldTick = Boolean(session)
+          && !elements.practiceView.hidden
+          && (prefs.showSetTimer || prefs.showQuestionTimer)
+          && document.visibilityState !== "hidden";
+        if (shouldTick && timerTickHandle === null) {
+          timerTickHandle = window.setInterval(renderTimers, TIMER_TICK_MS);
+        } else if (!shouldTick && timerTickHandle !== null) {
+          window.clearInterval(timerTickHandle);
+          timerTickHandle = null;
+        }
+        renderTimers();
       }
 
       function serializeSession(active = session) {
@@ -1514,6 +1738,8 @@
           recordedAttempt,
           completed: active.completed,
           currentNumber: active.currentNumber,
+          setElapsedMs: setTimerElapsed(active),
+          questionElapsedMs: questionTimerElapsed(active),
         });
       }
 
@@ -1533,6 +1759,10 @@
           recordedAttempt: normalized.recordedAttempt,
           completed: normalized.completed,
           currentNumber: normalized.currentNumber,
+          setElapsedMs: normalized.setElapsedMs,
+          setRunningSince: null,
+          questionElapsedMs: normalized.questionElapsedMs,
+          questionRunningSince: null,
         };
       }
 
@@ -1549,7 +1779,7 @@
       }
 
       function syncActiveSessionBeforeSave() {
-        if (session && !elements.summaryView.hidden) {
+        if (session && !elements.practiceView.hidden) {
           state.activeSession = serializeSession(session);
         }
       }
@@ -1562,6 +1792,8 @@
         renderQuestion(session.current);
         renderSavedStats();
         renderSessionStats();
+        resumeSessionTimers();
+        syncTimerTicker();
         if (session.recordedAttempt) prepareUpcomingQuestion();
         return true;
       }
@@ -2081,6 +2313,8 @@
         session.recordedAttempt = null;
         session.completed = false;
         session.currentNumber = session.answered.length + 1;
+        startQuestionTimer();
+        renderTimers();
         elements.rationaleText.innerHTML = "";
         delete elements.rationaleText.dataset.questionId;
         renderQuestion(picked.question);
@@ -2105,6 +2339,10 @@
           completed: false,
           currentNumber: 1,
           preparedNext: null,
+          setElapsedMs: 0,
+          setRunningSince: Date.now(),
+          questionElapsedMs: 0,
+          questionRunningSince: null,
         };
         showView("practice");
         beginQuestion(takePreparedFirstQuestion() || chooseQuestion());
@@ -2124,9 +2362,12 @@
       function renderQuestion(question) {
         elements.progressText.textContent = `Question ${session.currentNumber} of ${session.limit}`;
         elements.questionMeta.innerHTML = "";
-        elements.questionMeta.append(chip(question.domain, "teal"), chip(question.skill), chip(question.difficulty, "amber"));
-        elements.targetMeta.innerHTML = "";
-        elements.targetMeta.append(session.targetSkill ? chip("Targeted", "coral") : chip("Broad draw"));
+        elements.questionMeta.append(
+          chip(question.domain, "teal"),
+          chip(question.skill),
+          session.targetSkill ? chip("Targeted", "coral") : chip("Broad draw"),
+          chip(question.difficulty, "amber")
+        );
         applyPracticeHintVisibility();
 
         renderQuestionPdf(question, elements.questionRender);
@@ -2170,7 +2411,7 @@
           .find((button) => button.dataset.letter === letter) || null;
       }
 
-      function buildAttempt(question, selected, ok) {
+      function buildAttempt(question, selected, ok, durationMs = null) {
         return {
           id: question.id,
           selected,
@@ -2180,6 +2421,7 @@
           skill: question.skill,
           difficulty: question.difficulty,
           ts: Date.now(),
+          durationMs: normalizeDuration(durationMs),
         };
       }
 
@@ -2201,7 +2443,7 @@
         if (!ok) {
           if (!session.wrongLetters.includes(letter)) session.wrongLetters.push(letter);
           if (!session.recordedAttempt) {
-            const attempt = buildAttempt(question, letter, false);
+            const attempt = buildAttempt(question, letter, false, stopQuestionTimer());
             state.attempts.push(attempt);
             session.answered.push(attempt);
             session.mistakes.push(attempt);
@@ -2220,7 +2462,7 @@
         }
 
         if (!session.recordedAttempt) {
-          const attempt = buildAttempt(question, letter, true);
+          const attempt = buildAttempt(question, letter, true, stopQuestionTimer());
           state.attempts.push(attempt);
           session.answered.push(attempt);
           session.recordedAttempt = attempt;
@@ -2234,6 +2476,7 @@
         renderCurrentFeedback();
         renderSavedStats();
         renderSessionStats();
+        renderTimers();
         saveActiveSession();
         prepareUpcomingQuestion();
       }
@@ -2494,8 +2737,14 @@
 
       function renderSummary() {
         if (!session) return;
+        stopQuestionTimer();
+        stopSetTimer();
         const answered = session.answered.length;
         const correct = session.answered.filter((attempt) => attempt.ok).length;
+        const timed = session.answered.filter((attempt) => attempt.durationMs !== null);
+        const paceMs = timed.length ? timed.reduce((sum, attempt) => sum + attempt.durationMs, 0) / timed.length : null;
+        elements.summaryTime.textContent = formatDuration(setTimerElapsed());
+        elements.summaryPace.textContent = paceMs === null ? "--" : formatDuration(paceMs);
         elements.summaryScore.textContent = `${correct} / ${answered} (${percent(correct, answered)})`;
         elements.summaryMissed.textContent = String(session.mistakes.length);
         elements.summaryRolling.textContent = recentQuestionAccuracy();
@@ -2519,6 +2768,7 @@
                 <span class="chip">${escapeHtml(question.difficulty)}</span>
                 <span class="chip">Selected ${attempt.selected}</span>
                 <span class="chip teal">Correct ${question.correct}</span>
+                ${prefs.showQuestionTimer && attempt.durationMs !== null ? `<span class="chip amber">${formatDuration(attempt.durationMs)}</span>` : ""}
               </div>
               <div class="pdf-render-stack" data-role="mistake-question"></div>
               <h3>Justification</h3>
@@ -2539,6 +2789,7 @@
         elements.practiceView.hidden = name !== "practice";
         elements.summaryView.hidden = name !== "summary";
         if (name === "setup") window.setTimeout(prepareFirstQuestion, 0);
+        syncTimerTicker();
       }
 
       async function loadPdfJs() {
@@ -3042,20 +3293,31 @@
       [elements.hidePracticeHints, elements.hidePracticeHintsLive].forEach((input) => {
         if (input) input.addEventListener("change", (event) => setPracticeHintsHidden(event.currentTarget.checked));
       });
+      [elements.showSetTimer, elements.showSetTimerLive].forEach((input) => {
+        if (input) input.addEventListener("change", (event) => setTimerPref("showSetTimer", event.currentTarget.checked));
+      });
+      [elements.showQuestionTimer, elements.showQuestionTimerLive].forEach((input) => {
+        if (input) input.addEventListener("change", (event) => setTimerPref("showQuestionTimer", event.currentTarget.checked));
+      });
       DIFFICULTIES.forEach((difficulty) => {
         const input = elements.difficultyInputs[difficulty];
         if (input) input.addEventListener("change", saveDifficultyControls);
       });
       if (elements.resetDifficultyBtn) elements.resetDifficultyBtn.addEventListener("click", resetDifficultyDistribution);
       window.addEventListener("pagehide", () => {
+        pauseSessionTimers();
         syncActiveSessionBeforeSave();
         saveState({ stamp: false });
       });
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "hidden") {
+          pauseSessionTimers();
           syncActiveSessionBeforeSave();
           saveState({ stamp: false });
+        } else {
+          resumeSessionTimers();
         }
+        syncTimerTicker();
       });
       document.querySelectorAll("[data-count]").forEach((button) => {
         button.addEventListener("click", () => {
@@ -3064,8 +3326,10 @@
       });
 
       syncPracticeHintControls();
+      syncTimerControls();
       syncDifficultyControls();
       applyPracticeHintVisibility();
+      renderTimers();
       renderSavedStats();
       schedulePdfRuntimeWarmup();
       initPersistence()
