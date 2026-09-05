@@ -424,6 +424,27 @@
       font-size: 0.78rem;
       font-weight: 760;
     }
+    .target-slider {
+      display: grid;
+      gap: 8px;
+    }
+    .target-slider input[type="range"] {
+      width: 100%;
+      margin: 0;
+      accent-color: var(--teal);
+    }
+    .target-scale {
+      display: flex;
+      justify-content: space-between;
+      color: var(--graphite-3);
+      font-size: 0.72rem;
+      font-weight: 820;
+      text-transform: uppercase;
+    }
+    .target-scale strong {
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
     .info-button {
       position: relative;
       display: inline-grid;
@@ -1051,6 +1072,23 @@
                   <button id="resetDifficultyBtn" class="btn small" type="button">Reset mix</button>
                 </div>
               </div>
+              <div class="difficulty-settings">
+                <h3>Targeting</h3>
+                <div class="target-slider">
+                  <div class="target-scale" aria-hidden="true">
+                    <span>Broad <strong id="broadPercent">50%</strong></span>
+                    <span>Targeted <strong id="targetedPercent">50%</strong></span>
+                  </div>
+                  <input id="targetRate" type="range" min="0" max="100" step="5" value="50" aria-label="Share of questions drawn from weak skills">
+                </div>
+                <div class="difficulty-footer">
+                  <span class="difficulty-total-wrap">
+                    <span class="difficulty-total" id="targetRateSummary">Targeted 50%</span>
+                    <button class="info-button" type="button" aria-label="Targeting help" title="How often a question is drawn from your weakest skills." data-tooltip="The chance that each question is drawn from your weakest skills (based on your last 30 misses) instead of the whole bank. Broad draws fall back automatically when there are no recorded misses.">?</button>
+                  </span>
+                  <button id="resetTargetRateBtn" class="btn small" type="button">Reset</button>
+                </div>
+              </div>
               <div class="button-row">
                 <button id="exportBtn" class="btn small">Export Backup</button>
                 <button id="importBtn" class="btn small">Import Backup</button>
@@ -1200,7 +1238,7 @@
       const COOKIE_KEY = "sat_rw_trainer_checkpoint";
       const WEAKNESS_WINDOW = 30;
       const SCORE_WINDOW = 10;
-      const TARGET_RATE = 0.5;
+      const DEFAULT_TARGET_RATE = 0.5;
       const PAGE_CACHE_LIMIT = 8;
       const PAGE_DOCUMENT_CACHE_LIMIT = 12;
       const PDF_HORIZONTAL_INSET = 0;
@@ -1248,6 +1286,11 @@
           Hard: document.getElementById("difficultyHard"),
         },
         difficultyTotal: document.getElementById("difficultyTotal"),
+        targetRate: document.getElementById("targetRate"),
+        targetRateSummary: document.getElementById("targetRateSummary"),
+        broadPercent: document.getElementById("broadPercent"),
+        targetedPercent: document.getElementById("targetedPercent"),
+        resetTargetRateBtn: document.getElementById("resetTargetRateBtn"),
         resetDifficultyBtn: document.getElementById("resetDifficultyBtn"),
         startBtn: document.getElementById("startBtn"),
         exportBtn: document.getElementById("exportBtn"),
@@ -1513,6 +1556,7 @@
             showSetTimer: parsed.showSetTimer !== false,
             showQuestionTimer: parsed.showQuestionTimer !== false,
             difficultyDistribution: normalizeDifficultyDistribution(parsed.difficultyDistribution),
+            targetRate: normalizeTargetRate(parsed.targetRate),
           };
         } catch (error) {
           return {
@@ -1520,8 +1564,47 @@
             showSetTimer: true,
             showQuestionTimer: true,
             difficultyDistribution: defaultDifficultyDistribution(),
+            targetRate: DEFAULT_TARGET_RATE,
           };
         }
+      }
+
+      function normalizeTargetRate(raw) {
+        const value = Number(raw);
+        if (!Number.isFinite(value)) return DEFAULT_TARGET_RATE;
+        return Math.min(1, Math.max(0, Math.round(value * 100) / 100));
+      }
+
+      function syncTargetRateControls() {
+        prefs.targetRate = normalizeTargetRate(prefs.targetRate);
+        const targeted = Math.round(prefs.targetRate * 100);
+        if (elements.targetRate) elements.targetRate.value = String(targeted);
+        if (elements.targetedPercent) elements.targetedPercent.textContent = `${targeted}%`;
+        if (elements.broadPercent) elements.broadPercent.textContent = `${100 - targeted}%`;
+        if (elements.targetRateSummary) elements.targetRateSummary.textContent = `Targeted ${targeted}%`;
+      }
+
+      function saveTargetRateControls() {
+        prefs.targetRate = normalizeTargetRate(Number(elements.targetRate ? elements.targetRate.value : 50) / 100);
+        savePrefs();
+        syncTargetRateControls();
+        clearPreparedQuestions();
+        prepareFirstQuestion();
+      }
+
+      function syncTargetRateFromInput() {
+        const targeted = Math.min(100, Math.max(0, Number(elements.targetRate.value) || 0));
+        elements.targetedPercent.textContent = `${targeted}%`;
+        elements.broadPercent.textContent = `${100 - targeted}%`;
+        elements.targetRateSummary.textContent = `Targeted ${targeted}%`;
+      }
+
+      function resetTargetRate() {
+        prefs.targetRate = DEFAULT_TARGET_RATE;
+        savePrefs();
+        syncTargetRateControls();
+        clearPreparedQuestions();
+        prepareFirstQuestion();
       }
 
       function savePrefs() {
@@ -2234,7 +2317,7 @@
       }
 
       function chooseQuestionFromUsed(used) {
-        const shouldTarget = Math.random() < TARGET_RATE;
+        const shouldTarget = Math.random() < normalizeTargetRate(prefs.targetRate);
         let targetSkill = shouldTarget ? weightedWeakSkill() : null;
         const targetDifficulty = weightedDifficulty();
         let pool = [];
@@ -2268,6 +2351,7 @@
           state.attempts.length,
           Number(state.updatedAt) || 0,
           difficultyDistributionKey(),
+          `target:${normalizeTargetRate(prefs.targetRate)}`,
         ].join(":");
       }
 
@@ -3304,6 +3388,11 @@
         if (input) input.addEventListener("change", saveDifficultyControls);
       });
       if (elements.resetDifficultyBtn) elements.resetDifficultyBtn.addEventListener("click", resetDifficultyDistribution);
+      if (elements.targetRate) {
+        elements.targetRate.addEventListener("input", syncTargetRateFromInput);
+        elements.targetRate.addEventListener("change", saveTargetRateControls);
+      }
+      if (elements.resetTargetRateBtn) elements.resetTargetRateBtn.addEventListener("click", resetTargetRate);
       window.addEventListener("pagehide", () => {
         pauseSessionTimers();
         syncActiveSessionBeforeSave();
@@ -3328,6 +3417,7 @@
       syncPracticeHintControls();
       syncTimerControls();
       syncDifficultyControls();
+      syncTargetRateControls();
       applyPracticeHintVisibility();
       renderTimers();
       renderSavedStats();
