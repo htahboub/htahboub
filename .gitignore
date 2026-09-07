@@ -9,3 +9,4 @@ Thumbs.db
 # Local dependency/build output that should not be published
 node_modules/
 package-lock.json
+nohup.out
