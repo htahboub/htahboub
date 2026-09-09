@@ -372,6 +372,159 @@
     .history-tools .button-row {
       margin-top: 10px;
     }
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 3px;
+      padding: 3px;
+      border: 1px solid var(--line-soft);
+      border-radius: 9px;
+      background: var(--paper-inset);
+    }
+    .seg-btn {
+      min-height: 36px;
+      padding: 6px 12px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--graphite-3);
+      font-size: 0.88rem;
+      font-weight: 800;
+      transition: background 120ms ease, color 120ms ease, box-shadow 120ms ease;
+    }
+    .seg-btn:hover {
+      color: var(--graphite);
+    }
+    .seg-btn[aria-pressed="true"] {
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: 0 1px 2px rgba(20, 31, 29, 0.08), 0 0 0 1px var(--line-soft);
+    }
+    .mode-hint {
+      margin: 0;
+      color: var(--graphite-3);
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+    .skill-picker {
+      display: grid;
+      gap: 14px;
+      padding: 14px;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: var(--paper-soft);
+    }
+    .skill-picker-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .skill-picker-head h3 {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+    .skill-picker-summary {
+      color: var(--graphite-3);
+      font-size: 0.78rem;
+      font-weight: 760;
+    }
+    .skill-picker-summary.warn {
+      color: var(--red);
+    }
+    .skill-picker-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .skill-group {
+      display: grid;
+      gap: 8px;
+    }
+    .skill-group-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .skill-domain {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--graphite-2);
+      font-size: 0.74rem;
+      font-weight: 820;
+      letter-spacing: 0.01em;
+      text-align: left;
+      text-transform: uppercase;
+    }
+    .skill-domain:hover {
+      color: var(--teal-dark);
+    }
+    .skill-domain-count {
+      color: var(--graphite-faint);
+      font-size: 0.72rem;
+      font-weight: 760;
+      white-space: nowrap;
+    }
+    .skill-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .skill-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 32px;
+      padding: 5px 11px 5px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--graphite-3);
+      font-size: 0.8rem;
+      font-weight: 760;
+      line-height: 1.2;
+      text-align: left;
+      transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+    }
+    .skill-chip::before {
+      content: "";
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      background: var(--paper);
+      transition: background 120ms ease, border-color 120ms ease;
+    }
+    .skill-chip:hover {
+      border-color: var(--line-strong);
+      color: var(--graphite);
+    }
+    .skill-chip[aria-pressed="true"] {
+      border-color: rgba(47, 111, 99, 0.45);
+      background: var(--scantron-soft);
+      color: var(--teal-dark);
+    }
+    .skill-chip[aria-pressed="true"]::before {
+      border-color: var(--teal);
+      background: var(--teal) center / 10px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 5.2l2.1 2.1L8 3.4' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+    .skill-chip small {
+      color: var(--graphite-faint);
+      font-size: 0.72rem;
+      font-weight: 720;
+    }
+    .skill-chip[aria-pressed="true"] small {
+      color: rgba(38, 90, 81, 0.7);
+    }
+    .chip.blue {
+      border-color: rgba(63, 95, 134, 0.3);
+      background: var(--proof-blue-soft);
+      color: var(--blue);
+    }
     .difficulty-settings {
       display: grid;
       gap: 12px;
@@ -1429,6 +1582,25 @@
               <button class="btn small" data-count="25">25</button>
             </div>
           </div>
+          <div class="field">
+            <label>Mode</label>
+            <div class="segmented" id="modeSwitch">
+              <button class="seg-btn" type="button" data-mode="adaptive" aria-pressed="true">Adaptive</button>
+              <button class="seg-btn" type="button" data-mode="manual" aria-pressed="false">Manual</button>
+            </div>
+            <p class="mode-hint" id="modeHint">Draws from the whole bank and targets your weakest skills automatically.</p>
+          </div>
+          <div class="skill-picker" id="skillPicker" hidden>
+            <div class="skill-picker-head">
+              <h3>Question types</h3>
+              <div class="skill-picker-actions">
+                <button class="btn small" type="button" id="skillsAllBtn">All</button>
+                <button class="btn small" type="button" id="skillsNoneBtn">None</button>
+              </div>
+            </div>
+            <div id="skillGroups"></div>
+            <div class="skill-picker-summary" id="skillPickerSummary"></div>
+          </div>
           <div class="toggle-stack">
             <label class="toggle-row">
               <input id="hidePracticeHints" type="checkbox">
@@ -1474,7 +1646,7 @@
                   <button id="resetDifficultyBtn" class="btn small" type="button">Reset mix</button>
                 </div>
               </div>
-              <div class="difficulty-settings">
+              <div class="difficulty-settings" id="targetingSettings">
                 <h3>Targeting</h3>
                 <div class="target-slider">
                   <div class="target-scale" aria-hidden="true">
@@ -1587,7 +1759,7 @@
               </label>
             </div>
             <div id="weaknessTargetsPanel">
-              <h3>Weakness Targets</h3>
+              <h3 id="sideTargetsTitle">Weakness Targets</h3>
               <div class="chips" id="sideWeaknesses"></div>
             </div>
           </aside>
@@ -1747,6 +1919,19 @@
         return map;
       }, new Map());
       const DEFAULT_DIFFICULTY_DISTRIBUTION = { Easy: 20, Medium: 19, Hard: 18 };
+      const SKILL_GROUPS = (() => {
+        const groups = new Map();
+        QUESTIONS.forEach((question) => {
+          if (!groups.has(question.domain)) groups.set(question.domain, new Map());
+          const skills = groups.get(question.domain);
+          skills.set(question.skill, (skills.get(question.skill) || 0) + 1);
+        });
+        return [...groups.entries()].map(([domain, skills]) => ({
+          domain,
+          skills: [...skills.entries()].map(([skill, count]) => ({ skill, count })),
+        }));
+      })();
+      const ALL_SKILLS = SKILL_GROUPS.flatMap((group) => group.skills.map((entry) => entry.skill));
 
       const elements = {
         confettiCanvas: document.getElementById("confettiCanvas"),
@@ -1779,6 +1964,15 @@
           Hard: document.getElementById("difficultyHard"),
         },
         difficultyTotal: document.getElementById("difficultyTotal"),
+        modeSwitch: document.getElementById("modeSwitch"),
+        modeHint: document.getElementById("modeHint"),
+        skillPicker: document.getElementById("skillPicker"),
+        skillGroups: document.getElementById("skillGroups"),
+        skillPickerSummary: document.getElementById("skillPickerSummary"),
+        skillsAllBtn: document.getElementById("skillsAllBtn"),
+        skillsNoneBtn: document.getElementById("skillsNoneBtn"),
+        targetingSettings: document.getElementById("targetingSettings"),
+        sideTargetsTitle: document.getElementById("sideTargetsTitle"),
         targetRate: document.getElementById("targetRate"),
         targetRateSummary: document.getElementById("targetRateSummary"),
         broadPercent: document.getElementById("broadPercent"),
@@ -1980,6 +2174,7 @@
         return {
           status: "practice",
           limit,
+          mode: raw.mode === "manual" ? "manual" : "adaptive",
           answered,
           mistakes: mistakes.length ? mistakes : scoredMistakes,
           usedIds: [...usedIds],
@@ -2087,6 +2282,8 @@
             showTestTimer: parsed.showTestTimer !== false,
             difficultyDistribution: normalizeDifficultyDistribution(parsed.difficultyDistribution),
             targetRate: normalizeTargetRate(parsed.targetRate),
+            practiceMode: parsed.practiceMode === "manual" ? "manual" : "adaptive",
+            manualSkills: normalizeManualSkills(parsed.manualSkills),
           };
         } catch (error) {
           return {
@@ -2096,8 +2293,124 @@
             showTestTimer: true,
             difficultyDistribution: defaultDifficultyDistribution(),
             targetRate: DEFAULT_TARGET_RATE,
+            practiceMode: "adaptive",
+            manualSkills: [...ALL_SKILLS],
           };
         }
+      }
+
+      function normalizeManualSkills(raw) {
+        if (!Array.isArray(raw)) return [...ALL_SKILLS];
+        const valid = new Set(ALL_SKILLS);
+        return [...new Set(raw.filter((skill) => valid.has(skill)))];
+      }
+
+      function isManualMode() {
+        return prefs.practiceMode === "manual";
+      }
+
+      function manualSkillSet() {
+        return new Set(normalizeManualSkills(prefs.manualSkills));
+      }
+
+      function manualSelectionKey() {
+        return `${prefs.practiceMode}:${normalizeManualSkills(prefs.manualSkills).slice().sort().join("|")}`;
+      }
+
+      function setPracticeMode(mode) {
+        prefs.practiceMode = mode === "manual" ? "manual" : "adaptive";
+        savePrefs();
+        syncModeControls();
+        clearPreparedQuestions();
+        prepareFirstQuestion();
+      }
+
+      function setManualSkills(skills) {
+        prefs.manualSkills = normalizeManualSkills(skills);
+        savePrefs();
+        syncModeControls();
+        clearPreparedQuestions();
+        prepareFirstQuestion();
+      }
+
+      function toggleManualSkill(skill) {
+        const selected = manualSkillSet();
+        if (selected.has(skill)) selected.delete(skill);
+        else selected.add(skill);
+        setManualSkills(ALL_SKILLS.filter((item) => selected.has(item)));
+      }
+
+      function toggleManualDomain(domain) {
+        const group = SKILL_GROUPS.find((item) => item.domain === domain);
+        if (!group) return;
+        const selected = manualSkillSet();
+        const allOn = group.skills.every((entry) => selected.has(entry.skill));
+        group.skills.forEach((entry) => {
+          if (allOn) selected.delete(entry.skill);
+          else selected.add(entry.skill);
+        });
+        setManualSkills(ALL_SKILLS.filter((item) => selected.has(item)));
+      }
+
+      function renderSkillPicker() {
+        if (!elements.skillGroups) return;
+        const selected = manualSkillSet();
+        elements.skillGroups.innerHTML = "";
+        elements.skillGroups.style.display = "grid";
+        elements.skillGroups.style.gap = "14px";
+        SKILL_GROUPS.forEach((group) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "skill-group";
+          const head = document.createElement("div");
+          head.className = "skill-group-head";
+          const domainButton = document.createElement("button");
+          domainButton.type = "button";
+          domainButton.className = "skill-domain";
+          domainButton.dataset.domain = group.domain;
+          domainButton.textContent = group.domain;
+          domainButton.title = "Toggle every type in this domain";
+          const onCount = group.skills.filter((entry) => selected.has(entry.skill)).length;
+          const count = document.createElement("span");
+          count.className = "skill-domain-count";
+          count.textContent = `${onCount} / ${group.skills.length}`;
+          head.append(domainButton, count);
+          const chips = document.createElement("div");
+          chips.className = "skill-chips";
+          group.skills.forEach((entry) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "skill-chip";
+            button.dataset.skill = entry.skill;
+            button.setAttribute("aria-pressed", selected.has(entry.skill) ? "true" : "false");
+            button.innerHTML = `${escapeHtml(entry.skill)} <small>${entry.count}</small>`;
+            chips.append(button);
+          });
+          wrapper.append(head, chips);
+          elements.skillGroups.append(wrapper);
+        });
+        const total = ALL_SKILLS.filter((skill) => selected.has(skill)).reduce((sum, skill) => sum + (bySkill.get(skill) || []).length, 0);
+        elements.skillPickerSummary.classList.toggle("warn", selected.size === 0);
+        elements.skillPickerSummary.textContent = selected.size === 0
+          ? "Select at least one question type to start."
+          : `${selected.size} of ${ALL_SKILLS.length} types · ${total.toLocaleString()} questions available`;
+      }
+
+      function syncModeControls() {
+        const manual = isManualMode();
+        if (elements.modeSwitch) {
+          elements.modeSwitch.querySelectorAll("[data-mode]").forEach((button) => {
+            button.setAttribute("aria-pressed", button.dataset.mode === prefs.practiceMode ? "true" : "false");
+          });
+        }
+        if (elements.modeHint) {
+          elements.modeHint.textContent = manual
+            ? "Draws only from the question types you pick below. Difficulty mix still applies."
+            : "Draws from the whole bank and targets your weakest skills automatically.";
+        }
+        if (elements.skillPicker) elements.skillPicker.hidden = !manual;
+        if (elements.targetingSettings) elements.targetingSettings.hidden = manual;
+        if (manual) renderSkillPicker();
+        if (elements.startBtn) elements.startBtn.disabled = manual && manualSkillSet().size === 0;
       }
 
       function normalizeTargetRate(raw) {
@@ -2215,9 +2528,11 @@
 
       function applyPracticeHintVisibility() {
         const hide = Boolean(prefs.hidePracticeHints);
-        [elements.questionMeta, elements.targetedStat, elements.weaknessTargetsPanel].forEach((element) => {
+        const manual = Boolean(session && session.mode === "manual");
+        [elements.questionMeta, elements.weaknessTargetsPanel].forEach((element) => {
           if (element) element.hidden = hide;
         });
+        if (elements.targetedStat) elements.targetedStat.hidden = hide || manual;
       }
 
       function setPracticeHintsHidden(value) {
@@ -2341,6 +2656,7 @@
         return normalizeActiveSession({
           status: "practice",
           limit: active.limit,
+          mode: active.mode,
           answered,
           mistakes,
           usedIds: active.usedIds instanceof Set ? [...active.usedIds] : active.usedIds,
@@ -2362,6 +2678,7 @@
         if (!normalized) return null;
         return {
           limit: normalized.limit,
+          mode: normalized.mode,
           answered: normalized.answered,
           mistakes: normalized.mistakes,
           usedIds: new Set(normalized.usedIds),
@@ -2849,9 +3166,16 @@
       }
 
       function chooseQuestionFromUsed(used) {
+        const targetDifficulty = weightedDifficulty();
+        if (isManualMode()) {
+          const selected = manualSkillSet();
+          const allowed = selected.size ? QUESTIONS.filter((question) => selected.has(question.skill)) : QUESTIONS;
+          const unused = allowed.filter((question) => !used.has(question.id));
+          const pool = applyDifficultyPool(unused.length ? unused : allowed, targetDifficulty);
+          return { question: randomFrom(pool), targetSkill: null };
+        }
         const shouldTarget = Math.random() < normalizeTargetRate(prefs.targetRate);
         let targetSkill = shouldTarget ? weightedWeakSkill() : null;
-        const targetDifficulty = weightedDifficulty();
         let pool = [];
         if (targetSkill) {
           const skillPool = bySkill.get(targetSkill) || [];
@@ -2884,6 +3208,7 @@
           Number(state.updatedAt) || 0,
           difficultyDistributionKey(),
           `target:${normalizeTargetRate(prefs.targetRate)}`,
+          `mode:${manualSelectionKey()}`,
         ].join(":");
       }
 
@@ -2940,9 +3265,11 @@
       }
 
       function startPractice() {
+        if (isManualMode() && manualSkillSet().size === 0) return;
         const count = Math.min(100, Math.max(1, Number.parseInt(elements.questionCount.value || "20", 10)));
         session = {
           limit: count,
+          mode: prefs.practiceMode,
           answered: [],
           mistakes: [],
           usedIds: new Set(),
@@ -2981,7 +3308,7 @@
         elements.questionMeta.append(
           chip(question.domain, "teal"),
           chip(question.skill),
-          session.targetSkill ? chip("Targeted", "coral") : chip("Broad draw"),
+          session.mode === "manual" ? chip("Manual", "blue") : session.targetSkill ? chip("Targeted", "coral") : chip("Broad draw"),
           chip(question.difficulty, "amber")
         );
         applyPracticeHintVisibility();
@@ -3341,12 +3668,23 @@
         elements.targetedCount.textContent = String(session.targeted);
         elements.questionsLeft.textContent = String(Math.max(0, session.limit - answered));
         elements.sideWeaknesses.innerHTML = "";
-        const rows = weaknessRows().slice(0, 3);
-        elements.sideWeaknesses.append(chip(`Last ${WEAKNESS_WINDOW} misses`, "amber"));
-        if (!rows.length) {
-          elements.sideWeaknesses.append(chip("No misses", "teal"));
+        if (session.mode === "manual") {
+          elements.sideTargetsTitle.textContent = "Question Types";
+          const selected = ALL_SKILLS.filter((skill) => manualSkillSet().has(skill));
+          if (!selected.length || selected.length === ALL_SKILLS.length) {
+            elements.sideWeaknesses.append(chip("All types", "blue"));
+          } else {
+            selected.forEach((skill) => elements.sideWeaknesses.append(chip(skill, "blue")));
+          }
         } else {
-          rows.forEach((row) => elements.sideWeaknesses.append(chip(`${row.skill}: ${row.count}`, "coral")));
+          elements.sideTargetsTitle.textContent = "Weakness Targets";
+          const rows = weaknessRows().slice(0, 3);
+          elements.sideWeaknesses.append(chip(`Last ${WEAKNESS_WINDOW} misses`, "amber"));
+          if (!rows.length) {
+            elements.sideWeaknesses.append(chip("No misses", "teal"));
+          } else {
+            rows.forEach((row) => elements.sideWeaknesses.append(chip(`${row.skill}: ${row.count}`, "coral")));
+          }
         }
         applyPracticeHintVisibility();
       }
@@ -5095,6 +5433,25 @@
         if (input) input.addEventListener("change", saveDifficultyControls);
       });
       if (elements.resetDifficultyBtn) elements.resetDifficultyBtn.addEventListener("click", resetDifficultyDistribution);
+      if (elements.modeSwitch) {
+        elements.modeSwitch.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-mode]");
+          if (button) setPracticeMode(button.dataset.mode);
+        });
+      }
+      if (elements.skillGroups) {
+        elements.skillGroups.addEventListener("click", (event) => {
+          const chipButton = event.target.closest(".skill-chip");
+          if (chipButton) {
+            toggleManualSkill(chipButton.dataset.skill);
+            return;
+          }
+          const domainButton = event.target.closest(".skill-domain");
+          if (domainButton) toggleManualDomain(domainButton.dataset.domain);
+        });
+      }
+      if (elements.skillsAllBtn) elements.skillsAllBtn.addEventListener("click", () => setManualSkills(ALL_SKILLS));
+      if (elements.skillsNoneBtn) elements.skillsNoneBtn.addEventListener("click", () => setManualSkills([]));
       if (elements.targetRate) {
         elements.targetRate.addEventListener("input", syncTargetRateFromInput);
         elements.targetRate.addEventListener("change", saveTargetRateControls);
@@ -5124,6 +5481,7 @@
       });
 
       syncPracticeHintControls();
+      syncModeControls();
       syncTimerControls();
       syncDifficultyControls();
       syncTargetRateControls();
